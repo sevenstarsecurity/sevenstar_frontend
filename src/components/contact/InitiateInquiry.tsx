@@ -1,0 +1,175 @@
+"use client";
+
+import React, { useState } from "react";
+import { ChevronDown, ShieldCheck, Award } from "lucide-react";
+
+export const InitiateInquiry: React.FC = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    sector: "",
+    message: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+    setTimeout(() => {
+      setSubmitted(false);
+      setFormData({ name: "", email: "", sector: "", message: "" });
+    }, 4000);
+  };
+
+  return (
+    <section className="bg-[#f0f5ea] pt-44 md:pt-52 pb-16 border-b border-[#e2ebd9]">
+      <div className="max-w-[1152px] mx-auto px-6 md:px-10 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          {/* Left Column: Underline Style Form (Spans 7 cols on lg) */}
+          <div className="lg:col-span-7">
+            {/* Heading with Vertical Green Accent Bar */}
+            <div className="flex items-center space-x-3 mb-10">
+              <div className="w-[4px] h-7 bg-[#004E24]" />
+              <h2
+                className="text-2xl md:text-3xl font-extrabold text-gray-900 uppercase tracking-tight"
+                style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+              >
+                INITIATE INQUIRY
+              </h2>
+            </div>
+
+            {submitted ? (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-none p-6 text-center text-[#004E24]">
+                <h3 className="text-lg font-bold mb-2">INTELLIGENCE TRANSMITTED</h3>
+                <p className="text-xs text-gray-600">
+                  Thank you. Our tactical response desk will contact you shortly.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-8">
+                {/* 2 Underline Inputs Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      required
+                      placeholder="Full Operational Name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full bg-transparent border-b border-gray-400 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#004E24] transition-colors"
+                      style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+                    />
+                  </div>
+
+                  <div className="relative">
+                    <input
+                      type="email"
+                      required
+                      placeholder="Secure Email Address"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full bg-transparent border-b border-gray-400 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#004E24] transition-colors"
+                      style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+                    />
+                  </div>
+                </div>
+
+                {/* Dropdown Select with Underline */}
+                <div className="relative">
+                  <select
+                    required
+                    value={formData.sector}
+                    onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
+                    className="w-full bg-transparent border-b border-gray-400 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-[#004E24] transition-colors appearance-none pr-8 cursor-pointer"
+                    style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+                  >
+                    <option value="" disabled className="text-gray-400">
+                      Select Primary Sector
+                    </option>
+                    <option value="corporate" className="text-gray-900">Corporate & Commercial Security</option>
+                    <option value="vip" className="text-gray-900">VIP Escort & Executive Protection</option>
+                    <option value="industrial" className="text-gray-900">Industrial & Logistics Security</option>
+                    <option value="diplomatic" className="text-gray-900">Diplomatic & Embassy Services</option>
+                    <option value="event" className="text-gray-900">Event & Venue Operations</option>
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-gray-500 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+
+                {/* Textarea with Underline */}
+                <div className="relative">
+                  <textarea
+                    rows={4}
+                    required
+                    placeholder="Mission Specifics / Inquiry Details"
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full bg-transparent border-b border-gray-400 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#004E24] transition-colors resize-none"
+                    style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+                  />
+                </div>
+
+                {/* Sharp Rectangle Submit Button */}
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    className="bg-[#004E24] hover:bg-[#003d1c] text-white font-bold text-xs uppercase tracking-widest px-8 py-3.5 rounded-none shadow-sm hover:shadow-md transition-all duration-200 inline-flex items-center justify-center"
+                    style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+                  >
+                    SUBMIT INTELLIGENCE
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+
+          {/* Right Column: Google Map & ISO Certificates (Spans 5 cols on lg) */}
+          <div className="lg:col-span-5 space-y-6">
+            {/* Live Interactive Google Map Embed */}
+            <div className="bg-white rounded-none border border-gray-300 shadow-sm h-[260px] md:h-[280px] overflow-hidden relative">
+              <iframe
+                title="Seven Star Security Headquarters Location Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.0627072978184!2d85.3345464!3d27.7153403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1965b38a74e5%3A0xb355152919864278!2sChandol%2C%20Kathmandu%2044600!5e0!3m2!1sen!2snp!4v1700000000000!5m2!1sen!2snp"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full"
+              />
+            </div>
+
+            {/* ISO Certificates */}
+            <div className="space-y-3 pt-2">
+              {/* ISO 9001 Card */}
+              <div className="bg-white rounded-none p-3.5 border border-gray-200 flex items-center space-x-3.5 shadow-2xs">
+                <div className="w-10 h-10 rounded-none bg-amber-50 text-[#8C733E] border border-amber-200/60 flex items-center justify-center flex-shrink-0">
+                  <Award className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-extrabold text-gray-900 uppercase">
+                    ISO 9001 CERTIFIED
+                  </h4>
+                  <p className="text-[11px] text-gray-500">Quality Management Systems</p>
+                </div>
+              </div>
+
+              {/* ISO 14001 Card */}
+              <div className="bg-white rounded-none p-3.5 border border-gray-200 flex items-center space-x-3.5 shadow-2xs">
+                <div className="w-10 h-10 rounded-none bg-amber-50 text-[#8C733E] border border-amber-200/60 flex items-center justify-center flex-shrink-0">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-extrabold text-gray-900 uppercase">
+                    ISO 14001 CERTIFIED
+                  </h4>
+                  <p className="text-[11px] text-gray-500">Environmental Management</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
