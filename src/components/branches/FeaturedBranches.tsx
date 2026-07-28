@@ -213,7 +213,7 @@ export const FeaturedBranches: React.FC = () => {
           {/* Right: Training photo */}
           <div style={{ width: "42%", flexShrink: 0, overflow: "hidden" }}>
             <ImageFallback
-              src="/images/mic123.png"
+              src="/images/s3training.jpg"
               alt="S3 Training Academy"
               className="w-full h-full object-cover object-center"
               fallbackText="mic123.png"

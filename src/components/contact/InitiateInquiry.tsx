@@ -140,30 +140,42 @@ export const InitiateInquiry: React.FC = () => {
             </div>
 
             {/* ISO Certificates */}
-            <div className="space-y-3 pt-2">
+            <div className="space-y-5 pt-3">
               {/* ISO 9001 Card */}
-              <div className="bg-white rounded-none p-3.5 border border-gray-200 flex items-center space-x-3.5 shadow-2xs">
-                <div className="w-10 h-10 rounded-none bg-amber-50 text-[#8C733E] border border-amber-200/60 flex items-center justify-center flex-shrink-0">
-                  <Award className="w-5 h-5" />
+              <div className="flex items-center gap-5">
+                <div className="w-[84px] h-[84px] rounded-[22px] border-[1.5px] border-[#6b6228] bg-[#fbfdf8] p-2 flex items-center justify-center flex-shrink-0 shadow-xs">
+                  <img
+                    src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=160&q=80"
+                    alt="ISO 9001 Certificate"
+                    className="w-full h-full object-cover rounded-[14px]"
+                  />
                 </div>
                 <div>
-                  <h4 className="text-xs font-extrabold text-gray-900 uppercase">
+                  <h4 className="text-[17px] font-bold text-[#6a5e20] uppercase tracking-wide leading-snug">
                     ISO 9001 CERTIFIED
                   </h4>
-                  <p className="text-[11px] text-gray-500">Quality Management Systems</p>
+                  <p className="text-sm md:text-[15px] text-[#5c6459] font-medium mt-0.5">
+                    Quality Management Systems
+                  </p>
                 </div>
               </div>
 
               {/* ISO 14001 Card */}
-              <div className="bg-white rounded-none p-3.5 border border-gray-200 flex items-center space-x-3.5 shadow-2xs">
-                <div className="w-10 h-10 rounded-none bg-amber-50 text-[#8C733E] border border-amber-200/60 flex items-center justify-center flex-shrink-0">
-                  <ShieldCheck className="w-5 h-5" />
+              <div className="flex items-center gap-5">
+                <div className="w-[84px] h-[84px] rounded-[22px] border-[1.5px] border-[#6b6228] bg-[#fbfdf8] p-2 flex items-center justify-center flex-shrink-0 shadow-xs">
+                  <img
+                    src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=160&q=80"
+                    alt="ISO 14001 Certificate"
+                    className="w-full h-full object-cover rounded-[14px]"
+                  />
                 </div>
                 <div>
-                  <h4 className="text-xs font-extrabold text-gray-900 uppercase">
+                  <h4 className="text-[17px] font-bold text-[#6a5e20] uppercase tracking-wide leading-snug">
                     ISO 14001 CERTIFIED
                   </h4>
-                  <p className="text-[11px] text-gray-500">Environmental Management</p>
+                  <p className="text-sm md:text-[15px] text-[#5c6459] font-medium mt-0.5">
+                    Environmental Management
+                  </p>
                 </div>
               </div>
             </div>
