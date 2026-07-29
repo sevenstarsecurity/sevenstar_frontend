@@ -30,11 +30,10 @@ export const DistinguishedAdvisors: React.FC = () => {
 
   return (
     <section
-      className="w-full py-16 md:py-20"
-      style={{ background: "#E0E4DC4D" }}
+      className="w-full py-16 md:py-20 bg-[#BFC9BD]/30"
       ref={ref}
     >
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12 text-center">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 text-center">
         {/* Section Heading */}
         <h2
           className="uppercase mb-12"
@@ -55,23 +54,24 @@ export const DistinguishedAdvisors: React.FC = () => {
         </h2>
 
         {/* Advisor Cards Row */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <div className="flex flex-col sm:flex-row items-stretch justify-center gap-6">
           {advisors.map((advisor, i) => (
             <div
               key={advisor.name}
-              className={`bg-white border-l-4 border-l-[#FFDF96] border border-gray-200/60 px-6 py-5 text-left shadow-xs hover:shadow-md transition-all duration-500 min-w-[260px] max-w-[320px] w-full ${visible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-6"
+              className={`bg-white border-l-4 border-l-[#FFDF96] border border-gray-200/60 px-6 py-5 text-left shadow-xs hover:shadow-md transition-all duration-500 w-full sm:w-[380px] flex flex-col justify-center ${visible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-6"
                 }`}
               style={{ transitionDelay: `${i * 120}ms` }}
             >
               {/* Advisor Name */}
               <p
+                className="whitespace-nowrap"
                 style={{
                   fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
-                  fontWeight: 400,
+                  fontWeight: 500,
                   fontStyle: "normal",
-                  fontSize: "16px",
+                  fontSize: "18px",
                   lineHeight: "24px",
                   letterSpacing: "0px",
                   verticalAlign: "middle",
@@ -83,7 +83,7 @@ export const DistinguishedAdvisors: React.FC = () => {
 
               {/* Advisor Role */}
               <p
-                className="mt-1"
+                className="mt-1 whitespace-nowrap"
                 style={{
                   fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
                   fontWeight: 600,

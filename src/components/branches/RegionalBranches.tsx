@@ -90,7 +90,7 @@ export const RegionalBranches: React.FC = () => {
 
   return (
     <section className="py-16 md:py-24 bg-[#f2f5ec]" ref={ref}>
-      <div className="max-w-[1240px] mx-auto px-4 md:px-8 lg:px-10">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-12 gap-4">
           <div className="flex-shrink-0">

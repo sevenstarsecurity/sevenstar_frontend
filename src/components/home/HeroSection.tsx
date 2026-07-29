@@ -6,16 +6,18 @@ import { ImageFallback } from "../ui/ImageFallback";
 export const HeroSection: React.FC = () => {
   return (
     <section className="relative bg-[#f7faf6] min-h-[500px] lg:min-h-[580px] overflow-hidden flex items-center border-b border-gray-100">
-      {/* Right Side Angled Green Diagonal Background / Guard Photo */}
-      <div className="absolute right-0 top-0 bottom-0 w-full lg:w-[48%] bg-[#0a522c] z-0 [clip-path:polygon(16%_0,_100%_0,_100%_100%,_0_100%)] hidden lg:block">
+      {/* Green Diagonal Background — behind the image */}
+      <div className="absolute right-0 top-0 bottom-0 w-full lg:w-[48%] bg-[#0a522c]/50 z-0 [clip-path:polygon(16%_0,_100%_0,_100%_100%,_0_100%)] hidden lg:block" />
+
+      {/* Guard Image — in front of green bg, full visibility */}
+      <div className="absolute bottom-0 z-[1] hidden lg:block" style={{ right: '10%', width: '60%', top: '32px' }}>
         <ImageFallback
-          src="/images/police.jpg"
+          src="/images/nobgguard.png"
           alt="Seven Star Security Guard Lineup"
-          className="w-full h-full object-cover object-center opacity-90"
+          className="w-full h-full object-contain object-center"
+          style={{ transform: 'scale(1.05)', transformOrigin: 'center center' }}
           fallbackText="police.jpg"
         />
-        {/* Dark green overlay tint */}
-        <div className="absolute inset-0 bg-[#0a522c]/40" />
       </div>
 
       {/* Main Content Container */}

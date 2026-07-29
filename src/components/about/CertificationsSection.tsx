@@ -9,19 +9,7 @@ export const CertificationsSection: React.FC = () => {
       className="w-full border-t border-gray-200/60"
       style={{ opacity: 1, background: "#E0E4DC33" }}
     >
-      <div
-        style={{
-          width: "1280px",
-          maxWidth: "100%",
-          height: "128px",
-          paddingTop: "32px",
-          paddingBottom: "32px",
-          margin: "0 auto",
-          paddingLeft: "16px",
-          paddingRight: "16px",
-          boxSizing: "border-box",
-        }}
-      >
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 py-8 min-h-[128px] flex items-center justify-center">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-0 divide-y sm:divide-y-0 sm:divide-x divide-gray-300/60 h-full">
 
           {/* Left: ISO 9001:2015 Certified */}

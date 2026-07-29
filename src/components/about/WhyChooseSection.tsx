@@ -72,7 +72,7 @@ export const WhyChooseSection: React.FC = () => {
 
   return (
     <section className="py-20 md:py-24 bg-[#121613] text-white" ref={ref}>
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Section Title */}
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-normal tracking-tight text-white inline-block">

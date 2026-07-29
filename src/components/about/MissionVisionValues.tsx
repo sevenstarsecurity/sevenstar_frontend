@@ -30,7 +30,7 @@ export const MissionVisionValues: React.FC = () => {
       }}
       ref={ref}
     >
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12 w-full">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 w-full">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
 
           {/* Card 1: Our Mission */}

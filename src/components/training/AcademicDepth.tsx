@@ -46,7 +46,7 @@ export const AcademicDepth: React.FC = () => {
 
   return (
     <section className="py-20 md:py-24 bg-white border-t border-gray-100" ref={ref}>
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Header Row */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div className="max-w-2xl">

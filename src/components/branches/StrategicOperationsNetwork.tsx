@@ -17,27 +17,13 @@ export const StrategicOperationsNetwork: React.FC = () => {
   }, []);
 
   return (
-    <section
-      className="bg-[#f0f5ea] flex items-center justify-center py-0"
-      style={{ minHeight: "424px" }}
-      ref={ref}
-    >
-      <div
-        style={{
-          width: "1152px",
-          maxWidth: "1280px",
-          height: "424px",
-        }}
-        className="mx-auto px-6 flex items-center"
-      >
-        <div
-          className="grid grid-cols-1 lg:grid-cols-2 items-center w-full h-full"
-          style={{ gap: "64px" }}
-        >
+    <section className="bg-[#f0f5ea] py-12 md:py-20" ref={ref}>
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center w-full">
 
-          {/* Left: Nepal Map Card */}
+          {/* Left: Nepal Map Card (lg:col-span-6) */}
           <div
-            className={`transition-all duration-700 ${visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+            className={`lg:col-span-6 transition-all duration-700 ${visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
               }`}
           >
             <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-3">
@@ -50,30 +36,16 @@ export const StrategicOperationsNetwork: React.FC = () => {
             </div>
           </div>
 
-          {/* Right: Text Content */}
+          {/* Right: Text Content (lg:col-span-6) */}
           <div
-            className={`transition-all duration-700 delay-200 ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
+            className={`lg:col-span-6 space-y-6 transition-all duration-700 delay-200 ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
               }`}
           >
             {/* Heading */}
             <h2
+              className="text-3xl md:text-[40px] font-semibold leading-tight text-[#004E24] uppercase"
               style={{
-                width: "544px",
-                height: "96px",
                 fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-                fontWeight: 600,
-                fontStyle: "normal",
-                fontSize: "40px",
-                lineHeight: "48px",
-                letterSpacing: "0px",
-                verticalAlign: "middle",
-                opacity: 1,
-                transform: "rotate(0deg)",
-                color: "#004E24",
-                textTransform: "uppercase",
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "24px",
               }}
             >
               STRATEGIC OPERATIONS<br />NETWORK
@@ -81,36 +53,23 @@ export const StrategicOperationsNetwork: React.FC = () => {
 
             {/* Description */}
             <p
+              className="text-[#3F4940] text-sm md:text-base leading-relaxed"
               style={{
-                width: "544px",
-                height: "104px",
                 fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-                fontWeight: 400,
-                fontStyle: "normal",
-                fontSize: "16px",
-                lineHeight: "26px",
-                letterSpacing: "0px",
-                verticalAlign: "middle",
-                opacity: 1,
-                transform: "rotate(0deg)",
-                color: "#3F4940",
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "24px",
               }}
             >
-              Our footprint is designed for maximum operational efficiency. Each
-              branch operates as a self-contained unit with dedicated response teams,
-              local intelligence networks, and direct communication lines to our central
+              Our footprint is designed for maximum operational efficiency. Each<br />
+              branch operates as a self-contained unit with dedicated response teams,<br />
+              local intelligence networks, and direct communication lines to our central<br />
               command center in Kathmandu.
             </p>
 
             {/* Feature Cards */}
-            <div className="space-y-3">
+            <div className="space-y-3 pt-2">
 
               {/* Card 1 - Rapid Response Protocols */}
               <div
-                className="bg-white flex items-center gap-4"
+                className="bg-white flex items-center gap-4 rounded-xs shadow-2xs"
                 style={{
                   border: "1px solid #E5E7EB",
                   borderLeft: "4px solid #004E24",
@@ -135,7 +94,7 @@ export const StrategicOperationsNetwork: React.FC = () => {
 
               {/* Card 2 - Integrated Logistics */}
               <div
-                className="bg-white flex items-center gap-4"
+                className="bg-white flex items-center gap-4 rounded-xs shadow-2xs"
                 style={{
                   border: "1px solid #E5E7EB",
                   borderLeft: "4px solid #004E24",

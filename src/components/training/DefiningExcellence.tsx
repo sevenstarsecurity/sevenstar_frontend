@@ -41,7 +41,7 @@ export const DefiningExcellence: React.FC = () => {
 
   return (
     <section className="py-20 md:py-24 bg-[#f7faf3]" ref={ref}>
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12 text-center">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 text-center">
         {/* Section Heading */}
         <div className="mb-14 max-w-3xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-wider text-[#0b4226] uppercase mb-3">
@@ -53,7 +53,7 @@ export const DefiningExcellence: React.FC = () => {
         </div>
 
         {/* 3 Pillar Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-full w-full mx-auto">
           {pillars.map((item, i) => {
             const Icon = item.icon;
             return (

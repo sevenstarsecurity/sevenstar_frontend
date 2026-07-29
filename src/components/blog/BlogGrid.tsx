@@ -139,7 +139,7 @@ export const BlogGrid: React.FC = () => {
 
   return (
     <section className="bg-[#f0f5ea] py-10 md:py-16">
-      <div className="max-w-[1152px] mx-auto px-6 md:px-10 lg:px-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Category Filter Pills */}
         <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-10">
           {categories.map((cat) => (

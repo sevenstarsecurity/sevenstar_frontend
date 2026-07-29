@@ -37,7 +37,7 @@ export const StrategicAdvisors: React.FC = () => {
 
   return (
     <section className="py-20 md:py-24 bg-[#121613] text-white" ref={ref}>
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Title */}
         <div className="mb-14">
           <h2 className="text-xl md:text-2xl font-extrabold tracking-widest text-[#deb853] uppercase">

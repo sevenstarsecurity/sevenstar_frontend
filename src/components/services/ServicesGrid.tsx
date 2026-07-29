@@ -235,7 +235,7 @@ export const ServicesGrid: React.FC = () => {
 
   return (
     <section className="py-16 md:py-24 bg-[#f7faf3]">
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Filter Category Pills Bar */}
         <div className="flex flex-wrap items-center justify-center gap-2.5 md:gap-3 mb-14">
           {categories.map((cat) => (

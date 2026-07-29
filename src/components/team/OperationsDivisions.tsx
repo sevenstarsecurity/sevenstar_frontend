@@ -46,7 +46,7 @@ export const OperationsDivisions: React.FC = () => {
 
   return (
     <section className="py-20 md:py-24 bg-[#f4f7f5]">
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Navigation Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 border-b border-gray-200 pb-4 mb-14">
           {tabs.map((tab, idx) => (

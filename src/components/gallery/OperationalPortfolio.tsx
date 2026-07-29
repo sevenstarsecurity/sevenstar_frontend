@@ -11,18 +11,18 @@ export const OperationalPortfolio: React.FC = () => {
 
   return (
     <section className="bg-[#f0f5ea] py-12 md:py-16 border-t border-[#e2ebd9]">
-      <div className="max-w-[1152px] mx-auto px-6 md:px-10 lg:px-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Header Bar with Tabs */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-10 pb-4 border-b border-gray-200/60">
           {/* Section Heading */}
           <div>
             <h2
-              className="text-2xl md:text-3xl font-extrabold text-[#004E24] uppercase tracking-wider relative"
+              className="text-2xl md:text-3xl font-bold text-[#004E24] uppercase tracking-wider relative"
               style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
             >
               OPERATIONAL PORTFOLIO
             </h2>
-            <div className="w-16 h-[3px] bg-[#004E24] mt-2" />
+            <div className="w-16 h-[3px] bg-[#c8102e] mt-2" />
           </div>
 
           {/* Filter Tabs */}
@@ -46,8 +46,8 @@ export const OperationalPortfolio: React.FC = () => {
 
         {/* Gallery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-          {/* Top Row - Left Large Image (Spans 7 cols on md) */}
-          <div className="md:col-span-7 bg-white overflow-hidden border border-gray-200/80 shadow-xs h-[300px] md:h-[380px] group">
+          {/* Top Left Main Image (Spans 8 cols on md/lg) - Height covers 2 right side images */}
+          <div className="md:col-span-8 bg-white overflow-hidden border border-gray-200/80 shadow-xs group h-[340px] md:h-[520px]">
             <ImageFallback
               src="/images/meeting.png"
               alt="Security Guard Training Lecture"
@@ -56,32 +56,32 @@ export const OperationalPortfolio: React.FC = () => {
             />
           </div>
 
-          {/* Top Row - Right Stack (Spans 5 cols on md) */}
-<div className="md:col-span-5 flex flex-col gap-5">
-  {/* Top Right Image */}
-  <div className="bg-white overflow-hidden border border-gray-200/80 shadow-xs group w-full md:w-[361px] h-[248px]">
-    <ImageFallback
-      src="/images/hello.png"
-      alt="Command Center Operator"
-      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-      fallbackText="Command Center"
-    />
-  </div>
+          {/* Top Right Stack (Spans 4 cols on md/lg) */}
+          <div className="md:col-span-4 flex flex-col gap-5">
+            {/* Right Image 1 */}
+            <div className="bg-white overflow-hidden border border-gray-200/80 shadow-xs group w-full h-[250px]">
+              <ImageFallback
+                src="/images/hello.png"
+                alt="Command Center Operator"
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                fallbackText="Command Center"
+              />
+            </div>
 
-  {/* Bottom Right Image */}
-  <div className="bg-white overflow-hidden border border-gray-200/80 shadow-xs group w-full md:w-[361px] h-[248px]">
-    <ImageFallback
-      src="/images/smoke.png"
-      alt="Tactical Smoke Simulation"
-      className="w-full h-full object-cover object-center filter grayscale contrast-125 group-hover:scale-105 transition-transform duration-500"
-      fallbackText="Tactical Simulation"
-    />
-  </div>
-</div>
+            {/* Right Image 2 */}
+            <div className="bg-white overflow-hidden border border-gray-200/80 shadow-xs group w-full h-[250px]">
+              <ImageFallback
+                src="/images/smoke.png"
+                alt="Tactical Smoke Simulation"
+                className="w-full h-full object-cover object-center filter grayscale contrast-125 group-hover:scale-105 transition-transform duration-500"
+                fallbackText="Tactical Simulation"
+              />
+            </div>
+          </div>
 
-          {/* Bottom Row - 3 Columns Layout with Exact Height 530px Left Image */}
-          {/* Bottom Left Image: Exact width ~360.67px (col-span-4), Height: 530px */}
-          <div className="md:col-span-4 bg-white overflow-hidden border border-gray-200/80 shadow-xs h-[530px] group">
+          {/* Bottom Row */}
+          {/* Bottom Left Tall Image (Spans 4 cols on md/lg) */}
+          <div className="md:col-span-4 bg-white overflow-hidden border border-gray-200/80 shadow-xs group h-[520px]">
             <ImageFallback
               src="/images/confidence.png"
               alt="Security Guards Field Deployment"
@@ -90,7 +90,7 @@ export const OperationalPortfolio: React.FC = () => {
             />
           </div>
 
-          {/* Bottom Center Solid Green Card (Spans 4 cols on md, Height 250px to align with top of right image) */}
+          {/* Bottom Middle Solid Green Card (Spans 4 cols on md/lg) */}
           <div className="md:col-span-4 bg-[#004E24] p-6 md:p-8 flex flex-col justify-between shadow-xs relative overflow-hidden text-white h-[250px]">
             <div>
               <h3
@@ -112,8 +112,8 @@ export const OperationalPortfolio: React.FC = () => {
             </div>
           </div>
 
-          {/* Bottom Right Image (Spans 4 cols on md, Height 250px) */}
-          <div className="md:col-span-4 bg-white overflow-hidden border border-gray-200/80 shadow-xs h-[250px] group">
+          {/* Bottom Right Image (Spans 4 cols on md/lg) - 3rd Right Image with matching size */}
+          <div className="md:col-span-4 bg-white overflow-hidden border border-gray-200/80 shadow-xs group h-[250px]">
             <ImageFallback
               src="/images/pose.png"
               alt="VIP Protection Escort Team"

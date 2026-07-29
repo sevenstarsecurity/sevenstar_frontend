@@ -8,9 +8,9 @@ import { ImageFallback } from "../ui/ImageFallback";
 export const FeaturedPost: React.FC = () => {
   return (
     <section className="bg-[#f0f5ea] pt-12 md:pt-16 pb-8">
-      <div className="max-w-[1152px] mx-auto px-6 md:px-10 lg:px-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Featured Card Wrapper with Top Red Line */}
-        <div className="relative bg-white rounded-xl shadow-md border border-gray-200/80 overflow-hidden border-t-4 border-t-[#c8102e] group transition-all duration-300 hover:shadow-xl">
+        <div className="relative bg-white shadow-md border border-gray-200/80 overflow-hidden border-t-4 border-t-[#c8102e] group transition-all duration-300 hover:shadow-xl">
           <div className="grid grid-cols-1 lg:grid-cols-12">
             {/* Left Image Column (Spans 6 cols on lg) */}
             <div className="lg:col-span-6 relative h-[260px] sm:h-[320px] lg:h-auto overflow-hidden">

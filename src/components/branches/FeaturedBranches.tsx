@@ -17,34 +17,21 @@ export const FeaturedBranches: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  const cardStyle = (delay: number): React.CSSProperties => ({
-    border: "2.2px solid #543F00",
-    // borderRadius: "12px",
-    overflow: "hidden",
-    background: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    transition: "opacity 0.7s ease, transform 0.7s ease",
-    transitionDelay: `${delay}ms`,
-    opacity: visible ? 1 : 0,
-    transform: visible ? "translateY(0)" : "translateY(24px)",
-  });
-
   return (
     <section
-      className="bg-[#f0f5ea] py-10"
+      className="bg-[#f0f5ea] py-10 md:py-16"
       ref={ref}
     >
-      <div
-        style={{ maxWidth: "1152px" }}
-        className="mx-auto px-6 space-y-6"
-      >
+      <div className="max-w-[1450px] mx-auto px-4 sm:px-6 md:px-12 lg:px-16 space-y-8">
 
         {/* ── Card 1: Kathmandu Head Office ── */}
-        <div style={cardStyle(0)}>
-
-          {/* Left: Building photo */}
-          <div style={{ width: "42%", flexShrink: 0, overflow: "hidden" }}>
+        <div
+          className={`border-[2.2px] border-[#543F00] bg-white overflow-hidden flex flex-col md:flex-row transition-all duration-700 ${
+            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
+        >
+          {/* Building photo */}
+          <div className="w-full md:w-[42%] h-64 sm:h-72 md:h-auto flex-shrink-0 overflow-hidden">
             <ImageFallback
               src="/images/our story.jpg"
               alt="Kathmandu Head Office"
@@ -53,70 +40,44 @@ export const FeaturedBranches: React.FC = () => {
             />
           </div>
 
-          {/* Right: Content */}
-          <div style={{ flex: 1, padding: "36px 40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-
+          {/* Content */}
+          <div className="flex-1 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 flex flex-col justify-center">
             {/* Badge */}
-            <span style={{
-              display: "inline-block",
-              alignSelf: "flex-start",
-              background: "#6B4F1A",
-              color: "#fff",
-              fontSize: "10px",
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              padding: "3px 10px",
-              borderRadius: "3px",
-              marginBottom: "12px",
-              fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-            }}>
+            <span className="inline-block self-start bg-[#6B4F1A] text-white text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-sm mb-3 font-['Public_Sans']">
               GLOBAL HQ
             </span>
 
             {/* Heading */}
-            <h3 style={{
-              fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-              fontWeight: 700,
-              fontSize: "28px",
-              lineHeight: "34px",
-              color: "#004E24",
-              textTransform: "uppercase",
-              marginBottom: "10px",
-            }}>
+            <h3 className="font-['Public_Sans'] font-bold text-xl sm:text-2xl md:text-[28px] leading-tight text-[#004E24] uppercase mb-2.5">
               KATHMANDU HEAD OFFICE
             </h3>
 
             {/* Address */}
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
-              <MapPin size={14} color="#C8102E" />
-              <span style={{
-                fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-                fontSize: "13px",
-                color: "#3F4940",
-              }}>
+            <div className="flex items-center gap-1.5 mb-4">
+              <MapPin className="w-3.5 h-3.5 text-[#C8102E] flex-shrink-0" />
+              <span className="font-['Public_Sans'] text-xs sm:text-sm text-[#3F4940]">
                 Chandol-04, Kathmandu, Nepal (Near Kundalini Health Club)
               </span>
             </div>
 
             {/* Divider */}
-            <div style={{ borderTop: "1px solid #E5E7EB", marginBottom: "16px" }} />
+            <div className="border-t border-gray-200 mb-4" />
 
             {/* Contact + Operations row */}
-            <div style={{ display: "flex", gap: "48px" }}>
+            <div className="flex flex-wrap items-center gap-6 sm:gap-10">
               <div>
-                <p style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif", fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9CA3AF", marginBottom: "4px" }}>
+                <p className="font-['Public_Sans'] text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">
                   CONTACT
                 </p>
-                <p style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif", fontSize: "15px", fontWeight: 700, color: "#111827" }}>
+                <p className="font-['Public_Sans'] text-sm sm:text-base font-bold text-gray-900">
                   +977-1-4411111
                 </p>
               </div>
               <div>
-                <p style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif", fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9CA3AF", marginBottom: "4px" }}>
+                <p className="font-['Public_Sans'] text-[10px] font-semibold tracking-widest uppercase text-gray-400 mb-1">
                   OPERATIONS
                 </p>
-                <p style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif", fontSize: "15px", fontWeight: 700, color: "#004E24" }}>
+                <p className="font-['Public_Sans'] text-sm sm:text-base font-bold text-[#004E24]">
                   24/7 Command Center
                 </p>
               </div>
@@ -125,65 +86,33 @@ export const FeaturedBranches: React.FC = () => {
         </div>
 
         {/* ── Card 2: S3 Training Academy ── */}
-        <div style={cardStyle(150)}>
-
-          {/* Left: Content */}
-          <div style={{ flex: 1, padding: "36px 40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-
+        <div
+          className={`border-[2.2px] border-[#543F00] bg-white overflow-hidden flex flex-col-reverse md:flex-row transition-all duration-700 delay-150 ${
+            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
+        >
+          {/* Content */}
+          <div className="flex-1 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 flex flex-col justify-center">
             {/* Badge */}
-            <span style={{
-              display: "inline-block",
-              alignSelf: "flex-start",
-              background: "#004E24",
-              color: "#fff",
-              fontSize: "10px",
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              padding: "3px 10px",
-              borderRadius: "3px",
-              marginBottom: "12px",
-              fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-            }}>
+            <span className="inline-block self-start bg-[#004E24] text-white text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-sm mb-3 font-['Public_Sans']">
               CENTER OF EXCELLENCE
             </span>
 
             {/* Heading */}
-            <h3 style={{
-              fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-              fontWeight: 700,
-              fontSize: "28px",
-              lineHeight: "34px",
-              color: "#004E24",
-              textTransform: "uppercase",
-              marginBottom: "10px",
-            }}>
+            <h3 className="font-['Public_Sans'] font-bold text-xl sm:text-2xl md:text-[28px] leading-tight text-[#004E24] uppercase mb-2.5">
               S3 TRAINING ACADEMY
             </h3>
 
             {/* Address */}
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
-              <MapPin size={14} color="#C8102E" />
-              <span style={{
-                fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-                fontSize: "13px",
-                color: "#3F4940",
-              }}>
+            <div className="flex items-center gap-1.5 mb-4">
+              <MapPin className="w-3.5 h-3.5 text-[#C8102E] flex-shrink-0" />
+              <span className="font-['Public_Sans'] text-xs sm:text-sm text-[#3F4940]">
                 Swoyambhu, Kathmandu (Tactical Training Complex)
               </span>
             </div>
 
             {/* Quote */}
-            <blockquote style={{
-              borderLeft: "3px solid #C8102E",
-              paddingLeft: "14px",
-              marginBottom: "24px",
-              fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-              fontSize: "13px",
-              lineHeight: "20px",
-              color: "#3F4940",
-              fontStyle: "normal",
-            }}>
+            <blockquote className="border-l-4 border-l-[#C8102E] pl-3.5 mb-6 font-['Public_Sans'] text-xs sm:text-sm leading-relaxed text-[#3F4940]">
               "Forging professionals through rigorous physical and psychological conditioning since 2012."
             </blockquote>
 
@@ -191,27 +120,15 @@ export const FeaturedBranches: React.FC = () => {
             <div>
               <a
                 href="#training"
-                style={{
-                  display: "inline-block",
-                  background: "#004E24",
-                  color: "#fff",
-                  fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-                  fontWeight: 700,
-                  fontSize: "11px",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  padding: "11px 22px",
-                  borderRadius: "4px",
-                  textDecoration: "none",
-                }}
+                className="inline-block bg-[#004E24] hover:bg-[#00391a] text-white font-['Public_Sans'] font-bold text-[11px] tracking-wider uppercase px-5 py-3 rounded-sm transition-colors"
               >
                 TRAINING PROGRAMS
               </a>
             </div>
           </div>
 
-          {/* Right: Training photo */}
-          <div style={{ width: "42%", flexShrink: 0, overflow: "hidden" }}>
+          {/* Training photo */}
+          <div className="w-full md:w-[42%] h-64 sm:h-72 md:h-auto flex-shrink-0 overflow-hidden">
             <ImageFallback
               src="/images/s3training.jpg"
               alt="S3 Training Academy"

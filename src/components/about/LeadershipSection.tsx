@@ -45,14 +45,14 @@ export const LeadershipSection: React.FC = () => {
 
   return (
     <section className="py-20 md:py-24 bg-[#f7faf3]" ref={ref}>
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12 text-center">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 text-center">
         {/* Section Heading */}
         <h2 className="font-['Barlow_Condensed'] font-medium text-[32px] leading-[38.4px] tracking-[0px] text-center text-[#181D18] mb-16">
           Our Leadership
         </h2>
 
         {/* 3 Leadership Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14 items-start max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14 items-start w-full mx-auto">
           {leaders.map((leader, i) => (
             <div
               key={leader.name}

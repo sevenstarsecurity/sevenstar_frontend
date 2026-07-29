@@ -20,7 +20,7 @@ export const TrainingArena: React.FC = () => {
 
   return (
     <section className="py-20 md:py-24 bg-[#0b4226] text-white overflow-hidden" ref={ref}>
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Text Info (lg:col-span-5) */}
           <div

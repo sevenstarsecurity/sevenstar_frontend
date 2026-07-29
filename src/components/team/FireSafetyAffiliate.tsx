@@ -1,11 +1,11 @@
 "use client";
 
-import { Flame, ShieldCheck, Video, Wrench } from "lucide-react";
+import { Flame, Radio, Video, Wrench, Shield } from "lucide-react";
 import React from "react";
 
 const services = [
   { icon: Flame, title: "Fire Audits" },
-  { icon: ShieldCheck, title: "Rescue Drill" },
+  { icon: Radio, title: "Rescue Drill" },
   { icon: Video, title: "CCTV Sync" },
   { icon: Wrench, title: "AMC Support" },
 ];
@@ -13,56 +13,49 @@ const services = [
 export const FireSafetyAffiliate: React.FC = () => {
   return (
     <section className="py-12 bg-[#f7faf3]">
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12">
-<div
-  className="bg-[#FFDF964D] border-2 border-[#FFDF96] rounded-2xl w-[1152px] h-[273px] mx-auto p-[48px] flex flex-row items-center justify-between gap-[48px] shadow-xs relative overflow-hidden"
->
-          {/* Subtle watermark icon in background */}
-          <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-5 pointer-events-none hidden lg:block">
-            <Flame className="w-64 h-64 text-[#deb853]" />
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
+        <div className="bg-[#FAF2DF] border border-[#E8D9B5] rounded-xs w-full min-h-[220px] p-8 md:p-12 lg:px-14 flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-12 shadow-2xs relative overflow-hidden">
+          
+          {/* Subtle Watermark Icon in Top Right */}
+          <div className="absolute -right-4 -top-6 opacity-15 pointer-events-none hidden lg:block text-[#C5B487]">
+            <Shield className="w-72 h-72 stroke-[1]" />
           </div>
 
           {/* Left Text Box */}
-          <div className="space-y-3 text-center lg:text-left max-w-xl z-10">
-            <span className="bg-[#0b4226] text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-xs inline-block">
+          <div className="space-y-3.5 text-center lg:text-left max-w-[420px] z-10">
+            <span className="bg-[#004E24] text-white text-[11px] font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-xs inline-block">
               PREMIUM AFFILIATE
             </span>
-<h3
-  className="
-    font-['Public_Sans']
-    font-normal
-    text-[32px]
-    leading-[38.4px]
-    tracking-[0px]
-    text-[#004E24]
-  "
->
-  Seven Star Fire &amp; Safety
-</h3>
-            <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
-              Our specialized sister concern dedicated to <br></br>fire prevention, suppression systems, and <br></br>disaster management.
+            <h3
+              className="font-['Public_Sans'] font-semibold text-2xl md:text-[34px] leading-tight text-[#004E24]"
+            >
+              Seven Star Fire &amp; Safety
+            </h3>
+            <p className="text-[#556358] text-xs md:text-[14px] leading-relaxed">
+              Our specialized sister concern dedicated to <br className="hidden sm:inline" />
+              fire prevention, suppression systems, and <br className="hidden sm:inline" />
+              disaster management.
             </p>
           </div>
 
-          {/* Right 4 Service Pills */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 w-full lg:w-auto z-10">
+          {/* Right 4 Equal Cards in a Single Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-5 z-10 flex-shrink-0 w-full lg:w-auto">
             {services.map((item) => {
               const Icon = item.icon;
               return (
                 <div
                   key={item.title}
-                  className="bg-white/80 border border-[#eddba9]/60 rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-2xs hover:shadow-md hover:bg-white transition-all duration-200 min-w-[110px]"
+                  className="bg-[#FAF7F0]/90 border border-[#EFE5D0] rounded-xs p-5 flex flex-col items-center justify-center text-center shadow-2xs hover:shadow-md hover:bg-white transition-all duration-200 w-full sm:w-[140px] md:w-[155px] h-[120px] md:h-[130px]"
                 >
-                  <div className="w-8 h-8 rounded-full bg-[#f7eed4] flex items-center justify-center mb-2 text-[#0b4226]">
-                    <Icon className="w-4 h-4 text-[#0b4226]" />
-                  </div>
-                  <span className="text-xs font-extrabold text-gray-900 tracking-wide">
+                  <Icon className="w-7 h-7 text-[#004E24] mb-3 stroke-[1.75]" />
+                  <span className="text-xs md:text-[13px] font-bold text-[#181D18] tracking-tight whitespace-nowrap">
                     {item.title}
                   </span>
                 </div>
               );
             })}
           </div>
+
         </div>
       </div>
     </section>

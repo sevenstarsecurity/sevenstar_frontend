@@ -5,7 +5,7 @@ import React from "react";
 export const ServicesCtaBanner: React.FC = () => {
   return (
     <section className="py-12 md:py-16 bg-[#f7faf3]">
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 lg:px-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         <div className="bg-[#0b4226] text-white rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
           {/* Left Text */}
           <div className="space-y-2 text-center md:text-left max-w-xl">
