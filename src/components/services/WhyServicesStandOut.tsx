@@ -50,36 +50,27 @@ export const WhyServicesStandOut: React.FC = () => {
     <section className="py-20 md:py-24 bg-[#121613] text-white" ref={ref}>
       <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Title */}
-<h2
-  style={{
-    fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-    fontWeight: 600,
-    fontStyle: "normal",
-    fontSize: "40px",
-    lineHeight: "48px",
-    letterSpacing: "0px",
-    verticalAlign: "middle",
-  }}
-  className="tracking-tight text-white"
->
-  Why our services stand out
-</h2>
+        <h2
+          className="tracking-tight text-white mb-8 text-3xl md:text-4xl lg:text-5xl leading-snug"
+        >
+          Why our services stand out
+        </h2>
+
 
         {/* 5 Columns Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 justify-items-center">
           {features.map((feat, i) => {
             const Icon = feat.icon;
             return (
               <div
                 key={feat.title}
-                className={`transition-all duration-600 ${
-                  visible
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8"
-                }`}
+                className={`flex flex-col items-center text-center transition-all duration-600 ${visible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-8"
+                  }`}
                 style={{ transitionDelay: `${i * 90}ms` }}
               >
-                <div className="mb-4 text-[#40c075]">
+                <div className="flex justify-center mb-4 text-[#40c075]">
                   <Icon className="w-6 h-6 text-[#40c075]" />
                 </div>
                 <h3 className="text-base font-extrabold text-white mb-2 tracking-tight">

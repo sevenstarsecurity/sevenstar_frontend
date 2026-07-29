@@ -66,52 +66,57 @@ export const OurStorySection: React.FC = () => {
               className="
     font-['Public_Sans']
     font-regular
-    text-[34px]
-    leading-[38.4px]
+    text-[26px] sm:text-[34px]
+    leading-[32px] sm:leading-[38.4px]
     tracking-[0px]
-    text-[##181D18]
+    text-[#181d18]
     mb-5
   "
             >
-              A trusted name in security since <br></br>2071
+              A trusted name in security since <br className="hidden sm:inline" />2071
             </h2>
 
             {/* Paragraphs */}
             <div className="space-y-4">
-              <p>
-                Founded on Karthik 19, 2071, Seven Star Security Service Pvt. Ltd. was<br></br>
-                established with a singular vision: to redefine the standards of physical<br></br>
-                and electronic security in the region. What started as a focused team of<br></br>
+              <p className="text-base md:text-lg leading-relaxed">
+                Founded on Karthik 19, 2071, Seven Star Security Service Pvt. Ltd. was
+                <br className="hidden md:inline" />
+                established with a singular vision: to redefine the standards of physical
+                <br className="hidden md:inline" />
+                and electronic security in the region. What started as a focused team of
+                <br className="hidden md:inline" />
                 highly trained professionals has evolved into an industry leader.
               </p>
-              <p>
-                Over the past decade, we have navigated the complexities of an evolving<br></br>
-                security landscape, integrating advanced technology with rigorous<br></br>
-                human tactical training to provide unshakeable protection for corporate,<br></br>
+              <p className="text-base md:text-lg leading-relaxed">
+                Over the past decade, we have navigated the complexities of an evolving
+                <br className="hidden md:inline" />
+                security landscape, integrating advanced technology with rigorous
+                <br className="hidden md:inline" />
+                human tactical training to provide unshakeable protection for corporate,
+                <br className="hidden md:inline" />
                 industrial, and diplomatic assets.
               </p>
             </div>
 
-            {/* Stat Pills Grid (10+ YEARS | 500+ GUARDS | 200+ CLIENTS | 5 BRANCHES) */}
+            {/* Stat Pills (3 in Row 1, 1 in Row 2 matching image, fully responsive) */}
             <div className="pt-4 space-y-3">
-              {/* Top Row: 3 Badges */}
-              <div className="flex flex-wrap items-center gap-3 md:gap-4">
+              {/* Row 1: 3 Pills */}
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-4">
                 {storyStats.slice(0, 3).map((item) => (
                   <div
                     key={item.label}
-                    className="bg-[#e5eee7] border-l-[3px] border-l-[#0b4226] px-5 py-2.5 rounded-xs shadow-2xs font-extrabold text-xs tracking-wider text-[#0b4226] flex items-center justify-center min-w-[130px]"
+                    className="bg-[#e5eee7] border-l-[3px] border-l-[#0b4226] px-3 sm:px-5 py-2 sm:py-2.5 rounded-none font-extrabold text-[11px] sm:text-xs md:text-sm tracking-wider text-[#0b4226] flex items-center justify-center min-w-[95px] sm:min-w-[120px] flex-1 sm:flex-initial text-center"
                   >
                     <span>{item.label}</span>
                   </div>
                 ))}
               </div>
-
-              {/* Bottom Row: 1 Badge */}
-              <div className="flex flex-wrap items-center gap-3 md:gap-4">
+              {/* Row 2: 1 Pill */}
+              <div className="flex items-center gap-2.5 sm:gap-4">
                 {storyStats.slice(3).map((item) => (
                   <div
                     key={item.label}
-                    className="bg-[#e5eee7] border-l-[3px] border-l-[#0b4226] px-5 py-2.5 rounded-xs shadow-2xs font-extrabold text-xs tracking-wider text-[#0b4226] flex items-center justify-center min-w-[130px]"
+                    className="bg-[#e5eee7] border-l-[3px] border-l-[#0b4226] px-3 sm:px-5 py-2 sm:py-2.5 rounded-none font-extrabold text-[11px] sm:text-xs md:text-sm tracking-wider text-[#0b4226] flex items-center justify-center min-w-[95px] sm:min-w-[120px] flex-1 sm:flex-initial text-center"
                   >
                     <span>{item.label}</span>
                   </div>

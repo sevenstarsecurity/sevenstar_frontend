@@ -21,13 +21,13 @@ import { ImageFallback } from "../ui/ImageFallback";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#131612] text-gray-300 pt-14 pb-8 border-t border-[#1e231b]">
+    <footer className="bg-[#131612] text-gray-300 pt-10 md:pt-14 pb-8 border-t border-[#1e231b]">
       <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
-        {/* Top Grid: 4 Equal Columns (~252px each) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 pb-12">
+        {/* Top Grid: 4 Columns on large, 2 on medium, 1 on mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 pb-10 md:pb-12">
           {/* Column 1: Brand Info */}
-          <div className="space-y-3">
-            <Link href="/" className="flex items-center mb-3 group">
+          <div className="flex flex-col items-center sm:items-start text-center sm:text-left space-y-4">
+            <Link href="/" className="flex items-center mb-1 group">
               <ImageFallback
                 src="/images/sevennobg.png"
                 alt="Seven Star Security Logo"
@@ -36,7 +36,7 @@ export const Footer: React.FC = () => {
               />
             </Link>
 
-            <div className="text-[#9ca396] text-xs md:text-[13px] leading-relaxed max-w-xs space-y-0.5">
+            <div className="text-[#9ca396] text-xs md:text-sm leading-relaxed max-w-xs space-y-1">
               <p>Elite Protection Services.</p>
               <p>Safeguarding assets, ensuring</p>
               <p>operational continuity, and providing</p>
@@ -45,7 +45,7 @@ export const Footer: React.FC = () => {
             </div>
 
             {/* Social Square Icons */}
-            <div className="flex items-center space-x-2.5 pt-3">
+            <div className="flex flex-wrap items-center gap-2.5 pt-2 justify-center sm:justify-start">
               <a
                 href="#instagram"
                 aria-label="Instagram"
@@ -78,15 +78,15 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Column 2: QUICK LINKS */}
-          <div className="space-y-4 md:pt-[68px]">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="space-y-4 lg:pt-[68px] flex flex-col items-center sm:items-start text-center sm:text-left">
+            <div className="flex items-center gap-2 mb-2">
               <span className="w-[3px] h-4 bg-[#c8102e] inline-block flex-shrink-0" />
               <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
                 QUICK LINKS
               </h4>
             </div>
 
-            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396]">
+            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-center sm:items-start">
               {[
                 { name: "Home", href: "/" },
                 { name: "About Us", href: "#about" },
@@ -108,15 +108,15 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Column 3: OUR SERVICES */}
-          <div className="space-y-4 md:pt-[68px]">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="space-y-4 lg:pt-[68px] flex flex-col items-center sm:items-start text-center sm:text-left">
+            <div className="flex items-center gap-2 mb-2">
               <span className="w-[3px] h-4 bg-[#c8102e] inline-block flex-shrink-0" />
               <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
                 OUR SERVICES
               </h4>
             </div>
 
-            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396]">
+            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-center sm:items-start">
               <li className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
                 <Shield className="w-4 h-4 text-[#008e43] flex-shrink-0" />
                 <span>Security Guard Services</span>
@@ -141,15 +141,15 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Column 4: CONTACT INFO */}
-          <div className="space-y-4 md:pt-[68px]">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="space-y-4 lg:pt-[68px] flex flex-col items-center sm:items-start text-center sm:text-left">
+            <div className="flex items-center gap-2 mb-2">
               <span className="w-[3px] h-4 bg-[#c8102e] inline-block flex-shrink-0" />
               <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
                 CONTACT INFO
               </h4>
             </div>
 
-            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396]">
+            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-center sm:items-start">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#008e43] flex-shrink-0 mt-0.5" />
                 <span>
@@ -173,7 +173,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Copyright Bar */}
-        <div className="pt-6 border-t border-[#1e231b] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] md:text-xs font-semibold tracking-wider uppercase text-[#8b9186]">
+        <div className="pt-6 border-t border-[#1e231b] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] md:text-xs font-semibold tracking-wider uppercase text-[#8b9186] text-center sm:text-left">
           <p>© 2024 SEVEN STAR SECURITY SERVICE PVT. LTD. ALL RIGHTS RESERVED.</p>
           <div className="text-[#deb853]">
             <span>GOVT LICENSE NO. 127991/2071/072</span>
