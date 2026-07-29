@@ -44,10 +44,11 @@ export const Navbar: React.FC = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`transition-colors relative py-1 inline-flex items-center ${isActive
-                    ? "text-[#004E24] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#004E24]"
+                className={`transition-colors relative py-1 inline-flex items-center nav-heartbeat-item ${
+                  isActive
+                    ? "text-[#004E24] active-nav"
                     : "text-[#3F4940] hover:text-[#004E24]"
-                  }`}
+                }`}
                 style={{
                   fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
                   fontWeight: isActive ? 700 : 500,

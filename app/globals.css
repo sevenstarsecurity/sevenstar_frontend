@@ -63,3 +63,55 @@ body {
 .animate-fade-in-right {
   animation: fadeInRight 0.65s ease-out both;
 }
+
+/* Heartbeat Underline Animation for Navigation */
+@keyframes heartbeatUnderline {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  30% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleX(1.15);
+    opacity: 1;
+  }
+  70% {
+    transform: scaleX(0.9);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.nav-heartbeat-item {
+  position: relative;
+}
+
+.nav-heartbeat-item::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2.5px;
+  background-color: #004E24;
+  border-radius: 9999px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.nav-heartbeat-item:hover::after {
+  animation: heartbeatUnderline 0.55s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.nav-heartbeat-item.active-nav::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
