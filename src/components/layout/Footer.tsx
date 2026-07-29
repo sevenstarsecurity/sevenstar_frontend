@@ -79,7 +79,7 @@ export const Footer: React.FC = () => {
 
           {/* Column 2: QUICK LINKS */}
           <div className="space-y-4 lg:pt-[68px] flex flex-col items-center sm:items-start text-center sm:text-left">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-5">
               <span className="w-[3px] h-4 bg-[#c8102e] inline-block flex-shrink-0" />
               <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
                 QUICK LINKS
@@ -109,7 +109,7 @@ export const Footer: React.FC = () => {
 
           {/* Column 3: OUR SERVICES */}
           <div className="space-y-4 lg:pt-[68px] flex flex-col items-center sm:items-start text-center sm:text-left">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-5">
               <span className="w-[3px] h-4 bg-[#c8102e] inline-block flex-shrink-0" />
               <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
                 OUR SERVICES
@@ -142,7 +142,7 @@ export const Footer: React.FC = () => {
 
           {/* Column 4: CONTACT INFO */}
           <div className="space-y-4 lg:pt-[68px] flex flex-col items-center sm:items-start text-center sm:text-left">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-5">
               <span className="w-[3px] h-4 bg-[#c8102e] inline-block flex-shrink-0" />
               <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
                 CONTACT INFO
@@ -176,7 +176,7 @@ export const Footer: React.FC = () => {
         <div className="pt-6 border-t border-[#1e231b] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] md:text-xs font-semibold tracking-wider uppercase text-[#8b9186] text-center sm:text-left">
           <p>© 2024 SEVEN STAR SECURITY SERVICE PVT. LTD. ALL RIGHTS RESERVED.</p>
           <div className="text-[#deb853]">
-            <span>GOVT LICENSE NO. 127991/2071/072</span>
+            <span>Developed by: KREATIVEMANDU TECHNOLOGIES PVT LTD</span>
           </div>
         </div>
       </div>
