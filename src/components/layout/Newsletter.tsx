@@ -23,24 +23,13 @@ export const Newsletter: React.FC = () => {
         {/* Left Side Info */}
         <div className="space-y-1 text-center md:text-left">
 
-          <h3 className="text-[24px] font-bold tracking-wider uppercase">
+          <h3 className="text-base md:text-2xl font-bold tracking-wider uppercase">
             STAY INFORMED
           </h3>
 
 
           <p
-            className="
-              font-['Public_Sans']
-              font-normal
-              text-[16px]
-              leading-[24px]
-              tracking-[0px]
-              w-[439.81px]
-              h-[24px]
-              text-[#FFFFFF]
-              flex
-              items-center
-            "
+            className="text-sm md:text-base font-['Public_Sans'] font-normal leading-[24px] tracking-[0px] w-full max-w-[440px] text-[#FFFFFF] flex items-center"
           >
             Subscribe to our security advisories and corporate updates.
           </p>

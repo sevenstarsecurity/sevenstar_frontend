@@ -10,7 +10,7 @@ export const CertificationsSection: React.FC = () => {
       style={{ opacity: 1, background: "#E0E4DC33" }}
     >
       <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 py-8 min-h-[128px] flex items-center justify-center">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-0 divide-y sm:divide-y-0 sm:divide-x divide-gray-300/60 h-full">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 overflow-x-auto sm:overflow-visible divide-y sm:divide-y-0 sm:divide-x divide-gray-300/60 h-full">
 
           {/* Left: ISO 9001:2015 Certified */}
           <div className="flex items-center gap-4 py-6 sm:pr-10">

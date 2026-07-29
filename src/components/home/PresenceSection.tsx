@@ -48,15 +48,15 @@ export const PresenceSection: React.FC = () => {
 
 
             {/* Description */}
-            <p
-              className={`${publicSans.className} font-normal text-[16px] leading-[27.2px] tracking-[0px] w-[429.44px] h-[82px] flex items-center mb-6`}
-            >
-              From the heart of Kathmandu to the far-western industrial
-              <br />
-              zones, we are the trusted shield for Nepal's growing
-              <br />
-              economy.
-            </p>
+          <p
+            className={`${publicSans.className} font-normal text-base md:text-lg leading-relaxed max-w-md mb-6`}
+          >
+            From the heart of Kathmandu to the far-western industrial
+            <br />
+            zones, we are the trusted shield for Nepal's growing
+            <br />
+            economy.
+          </p>
 
 
             {/* Link */}

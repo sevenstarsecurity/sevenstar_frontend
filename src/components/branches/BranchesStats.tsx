@@ -39,18 +39,7 @@ export const BranchesStats: React.FC = () => {
 
         {/* Subtitle */}
         <p
-          className={`text-center max-w-2xl mx-auto mb-10 transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          style={{
-            fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-            fontWeight: 200,
-            fontStyle: "normal",
-            fontSize: "14px",
-            lineHeight: "26px",
-            letterSpacing: "0px",
-            verticalAlign: "middle",
-            color: "#3F4940",
-          }}
+          className={`text-center max-w-2xl mx-auto mb-10 transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           From our headquarters in Kathmandu to five strategic regional branches, Seven Star Security maintains a robust
           operational network ensuring rapid response and localized expertise for over 12 years.

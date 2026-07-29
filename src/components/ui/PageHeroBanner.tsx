@@ -47,24 +47,14 @@ export const PageHeroBanner: React.FC<PageHeroBannerProps> = ({ title, label, br
 
 
         {/* Company Label */}
-        <p className="text-[16px] font-regular uppercase tracking-[0.25em] text-emerald-200/80 mb-3">
+        <p className="text-sm font-medium uppercase tracking-wider text-emerald-200/80 mb-3">
           {label}
         </p>
 
 
         {/* Main Title */}
         <h1
-          className="
-            font-['Public_Sans']
-            font-normal
-            text-[56px]
-            leading-[61.6px]
-            tracking-[0.5px]
-            text-center
-            text-[#FFFFFF]
-            mb-5
-            drop-shadow-md
-          "
+          className="font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-5 leading-snug"
         >
           {title}
         </h1>
@@ -84,21 +74,7 @@ export const PageHeroBanner: React.FC<PageHeroBannerProps> = ({ title, label, br
             /
           </span>
 
-          <span
-            className="
-    font-['Public_Sans']
-    font-regular
-    text-[14px]
-    leading-[19.6px]
-    tracking-[0.7px]
-    text-center
-    text-[#FFFFFF]
-    flex
-    items-center
-    justify-center
-    whitespace-nowrap
-  "
-          >
+          <span className="text-sm md:text-base font-medium text-white/70">
             {breadcrumbTitle}
           </span>
 

@@ -45,7 +45,7 @@ export const OperationalPortfolio: React.FC = () => {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {/* Top Left Main Image (Spans 8 cols on md/lg) - Height covers 2 right side images */}
           <div className="md:col-span-8 bg-white overflow-hidden border border-gray-200/80 shadow-xs group h-[340px] md:h-[520px]">
             <ImageFallback
