@@ -24,51 +24,41 @@ export const BranchesStats: React.FC = () => {
 
   return (
     <section
-      className="bg-[#f0f5ea] flex items-center justify-center py-0"
+      className="bg-[#f0f5ea] flex items-center justify-center py-10 sm:py-12 lg:py-0"
       style={{ minHeight: "424px" }}
       ref={ref}
     >
       <div
-        style={{
-          width: "1152px",
-          maxWidth: "1280px",
-          height: "424px",
-        }}
-        className="mx-auto px-6 flex flex-col justify-center"
+        className="mx-auto px-4 sm:px-6 lg:px-6 w-full max-w-7xl lg:w-6xl flex flex-col justify-center lg:h-106"
       >
 
         {/* Subtitle */}
         <p
-          className={`text-center max-w-2xl mx-auto mb-10 transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`text-center max-w-2xl mx-auto mb-6 sm:mb-8 lg:mb-10 text-sm sm:text-base transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           From our headquarters in Kathmandu to five strategic regional branches, Seven Star Security maintains a robust
           operational network ensuring rapid response and localized expertise for over 12 years.
         </p>
 
         {/* Stat Cards Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: "64px" }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-16">
           {stats.map((s, i) => (
             <div
               key={s.label}
-              className={`bg-white flex flex-col items-center text-center transition-all duration-700`}
+              className="bg-white flex flex-col items-center text-center transition-all duration-700 border-b-4 border-[#C8102E] pt-6 sm:pt-8 lg:pt-10 pb-5 sm:pb-6 lg:pb-8 px-3 sm:px-4"
               style={{
                 transitionDelay: `${i * 120}ms`,
                 opacity: visible ? 1 : 0,
                 transform: visible ? "translateY(0)" : "translateY(16px)",
-                borderBottom: "4px solid #C8102E",
-                paddingTop: "40px",
-                paddingBottom: "32px",
-                paddingLeft: "16px",
-                paddingRight: "16px",
               }}
             >
               {/* Number */}
               <span
+                className="text-2xl xs:text-3xl sm:text-4xl lg:text-[48px]"
                 style={{
                   fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
                   fontWeight: 700,
-                  fontSize: "48px",
-                  lineHeight: "56px",
+                  lineHeight: "1.15",
                   color: "#004E24",
                 }}
               >
@@ -77,11 +67,10 @@ export const BranchesStats: React.FC = () => {
 
               {/* Label */}
               <span
-                className="mt-3"
+                className="mt-2 sm:mt-3 text-[9px] xs:text-[10px] sm:text-[11px]"
                 style={{
                   fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
                   fontWeight: 400,
-                  fontSize: "11px",
                   lineHeight: "16px",
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
