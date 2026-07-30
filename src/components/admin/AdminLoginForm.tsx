@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Shield, User, Lock, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { ImageFallback } from "../ui/ImageFallback";
-
 import { useRouter } from "next/navigation";
+import { login } from "@/services/auth"; // adjust path to wherever your auth.ts lives
 
 export const AdminLoginForm: React.FC = () => {
   const router = useRouter();
-  const [adminId, setAdminId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
@@ -17,11 +17,11 @@ export const AdminLoginForm: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
 
-    if (!adminId.trim()) {
+    if (!email.trim()) {
       setErrorMsg("Please enter your Administrator ID.");
       return;
     }
@@ -32,20 +32,34 @@ export const AdminLoginForm: React.FC = () => {
 
     setIsLoading(true);
 
-    // Simulate authentication process and redirect to Admin Dashboard
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const data = await login(email.trim(), password);
+
+      // Optional: persist stayLoggedIn preference for your refresh-token logic
+      if (typeof window !== "undefined") {
+        localStorage.setItem("stayLoggedIn", String(stayLoggedIn));
+      }
+
       setIsSuccess(true);
+
+      // brief pause so the success UI is visible, then redirect
       setTimeout(() => {
         router.push("/admin/dashboard");
       }, 600);
-    }, 800);
+    } catch (err: any) {
+      setIsLoading(false);
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Invalid credentials. Please try again.";
+      setErrorMsg(message);
+    }
   };
 
   return (
     <div className="h-screen w-full flex flex-col lg:flex-row bg-[#081f14] overflow-y-auto lg:overflow-hidden select-none">
       {/* LEFT PANEL - GREEN OVERLAY WITH BUILDING BACKGROUND */}
-      <div className="lg:w-1/2 relative min-h-[380px] lg:h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-12 overflow-hidden flex-shrink-0">
+      <div className="lg:w-1/2 relative min-h-[260px] sm:min-h-[320px] lg:min-h-0 lg:h-screen flex flex-col justify-between p-5 sm:p-8 lg:p-12 overflow-hidden flex-shrink-0">
         {/* Background Building Image */}
         <div className="absolute inset-0 z-0">
           <ImageFallback
@@ -61,56 +75,56 @@ export const AdminLoginForm: React.FC = () => {
 
         {/* Top Left Header Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-[#14532d] border border-[#22c55e]/30 flex items-center justify-center shadow-lg">
-            <Shield className="w-5 h-5 text-[#4ade80] fill-[#4ade80]/20" />
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#14532d] border border-[#22c55e]/30 flex items-center justify-center shadow-lg flex-shrink-0">
+            <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-[#4ade80] fill-[#4ade80]/20" />
           </div>
           <div>
-            <h1 className="text-white font-bold tracking-wider text-base leading-tight uppercase font-['Public_Sans']">
+            <h1 className="text-white font-bold tracking-wider text-sm sm:text-base leading-tight uppercase font-['Public_Sans']">
               SHIELD<span className="text-[#4ade80]">CMS</span>
             </h1>
-            <p className="text-[10px] font-semibold text-[#86efac] tracking-widest uppercase">
+            <p className="text-[9px] sm:text-[10px] font-semibold text-[#86efac] tracking-widest uppercase">
               Admin Terminal
             </p>
           </div>
         </div>
 
         {/* Middle Hero Content */}
-        <div className="relative z-10 my-auto py-6 max-w-lg">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white leading-[1.15] tracking-tight">
+        <div className="relative z-10 my-auto py-4 sm:py-6 max-w-lg">
+          <h2 className="text-xl sm:text-2xl lg:text-4xl xl:text-5xl font-extrabold text-white leading-[1.15] tracking-tight">
             Securing Assets.
             <br />
             Protecting Futures.
           </h2>
 
           {/* Accent Line */}
-          <div className="w-12 h-1 bg-[#22c55e] my-4 rounded-full" />
+          <div className="w-10 sm:w-12 h-1 bg-[#22c55e] my-3 sm:my-4 rounded-full" />
 
-          <p className="text-xs sm:text-sm text-[#d1fae5]/90 leading-relaxed font-normal">
+          <p className="text-[11px] sm:text-xs lg:text-sm text-[#d1fae5]/90 leading-relaxed font-normal">
             Operational Headquarters: Kathmandu, Nepal.
-            <br />
+            <br className="hidden sm:block" />
             Monitoring 1,400+ active zones across the region with institutional discipline.
           </p>
         </div>
 
         {/* Bottom Status Metadata Bar */}
-        <div className="relative z-10 pt-4 border-t border-emerald-800/40 grid grid-cols-2 gap-4 max-w-md">
+        <div className="relative z-10 pt-3 sm:pt-4 border-t border-emerald-800/40 grid grid-cols-2 gap-4 max-w-md">
           <div>
-            <span className="text-[10px] font-bold text-[#86efac]/70 uppercase tracking-widest block mb-1">
+            <span className="text-[9px] sm:text-[10px] font-bold text-[#86efac]/70 uppercase tracking-widest block mb-1">
               SYSTEM STATUS
             </span>
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse" />
-              <span className="text-xs font-semibold text-[#d1fae5]">
+              <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse flex-shrink-0" />
+              <span className="text-[11px] sm:text-xs font-semibold text-[#d1fae5]">
                 All Nodes Operational
               </span>
             </div>
           </div>
 
           <div>
-            <span className="text-[10px] font-bold text-[#86efac]/70 uppercase tracking-widest block mb-1">
+            <span className="text-[9px] sm:text-[10px] font-bold text-[#86efac]/70 uppercase tracking-widest block mb-1">
               ENCRYPTION
             </span>
-            <span className="text-xs font-semibold text-[#d1fae5]">
+            <span className="text-[11px] sm:text-xs font-semibold text-[#d1fae5]">
               AES-256 Validated
             </span>
           </div>
@@ -118,17 +132,17 @@ export const AdminLoginForm: React.FC = () => {
       </div>
 
       {/* RIGHT PANEL - LOGIN CARD & FORM */}
-      <div className="lg:w-1/2 bg-white flex flex-col justify-between p-6 sm:p-8 lg:p-10 min-h-screen lg:min-h-0 lg:h-screen overflow-y-auto lg:overflow-hidden">
+      <div className="lg:w-1/2 bg-white flex flex-col justify-between p-5 sm:p-8 lg:p-10 min-h-screen lg:min-h-0 lg:h-screen overflow-y-auto lg:overflow-hidden">
         {/* Spacer */}
         <div className="hidden lg:block h-2" />
 
         {/* Form Container Box */}
-        <div className="my-auto max-w-md w-full mx-auto">
+        <div className="my-auto max-w-md w-full mx-auto py-4 lg:py-0">
           {/* Card Frame */}
-          <div className="bg-white border border-gray-200/90 rounded-sm shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)] p-6 sm:p-8">
+          <div className="bg-white border border-gray-200/90 rounded-sm shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)] p-5 sm:p-8">
             {/* Header */}
-            <div className="mb-6">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
+            <div className="mb-5 sm:mb-6">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 tracking-tight">
                 Identity Verification
               </h2>
               <p className="text-xs text-gray-500 mt-1 font-normal">
@@ -136,11 +150,11 @@ export const AdminLoginForm: React.FC = () => {
               </p>
             </div>
 
-            {/* Simulated Success State */}
+            {/* Success State */}
             {isSuccess ? (
-              <div className="bg-emerald-50 border border-emerald-200 rounded p-6 text-center space-y-3">
-                <ShieldCheck className="w-10 h-10 text-[#0b4226] mx-auto animate-bounce" />
-                <h3 className="text-base font-bold text-[#0b4226]">
+              <div className="bg-emerald-50 border border-emerald-200 rounded p-5 sm:p-6 text-center space-y-3">
+                <ShieldCheck className="w-9 h-9 sm:w-10 sm:h-10 text-[#0b4226] mx-auto animate-bounce" />
+                <h3 className="text-sm sm:text-base font-bold text-[#0b4226]">
                   Access Granted
                 </h3>
                 <p className="text-xs text-emerald-800">
@@ -152,17 +166,17 @@ export const AdminLoginForm: React.FC = () => {
               </div>
             ) : (
               /* Form */
-              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" noValidate>
                 {errorMsg && (
-                  <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
+                  <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded break-words">
                     {errorMsg}
                   </div>
                 )}
 
-                {/* Field 1: Administrator ID */}
+                {/* Field 1: Administrator ID (email) */}
                 <div className="space-y-1.5">
                   <label
-                    htmlFor="adminId"
+                    htmlFor="email"
                     className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block"
                   >
                     ADMINISTRATOR ID <span className="text-red-500">*</span>
@@ -170,17 +184,19 @@ export const AdminLoginForm: React.FC = () => {
                   <div className="relative flex items-center">
                     <User className="w-4 h-4 text-gray-400 absolute left-3.5 pointer-events-none" />
                     <input
-                      id="adminId"
-                      type="text"
-                      value={adminId}
-                      onChange={(e) => setAdminId(e.target.value)}
-                      placeholder="Enter your unique ID"
-                      className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] focus:border-[#0b4226] transition-all"
+                      id="email"
+                      type="email"
+                      autoComplete="username"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your admin email"
+                      disabled={isLoading}
+                      className="w-full pl-10 pr-4 py-2.5 sm:py-2 bg-white border border-gray-300 rounded text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] focus:border-[#0b4226] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
                     />
                   </div>
                 </div>
 
-                {/* Field 2: Security Clearance Key */}
+                {/* Field 2: Security Clearance Key (password) */}
                 <div className="space-y-1.5">
                   <label
                     htmlFor="password"
@@ -193,16 +209,19 @@ export const AdminLoginForm: React.FC = () => {
                     <input
                       id="password"
                       type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-2 bg-white border border-gray-300 rounded text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] focus:border-[#0b4226] transition-all"
+                      disabled={isLoading}
+                      className="w-full pl-10 pr-10 py-2.5 sm:py-2 bg-white border border-gray-300 rounded text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] focus:border-[#0b4226] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 text-gray-400 hover:text-gray-600 focus:outline-none p-1"
                       aria-label="Toggle password visibility"
+                      tabIndex={-1}
                     >
                       {showPassword ? (
                         <EyeOff className="w-4 h-4" />
@@ -214,7 +233,7 @@ export const AdminLoginForm: React.FC = () => {
                 </div>
 
                 {/* Checkbox & Forgot Reset Link */}
-                <div className="flex items-center justify-between pt-0.5">
+                <div className="flex items-center justify-between pt-0.5 flex-wrap gap-2">
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input
                       type="checkbox"
@@ -225,8 +244,8 @@ export const AdminLoginForm: React.FC = () => {
                     <span className="text-xs text-gray-600">Stay logged in</span>
                   </label>
 
-                  <a
-                    href="#reset"
+                  
+                    <a href="#reset"
                     className="text-xs font-semibold text-[#0b4226] hover:underline transition-colors"
                   >
                     Reset Key
@@ -237,7 +256,7 @@ export const AdminLoginForm: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-3 bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-widest rounded transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-75 cursor-pointer"
+                  className="w-full py-3 bg-[#0b4226] hover:bg-[#072c19] active:bg-[#051f12] text-white font-bold text-xs uppercase tracking-widest rounded transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-75 cursor-pointer"
                 >
                   {isLoading ? (
                     <span className="flex items-center gap-2">
@@ -256,14 +275,14 @@ export const AdminLoginForm: React.FC = () => {
           </div>
 
           {/* Additional Info & Disclaimer Below Card */}
-          <div className="mt-6 text-center space-y-3.5">
-            <p className="text-[11px] text-gray-500 leading-relaxed max-w-xs mx-auto">
+          <div className="mt-5 sm:mt-6 text-center space-y-3 sm:space-y-3.5">
+            <p className="text-[11px] text-gray-500 leading-relaxed max-w-xs mx-auto px-2">
               This system is strictly for the use of authorized Seven Star Security
               personnel. Unauthorized access attempts are monitored and recorded.
             </p>
 
             {/* Links */}
-            <div className="flex items-center justify-center gap-6 text-[10px] font-bold text-gray-500 tracking-wider uppercase">
+            <div className="flex items-center justify-center gap-4 sm:gap-6 text-[10px] font-bold text-gray-500 tracking-wider uppercase flex-wrap">
               <a href="#terms" className="hover:text-gray-800 transition-colors">
                 SYSTEM TERMS
               </a>
@@ -273,7 +292,7 @@ export const AdminLoginForm: React.FC = () => {
             </div>
 
             {/* IP & Session Info */}
-            <div className="pt-1">
+            <div className="pt-1 hidden sm:block">
               <p className="font-mono text-[10px] text-gray-400 tracking-widest uppercase">
                 IP RECORDED: 192.168.1.104 &nbsp;|&nbsp; SESSION: X-7792
               </p>
