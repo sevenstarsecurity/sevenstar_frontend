@@ -5,8 +5,8 @@ import { ShieldCheck } from "lucide-react";
 
 export const InstitutionalLegacy: React.FC = () => {
   return (
-    <section className="bg-[#f0f5ea] py-16 md:py-20">
-      <div className="max-w-[1152px] mx-auto px-6 md:px-10 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-10">
+    <section className="bg-[#F1F5ED] py-16 md:py-20">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-10">
         {/* Left Column: Text */}
         <div className="max-w-xl">
           {/* Tag */}

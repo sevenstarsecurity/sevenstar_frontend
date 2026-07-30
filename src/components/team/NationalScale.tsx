@@ -76,9 +76,8 @@ export const NationalScale: React.FC = () => {
           {hubs.map((hub, i) => (
             <div
               key={hub.tag}
-              className={`bg-white rounded-none p-8 md:p-9 border border-gray-100/80 shadow-2xs hover:shadow-md transition-all duration-500 flex flex-col justify-between h-full ${
-                visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+              className={`bg-white rounded-none p-8 md:p-9 border border-gray-100/80 shadow-2xs hover:shadow-md transition-all duration-500 flex flex-col justify-between h-full ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
               style={{ transitionDelay: `${i * 120}ms` }}
             >
               <div>

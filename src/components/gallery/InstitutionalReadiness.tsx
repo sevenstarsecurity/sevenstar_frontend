@@ -8,8 +8,8 @@ export const InstitutionalReadiness: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section className="bg-[#f0f5ea] py-16 md:py-24 border-t border-[#e2ebd9]">
-      <div className="max-w-[1152px] mx-auto px-6 md:px-10 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <section className="bg-[#F1F5ED] py-16 md:py-24 border-t border-[#e2ebd9]">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         {/* Left Column: Video Simulation Card */}
         <div className="lg:col-span-6">
           <div className="relative bg-black rounded-lg overflow-hidden border border-gray-300 shadow-md group aspect-[16/10]">
@@ -56,11 +56,11 @@ export const InstitutionalReadiness: React.FC = () => {
         {/* Right Column: Text & Stats */}
         <div className="lg:col-span-6 space-y-6">
           {/* Heading */}
-<h2
-  className="font-sans text-[40px] leading-[48px] font-semibold tracking-[2px] text-[#004E24] uppercase"
->
-  INSTITUTIONAL READINESS
-</h2>
+          <h2
+            className="font-sans text-[40px] leading-[48px] font-semibold tracking-[2px] text-[#004E24] uppercase"
+          >
+            INSTITUTIONAL READINESS
+          </h2>
 
           {/* Paragraph */}
           <p

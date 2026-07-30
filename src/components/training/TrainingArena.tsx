@@ -66,8 +66,8 @@ export const TrainingArena: React.FC = () => {
               }`}
           >
             {/* Photo 1: salam.png */}
-            <div className="p-1 border-4 border-[#deb853] bg-white shadow-2xl rounded-xs overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
-              <div className="h-[280px] sm:h-[320px] w-full overflow-hidden relative">
+            <div className="border-4 border-[#deb853] shadow-2xl rounded-xs overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+              <div className="h-[387px] w-full overflow-hidden relative">
                 <ImageFallback
                   src="/images/salam.png"
                   alt="Seven Star Guards Formation"
@@ -78,8 +78,8 @@ export const TrainingArena: React.FC = () => {
             </div>
 
             {/* Photo 2: mic123.png */}
-            <div className="p-1 border-4 border-[#deb853] bg-white shadow-2xl rounded-xs overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
-              <div className="h-[280px] sm:h-[320px] w-full overflow-hidden relative">
+            <div className="border-4 border-[#deb853] shadow-2xl rounded-xs overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+              <div className="h-[387px] w-full overflow-hidden relative">
                 <ImageFallback
                   src="/images/mic123.png"
                   alt="Seven Star Radio Officer"

@@ -21,6 +21,13 @@ export const Navbar: React.FC = () => {
     { name: "CONTACT", href: "/contact" },
   ];
 
+  const isItemActive = (href: string) => {
+    if (!pathname) return false;
+    if (href === "/") return pathname === "/";
+    if (href === "/about") return pathname === "/about" || pathname.startsWith("/team");
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs">
       <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 h-20 flex items-center justify-between">
@@ -39,16 +46,15 @@ export const Navbar: React.FC = () => {
         {/* Desktop Navigation Menu */}
         <nav className="hidden lg:flex items-center space-x-7">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = isItemActive(item.href);
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`transition-colors relative py-1 inline-flex items-center nav-heartbeat-item ${
-                  isActive
-                    ? "text-[#004E24] active-nav"
-                    : "text-[#3F4940] hover:text-[#004E24]"
-                }`}
+                className={`transition-colors relative py-1 inline-flex items-center nav-heartbeat-item ${isActive
+                    ? "text-[#004E24] active-nav font-bold"
+                    : "text-[#3F4940] hover:text-[#004E24] font-medium"
+                  }`}
                 style={{
                   fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
                   fontWeight: isActive ? 700 : 500,
@@ -93,13 +99,13 @@ export const Navbar: React.FC = () => {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-b border-gray-200 px-6 py-4 space-y-3 shadow-lg">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = isItemActive(item.href);
             return (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block transition-colors ${isActive ? "text-[#004E24]" : "text-[#3F4940]"
+                className={`block transition-colors ${isActive ? "text-[#004E24] font-bold" : "text-[#3F4940] font-medium"
                   }`}
                 style={{
                   fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",

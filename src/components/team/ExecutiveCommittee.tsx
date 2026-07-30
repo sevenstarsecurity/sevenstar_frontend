@@ -8,16 +8,19 @@ const executives = [
     name: "Major Vikram Singh (Retd.)",
     role: "CHAIRMAN & MANAGING DIRECTOR",
     bio: "20 years of tactical experience in national security and paramilitary coordination.",
+    image: "/images/vikram.jpg",
   },
   {
     name: "Anjali Deshmukh",
     role: "DIRECTOR OF OPERATIONS",
     bio: "Driving operational excellence across 500+ secure deployments nationwide.",
+    image: "/images/anjali.jpg",
   },
   {
     name: "Arjun Khanna",
     role: "CHIEF INTELLIGENCE OFFICER",
     bio: "Pioneer in AI-driven surveillance and modern cyber-physical security integration.",
+    image: "/images/arjun.jpg",
   },
 ];
 
@@ -55,31 +58,29 @@ export const ExecutiveCommittee: React.FC = () => {
           {executives.map((member, i) => (
             <div
               key={member.name}
-              className={`flex flex-col items-center text-center group transition-all duration-600 ${
-                i === 1 ? "md:mt-12" : ""
-              } ${
-                visible
+              className={`flex flex-col items-center text-center group transition-all duration-600 ${i === 1 ? "md:mt-12" : ""
+                } ${visible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-10"
-              }`}
+                }`}
               style={{ transitionDelay: `${i * 120}ms` }}
             >
               {/* Rectangular Photo with Gold Frame */}
-              <div className="p-1 border-4 border-[#deb853] bg-white shadow-md w-[270px] h-[306px] mx-auto mb-6 group-hover:scale-105 transition-transform duration-300 opacity-100">
+              <div className="p-1 border-4 border-[#deb853] bg-[#FFDF96] shadow-md w-[270px] h-[306px] mx-auto mb-6 group-hover:scale-105 transition-transform duration-300 opacity-100">
                 <div className="w-full h-full overflow-hidden bg-gray-100">
                   <ImageFallback
-                    src="/images/mic123.png"
+                    src={member.image}
                     alt={member.name}
                     className="w-full h-full object-cover object-center"
-                    fallbackText="mic123.png"
+                    fallbackText={member.name}
                   />
                 </div>
               </div>
 
               {/* Name */}
               <h3
-                className="text-lg md:text-xl font-bold text-gray-900 mb-1 tracking-tight"
-                style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+                className="text-2xl font-normal text-[#004E24] leading-[31.2px] tracking-normal"
+                style={{ fontFamily: "'Public Sans', sans-serif" }}
               >
                 {member.name}
               </h3>

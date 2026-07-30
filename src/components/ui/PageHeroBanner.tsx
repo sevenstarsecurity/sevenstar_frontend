@@ -54,7 +54,7 @@ export const PageHeroBanner: React.FC<PageHeroBannerProps> = ({ title, label, br
 
         {/* Main Title */}
         <h1
-          className="font-bold text-4xl md:text-5xl lg:text-6xl text-white mb-5 leading-snug"
+          className="font-semibold text-4xl md:text-5xl lg:text-6xl text-white mb-5 leading-snug"
         >
           {title}
         </h1>

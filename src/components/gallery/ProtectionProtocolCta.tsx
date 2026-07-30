@@ -6,7 +6,7 @@ import Link from "next/link";
 export const ProtectionProtocolCta: React.FC = () => {
   return (
     <section className="bg-[#004E24] py-16 md:py-24 text-white">
-      <div className="max-w-[1152px] mx-auto px-6 md:px-10 lg:px-12 text-center flex flex-col items-center justify-center">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 text-center flex flex-col items-center justify-center">
         {/* Title */}
         <h2
           className="text-2xl md:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight mb-4"
