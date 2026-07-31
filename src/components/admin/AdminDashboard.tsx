@@ -31,6 +31,7 @@ import {
   Share2,
   Video,
   Crown,
+  Briefcase,
 } from "lucide-react";
 import {
   LineChart,
@@ -54,6 +55,7 @@ const navItems = [
   { name: "Blog", icon: FileText, href: "#" },
   { name: "Gallery", icon: ImageIcon, href: "/admin/gallery" },
   { name: "Branches", icon: MapPin, href: "/admin/branches" },
+  { name: "Clients", icon: Briefcase, href: "/admin/clients" },
   { name: "Submissions", icon: Send, href: "#" },
   { name: "Services", icon: Wrench, href: "#" },
   { name: "Settings", icon: Settings, href: "/admin/settings" },
@@ -80,9 +82,8 @@ const ACTION_LABELS: Record<string, string> = {
 
 const describeLog = (log: ActivityLog): string => {
   const readableEntity = log.entity.replace(/([a-z])([A-Z])/g, "$1 $2");
-  return `${readableEntity} · ${log.entityId.slice(0, 24)}${
-    log.entityId.length > 24 ? "…" : ""
-  }`;
+  return `${readableEntity} · ${log.entityId.slice(0, 24)}${log.entityId.length > 24 ? "…" : ""
+    }`;
 };
 
 const timeAgo = (iso: string): string => {
@@ -154,11 +155,10 @@ export const AdminDashboard: React.FC = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md font-semibold text-sm transition-all cursor-pointer ${
-                    isActive
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md font-semibold text-sm transition-all cursor-pointer ${isActive
                       ? "bg-[#0b4226] text-white shadow-sm"
                       : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                  }`}
+                    }`}
                 >
                   <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-500"}`} />
                   <span>{item.name}</span>
@@ -258,11 +258,10 @@ export const AdminDashboard: React.FC = () => {
                     <p className="text-xs md:text-sm text-gray-500 mt-0.5 font-normal">
                       Database status:{" "}
                       <span
-                        className={`font-bold ${
-                          health?.database.status === "operational"
+                        className={`font-bold ${health?.database.status === "operational"
                             ? "text-emerald-600"
                             : "text-amber-600"
-                        }`}
+                          }`}
                       >
                         {health?.database.status.toUpperCase()}
                       </span>{" "}
@@ -609,9 +608,8 @@ export const AdminDashboard: React.FC = () => {
                       <div key={log.id} className="flex items-start gap-3.5 relative">
                         <div className="mt-1 flex-shrink-0">
                           <span
-                            className={`w-2.5 h-2.5 rounded-full block ${
-                              idx === 0 ? "bg-[#0b4226]" : "bg-gray-300"
-                            }`}
+                            className={`w-2.5 h-2.5 rounded-full block ${idx === 0 ? "bg-[#0b4226]" : "bg-gray-300"
+                              }`}
                           />
                         </div>
 
@@ -650,11 +648,10 @@ export const AdminDashboard: React.FC = () => {
                         Database
                       </p>
                       <p
-                        className={`font-bold mt-0.5 ${
-                          health?.database.status === "operational"
+                        className={`font-bold mt-0.5 ${health?.database.status === "operational"
                             ? "text-emerald-600"
                             : "text-amber-600"
-                        }`}
+                          }`}
                       >
                         {health?.database.status}
                       </p>
@@ -707,9 +704,8 @@ export const AdminDashboard: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-gray-500">Backup enabled</span>
                       <span
-                        className={`font-bold ${
-                          quickActions?.backupEnabled ? "text-emerald-600" : "text-red-600"
-                        }`}
+                        className={`font-bold ${quickActions?.backupEnabled ? "text-emerald-600" : "text-red-600"
+                          }`}
                       >
                         {quickActions?.backupEnabled ? "YES" : "NO"}
                       </span>

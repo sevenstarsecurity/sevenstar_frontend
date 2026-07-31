@@ -31,6 +31,7 @@ import {
   EyeOff,
   AlertCircle,
   SlidersHorizontal,
+  Briefcase,
 } from "lucide-react";
 import { ImageFallback } from "../ui/ImageFallback";
 import { changePassword, logout, extractAuthErrorMessage } from "@/services/auth"; // adjust path to match your project
@@ -84,11 +85,11 @@ export const AdminSettings: React.FC = () => {
 
   const handlePasswordFieldChange =
     (field: keyof typeof passwordForm) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPasswordForm((prev) => ({ ...prev, [field]: e.target.value }));
-      if (pwError) setPwError(null);
-      if (pwSuccess) setPwSuccess(false);
-    };
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPasswordForm((prev) => ({ ...prev, [field]: e.target.value }));
+        if (pwError) setPwError(null);
+        if (pwSuccess) setPwSuccess(false);
+      };
 
   const validatePasswordForm = (): string | null => {
     if (!passwordForm.currentPassword) return "Please enter your current password.";
@@ -141,8 +142,9 @@ export const AdminSettings: React.FC = () => {
     { name: "Overview", icon: LayoutGrid, href: "/admin/dashboard" },
     { name: "Team", icon: Users, href: "/admin/team" },
     { name: "Blog", icon: FileText, href: "#" },
-    { name: "Gallery", icon: ImageIcon, href: "#" },
+    { name: "Gallery", icon: ImageIcon, href: "/admin/gallery" },
     { name: "Branches", icon: MapPin, href: "/admin/branches" },
+    { name: "Clients", icon: Briefcase, href: "/admin/clients" },
     { name: "Submissions", icon: Send, href: "#" },
     { name: "Services", icon: Wrench, href: "#" },
     { name: "Settings", icon: Settings, href: "/admin/settings" },
@@ -188,11 +190,10 @@ export const AdminSettings: React.FC = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md font-semibold text-sm transition-all ${
-                    isActive
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md font-semibold text-sm transition-all ${isActive
                       ? "bg-[#0b4226] text-white shadow-sm"
                       : "text-gray-400 hover:bg-[#1e2025] hover:text-white"
-                  }`}
+                    }`}
                 >
                   <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-400"}`} />
                   <span>{item.name}</span>
@@ -272,11 +273,10 @@ export const AdminSettings: React.FC = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 -mb-px cursor-pointer ${
-                    isActive
+                  className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 -mb-px cursor-pointer ${isActive
                       ? "border-[#0b4226] text-[#0b4226]"
                       : "border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300"
-                  }`}
+                    }`}
                 >
                   {tab.icon}
                   {tab.label}

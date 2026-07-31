@@ -28,6 +28,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
+  Briefcase,
 } from "lucide-react";
 import { ImageFallback } from "../ui/ImageFallback";
 
@@ -61,6 +62,7 @@ const navItems = [
   { name: "Blog", icon: FileText, href: "#" },
   { name: "Gallery", icon: ImageIcon, href: "/admin/gallery" },
   { name: "Branches", icon: MapPin, href: "/admin/branches" },
+  { name: "Clients", icon: Briefcase, href: "/admin/clients" },
   { name: "Submissions", icon: Send, href: "#" },
   { name: "Services", icon: Wrench, href: "#" },
   { name: "Settings", icon: Settings, href: "/admin/settings" },
@@ -285,11 +287,10 @@ export const AdminTeam: React.FC = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md font-semibold text-sm transition-all ${
-                    isActive
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md font-semibold text-sm transition-all ${isActive
                       ? "bg-[#0b4226] text-white shadow-sm"
                       : "text-gray-400 hover:bg-[#1e2025] hover:text-white"
-                  }`}
+                    }`}
                 >
                   <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-400"}`} />
                   <span>{item.name}</span>
@@ -357,11 +358,10 @@ export const AdminTeam: React.FC = () => {
               <button
                 key={section}
                 onClick={() => setActiveSection(section)}
-                className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer ${
-                  activeSection === section
+                className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer ${activeSection === section
                     ? "border-[#0b4226] text-[#0b4226]"
                     : "border-transparent text-gray-400 hover:text-gray-700"
-                }`}
+                  }`}
               >
                 {section === "Team" ? "Team Members" : "Leadership"}
               </button>
@@ -510,20 +510,17 @@ export const AdminTeam: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => toggleActive(person)}
-                              className={`w-9 h-5 flex items-center rounded-full p-0.5 cursor-pointer transition-colors ${
-                                person.isActive ? "bg-[#0b4226]" : "bg-gray-300"
-                              }`}
+                              className={`w-9 h-5 flex items-center rounded-full p-0.5 cursor-pointer transition-colors ${person.isActive ? "bg-[#0b4226]" : "bg-gray-300"
+                                }`}
                             >
                               <div
-                                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                                  person.isActive ? "translate-x-4" : "translate-x-0"
-                                }`}
+                                className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${person.isActive ? "translate-x-4" : "translate-x-0"
+                                  }`}
                               />
                             </button>
                             <span
-                              className={`text-[10px] font-bold tracking-wider uppercase ${
-                                person.isActive ? "text-[#0b4226]" : "text-gray-400"
-                              }`}
+                              className={`text-[10px] font-bold tracking-wider uppercase ${person.isActive ? "text-[#0b4226]" : "text-gray-400"
+                                }`}
                             >
                               {person.isActive ? "ACTIVE" : "INACTIVE"}
                             </span>
@@ -575,11 +572,10 @@ export const AdminTeam: React.FC = () => {
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`w-7 h-7 flex items-center justify-center rounded border font-bold text-xs ${
-                      currentPage === page
+                    className={`w-7 h-7 flex items-center justify-center rounded border font-bold text-xs ${currentPage === page
                         ? "bg-[#0b4226] text-white border-[#0b4226]"
                         : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                    }`}
+                      }`}
                   >
                     {page}
                   </button>
@@ -728,14 +724,12 @@ export const AdminTeam: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setOperationalStatus(!operationalStatus)}
-                  className={`w-9 h-5 flex items-center rounded-full p-0.5 cursor-pointer transition-colors ${
-                    operationalStatus ? "bg-[#0b4226]" : "bg-gray-300"
-                  }`}
+                  className={`w-9 h-5 flex items-center rounded-full p-0.5 cursor-pointer transition-colors ${operationalStatus ? "bg-[#0b4226]" : "bg-gray-300"
+                    }`}
                 >
                   <div
-                    className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                      operationalStatus ? "translate-x-4" : "translate-x-0"
-                    }`}
+                    className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${operationalStatus ? "translate-x-4" : "translate-x-0"
+                      }`}
                   />
                 </button>
               </div>

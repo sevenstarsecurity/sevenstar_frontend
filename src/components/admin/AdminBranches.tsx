@@ -24,6 +24,7 @@ import {
   X,
   Building,
   Loader2,
+  Briefcase,
 } from "lucide-react";
 import { ImageFallback } from "../ui/ImageFallback";
 import {
@@ -60,6 +61,7 @@ export const AdminBranches: React.FC = () => {
     { name: "Blog", icon: FileText, href: "#" },
     { name: "Gallery", icon: ImageIcon, href: "/admin/gallery" },
     { name: "Branches", icon: MapPin, href: "/admin/branches" },
+    { name: "Clients", icon: Briefcase, href: "/admin/clients" },
     { name: "Submissions", icon: Send, href: "#" },
     { name: "Services", icon: Wrench, href: "#" },
     { name: "Settings", icon: Settings, href: "/admin/settings" },
