@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "./api";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -41,9 +42,17 @@ interface ApiResponse<T> {
   statusCode: number;
 }
 
-// ─── List endpoint ──────────────────────────────────────────────────────────
-// Same pattern as executives: ONE route (/leadership), auth via Bearer token,
-// no separate /admin/* path.
+// ─── Plain axios instance for public calls ─────────────────────────────────
+// IMPORTANT: this does NOT use the shared `api` instance, because `api` has
+// an interceptor that redirects to /login on 401 (see auth.ts). Public pages
+// have no logged-in admin, so a 401 there should just fail quietly instead
+// of hijacking the visitor to the admin login screen.
+
+const publicApi = axios.create({
+  baseURL: api.defaults.baseURL,
+});
+
+// ─── List endpoint (admin, authenticated) ──────────────────────────────────
 
 export interface ListLeadersParams {
   page?: number;
@@ -69,9 +78,33 @@ export const getLeaders = async (
 };
 
 export const getAdminLeaders = getLeaders;
+
+// ─── Public list endpoint (unauthenticated, for the client site) ──────────
+// Tries a true public route first (/leadership), matching the pattern used
+// by branches.ts (/branches) and vigilance.ts (/vigilance). If that route
+// doesn't exist yet on the backend (404), falls back to the admin route on
+// a plain axios instance so a 401 fails silently instead of redirecting
+// the visitor to /login.
+
 export const getPublicLeaders = async (): Promise<Leader[]> => {
-  const res = await getLeaders();
-  return res.items;
+  try {
+    const res = await publicApi.get<ApiResponse<Leader[]>>("/leadership");
+    return Array.isArray(res.data.data) ? res.data.data : [];
+  } catch (err: any) {
+    // If there's genuinely no public route (404), try the admin route
+    // without triggering the login-redirect interceptor.
+    if (err?.response?.status === 404) {
+      try {
+        const fallbackRes = await publicApi.get<ApiResponse<Leader[]>>(
+          "/admin/leadership"
+        );
+        return Array.isArray(fallbackRes.data.data) ? fallbackRes.data.data : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
 };
 
 export const getLeaderById = async (id: string): Promise<Leader> => {
@@ -79,9 +112,17 @@ export const getLeaderById = async (id: string): Promise<Leader> => {
   return res.data.data;
 };
 export const getAdminLeader = getLeaderById;
-export const getPublicLeader = getLeaderById;
 
-// ─── Create / Update / Delete ──────────────────────────────────────────────
+export const getPublicLeader = async (id: string): Promise<Leader | null> => {
+  try {
+    const res = await publicApi.get<ApiResponse<Leader>>(`/leadership/${id}`);
+    return res.data.data;
+  } catch {
+    return null;
+  }
+};
+
+// ─── Create / Update / Delete (admin, authenticated) ───────────────────────
 
 // The backend accepts multipart/form-data directly on this route — the
 // image file goes under the field name "file" (confirmed via Postman).

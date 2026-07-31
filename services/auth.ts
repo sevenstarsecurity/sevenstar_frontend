@@ -110,6 +110,47 @@ export async function refreshAccessToken(): Promise<string> {
   return accessToken;
 }
 
+// ---- Change Password ----
+
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface ValidationErrorResponse {
+  success: false;
+  message: string;
+  errors?: Record<string, string[]>;
+  statusCode: number;
+}
+
+export async function changePassword(
+  payload: ChangePasswordPayload
+): Promise<void> {
+  const res = await api.post<ApiResponse<null>>("/auth/change-password", payload);
+
+  if (!res.data.success) {
+    throw new Error(res.data.message || "Failed to change password");
+  }
+}
+
+// Reads a readable message off any auth-related API error, including
+// field-level validation errors shaped like:
+// { success: false, message: "Validation Failed", errors: { confirmPassword: ["..."] } }
+export function extractAuthErrorMessage(err: any, fallback: string): string {
+  const data = err?.response?.data as ValidationErrorResponse | undefined;
+
+  if (data?.errors && typeof data.errors === "object") {
+    const fieldMessages = Object.values(data.errors).flat().filter(Boolean);
+    if (fieldMessages.length > 0) {
+      return fieldMessages.join(" ");
+    }
+  }
+
+  return data?.message || err?.message || fallback;
+}
+
 // ---- Axios interceptors: attach token + auto-refresh on 401 ----
 
 api.interceptors.request.use((config) => {

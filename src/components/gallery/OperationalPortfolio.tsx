@@ -1,13 +1,52 @@
 "use client";
 
 import { Award } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImageFallback } from "../ui/ImageFallback";
+import { getPublicGalleryImages, GalleryImage } from "@/services/gallery"; // adjust path to match your project
 
 export const OperationalPortfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState("All View");
+  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const tabs = ["All View", "Field Ops", "Intelligence", "Facilities"];
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadImages = async () => {
+      try {
+        setLoading(true);
+        const data = await getPublicGalleryImages();
+        if (isMounted) {
+          const sorted = [...data].sort((a, b) => a.displayOrder - b.displayOrder);
+          setImages(sorted);
+          setError(null);
+        }
+      } catch (err) {
+        console.error("Failed to load gallery images:", err);
+        if (isMounted) {
+          setError("Unable to load gallery right now.");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadImages();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Layout has 5 image slots — map the first 5 gallery images in displayOrder
+  // into those fixed positions. Falls back gracefully if fewer than 5 exist.
+  const [mainImg, topRight1, topRight2, bottomLeft, bottomRight] = images;
 
   return (
     <section className="bg-[#f1f1f1] py-12 md:py-16 border-t border-[#e2ebd9]">
@@ -31,10 +70,11 @@ export const OperationalPortfolio: React.FC = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`relative py-1 transition-colors ${activeTab === tab
-                  ? "text-[#004E24] font-bold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#004E24]"
-                  : "text-gray-500 hover:text-[#004E24]"
-                  }`}
+                className={`relative py-1 transition-colors ${
+                  activeTab === tab
+                    ? "text-[#004E24] font-bold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#004E24]"
+                    : "text-gray-500 hover:text-[#004E24]"
+                }`}
                 style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
               >
                 {tab}
@@ -43,86 +83,115 @@ export const OperationalPortfolio: React.FC = () => {
           </div>
         </div>
 
+        {/* Loading state */}
+        {loading && (
+          <div className="py-16 text-center text-sm text-gray-500">
+            Loading gallery...
+          </div>
+        )}
+
+        {/* Error state */}
+        {!loading && error && (
+          <div className="py-16 text-center text-sm text-red-600">{error}</div>
+        )}
+
+        {/* Empty state */}
+        {!loading && !error && images.length === 0 && (
+          <div className="py-16 text-center text-sm text-gray-500">
+            No gallery images available yet.
+          </div>
+        )}
+
         {/* Gallery Grid */}
-        <div className="flex flex-col gap-4 md:gap-5">
-          {/* Top Row Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
-            {/* Main Large Image (Classroom Training) - Spans 2 Columns */}
-            <div className="md:col-span-2 relative w-full h-[320px] sm:h-[440px] md:h-[560px] overflow-hidden bg-white group">
-              <ImageFallback
-                src="/images/meeting.png"
-                alt="Training Lecture"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                fallbackText="Training Lecture"
-              />
+        {!loading && !error && images.length > 0 && (
+          <div className="flex flex-col gap-4 md:gap-5">
+            {/* Top Row Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+              {/* Main Large Image - Spans 2 Columns */}
+              {mainImg && (
+                <div className="md:col-span-2 relative w-full h-[320px] sm:h-[440px] md:h-[560px] overflow-hidden bg-white group">
+                  <ImageFallback
+                    src={mainImg.imageUrl}
+                    alt={mainImg.caption || "Gallery image"}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fallbackText={mainImg.caption || "Gallery image"}
+                  />
+                </div>
+              )}
+
+              {/* Top Right Stacked Images - 1 Column */}
+              <div className="md:col-span-1 flex flex-col gap-4 md:gap-5">
+                {topRight1 && (
+                  <div className="relative w-full h-[200px] sm:h-[250px] md:h-[270px] overflow-hidden bg-white group">
+                    <ImageFallback
+                      src={topRight1.imageUrl}
+                      alt={topRight1.caption || "Gallery image"}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fallbackText={topRight1.caption || "Gallery image"}
+                    />
+                  </div>
+                )}
+
+                {topRight2 && (
+                  <div className="relative w-full h-[200px] sm:h-[250px] md:h-[270px] overflow-hidden bg-white group">
+                    <ImageFallback
+                      src={topRight2.imageUrl}
+                      alt={topRight2.caption || "Gallery image"}
+                      className="w-full h-full object-cover grayscale contrast-110 group-hover:scale-105 transition-transform duration-500"
+                      fallbackText={topRight2.caption || "Gallery image"}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Top Right Stacked Images - 1 Column */}
-            <div className="md:col-span-1 flex flex-col gap-4 md:gap-5">
-              {/* Top Right 1: Desk Officer (hello.png) */}
-              <div className="relative w-full h-[200px] sm:h-[250px] md:h-[270px] overflow-hidden bg-white group">
-                <ImageFallback
-                  src="/images/hello.png"
-                  alt="Command Center"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  fallbackText="Command Center"
-                />
+            {/* Bottom Row Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 items-start">
+              {/* Bottom Left: Tall Vertical Image */}
+              {bottomLeft && (
+                <div className="md:col-span-1 relative w-full h-[320px] sm:h-[420px] md:h-[480px] overflow-hidden bg-white group">
+                  <ImageFallback
+                    src={bottomLeft.imageUrl}
+                    alt={bottomLeft.caption || "Gallery image"}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fallbackText={bottomLeft.caption || "Gallery image"}
+                  />
+                </div>
+              )}
+
+              {/* Bottom Center: Precision Personnel Green Card (static content) */}
+              <div className="md:col-span-1 relative w-full h-[200px] sm:h-[250px] md:h-[270px] bg-[#074724] p-6 sm:p-8 flex flex-col justify-between text-white overflow-hidden">
+                <div>
+                  <h3
+                    className="text-xs sm:text-sm font-bold text-[#cba242] uppercase tracking-wider mb-3"
+                    style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+                  >
+                    Precision Personnel
+                  </h3>
+                  <p className="text-xs sm:text-sm text-green-100/90 leading-relaxed">
+                    Our operators undergo 1,200 hours of specialized tactical and psychological training annually.
+                  </p>
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <Award className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-300/50 stroke-[1.5]" />
+                </div>
               </div>
 
-              {/* Top Right 2: Smoke / Fire Extinguisher Training (smoke.png) */}
-              <div className="relative w-full h-[200px] sm:h-[250px] md:h-[270px] overflow-hidden bg-white group">
-                <ImageFallback
-                  src="/images/smoke.png"
-                  alt="Smoke Training"
-                  className="w-full h-full object-cover grayscale contrast-110 group-hover:scale-105 transition-transform duration-500"
-                  fallbackText="Tactical Simulation"
-                />
-              </div>
+              {/* Bottom Right */}
+              {bottomRight && (
+                <div className="md:col-span-1 relative w-full h-[200px] sm:h-[250px] md:h-[270px] overflow-hidden bg-white group">
+                  <ImageFallback
+                    src={bottomRight.imageUrl}
+                    alt={bottomRight.caption || "Gallery image"}
+                    className="w-full h-full object-cover grayscale contrast-110 group-hover:scale-105 transition-transform duration-500"
+                    fallbackText={bottomRight.caption || "Gallery image"}
+                  />
+                </div>
+              )}
             </div>
           </div>
-
-          {/* Bottom Row Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 items-start">
-            {/* Bottom Left: Marching Guards (Tall Vertical Image) */}
-            <div className="md:col-span-1 relative w-full h-[320px] sm:h-[420px] md:h-[480px] overflow-hidden bg-white group">
-              <ImageFallback
-                src="/images/confidence.png"
-                alt="Field Deployment"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                fallbackText="Field Deployment"
-              />
-            </div>
-
-            {/* Bottom Center: Precision Personnel Green Card */}
-            <div className="md:col-span-1 relative w-full h-[200px] sm:h-[250px] md:h-[270px] bg-[#074724] p-6 sm:p-8 flex flex-col justify-between text-white overflow-hidden">
-              <div>
-                <h3
-                  className="text-xs sm:text-sm font-bold text-[#cba242] uppercase tracking-wider mb-3"
-                  style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
-                >
-                  Precision Personnel
-                </h3>
-                <p className="text-xs sm:text-sm text-green-100/90 leading-relaxed">
-                  Our operators undergo 1,200 hours of specialized tactical and psychological training annually.
-                </p>
-              </div>
-
-              <div className="flex justify-end pt-2">
-                <Award className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-300/50 stroke-[1.5]" />
-              </div>
-            </div>
-
-            {/* Bottom Right: 3 Bouncers (pose.png - Grayscale Image) */}
-            <div className="md:col-span-1 relative w-full h-[200px] sm:h-[250px] md:h-[270px] overflow-hidden bg-white group">
-              <ImageFallback
-                src="/images/pose.png"
-                alt="VIP Protection"
-                className="w-full h-full object-cover grayscale contrast-110 group-hover:scale-105 transition-transform duration-500"
-                fallbackText="VIP Protection"
-              />
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );
