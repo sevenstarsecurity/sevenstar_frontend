@@ -48,81 +48,7 @@ const navItems = [
   { name: "Settings", icon: Settings, href: "/admin/settings" },
 ];
 
-/** Demo seed so the page matches the Brand Management layout when the API is offline. */
-const SEED_CLIENTS: Client[] = [
-  {
-    id: "seed-1",
-    name: "Yamaha",
-    logoUrl: "/images/Ncell-Logo.wine.png",
-    displayOrder: 1,
-    isActive: true,
-    showOnHomepage: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "seed-2",
-    name: "Bajaj",
-    logoUrl: "/images/Worldlink_Logo.svg.webp",
-    displayOrder: 2,
-    isActive: true,
-    showOnHomepage: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "seed-3",
-    name: "Honda",
-    logoUrl: "/images/sevenstarlogo.png",
-    displayOrder: 3,
-    isActive: true,
-    showOnHomepage: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "seed-4",
-    name: "Hero",
-    logoUrl: "/images/ISO Seal Badge.png",
-    displayOrder: 4,
-    isActive: true,
-    showOnHomepage: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "seed-5",
-    name: "TVS",
-    logoUrl: "/images/Trusted By Badge.png",
-    displayOrder: 5,
-    isActive: true,
-    showOnHomepage: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "seed-6",
-    name: "Royal Enfield",
-    logoUrl: "/images/Ncell-Logo.wine.png",
-    displayOrder: 6,
-    isActive: true,
-    showOnHomepage: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "seed-7",
-    name: "Suzuki",
-    logoUrl: "/images/Worldlink_Logo.svg.webp",
-    displayOrder: 7,
-    isActive: true,
-    showOnHomepage: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "seed-8",
-    name: "KTM",
-    logoUrl: "/images/sevenstarlogo.png",
-    displayOrder: 8,
-    isActive: true,
-    showOnHomepage: true,
-    createdAt: new Date().toISOString(),
-  },
-];
+
 
 export const AdminClients: React.FC = () => {
   const [clients, setClients] = useState<Client[]>([]);
@@ -140,7 +66,7 @@ export const AdminClients: React.FC = () => {
   const [formFile, setFormFile] = useState<File | null>(null);
   const [formPreview, setFormPreview] = useState<string | null>(null);
   const [formActive, setFormActive] = useState(true);
-  const [formHomepage, setFormHomepage] = useState(true);
+  const [formOrder, setFormOrder] = useState<string>("");
 
   const loadClients = async () => {
     setLoading(true);
@@ -157,7 +83,6 @@ export const AdminClients: React.FC = () => {
         (err as { message?: string })?.message ||
         "Failed to load clients.";
       setError(message);
-      setClients(SEED_CLIENTS);
       setUsingSeed(true);
     } finally {
       setLoading(false);
@@ -168,10 +93,11 @@ export const AdminClients: React.FC = () => {
     loadClients();
   }, []);
 
-  const homepageClients = useMemo(
+  // "Homepage order" = every active client, sorted by displayOrder.
+  const orderedActiveClients = useMemo(
     () =>
       [...clients]
-        .filter((c) => c.isActive && c.showOnHomepage)
+        .filter((c) => c.isActive)
         .sort((a, b) => a.displayOrder - b.displayOrder),
     [clients]
   );
@@ -184,17 +110,23 @@ export const AdminClients: React.FC = () => {
     return [...list].sort((a, b) => a.displayOrder - b.displayOrder);
   }, [clients, search]);
 
+  const nextOrderSuggestion = useMemo(() => {
+    if (clients.length === 0) return 1;
+    return Math.max(...clients.map((c) => c.displayOrder)) + 1;
+  }, [clients]);
+
   const resetForm = () => {
     setEditing(null);
     setFormName("");
     setFormFile(null);
     setFormPreview(null);
     setFormActive(true);
-    setFormHomepage(true);
+    setFormOrder("");
   };
 
   const openAdd = () => {
     resetForm();
+    setFormOrder(String(nextOrderSuggestion));
     setShowModal(true);
   };
 
@@ -204,7 +136,7 @@ export const AdminClients: React.FC = () => {
     setFormFile(null);
     setFormPreview(client.logoUrl);
     setFormActive(client.isActive);
-    setFormHomepage(client.showOnHomepage);
+    setFormOrder(String(client.displayOrder));
     setShowModal(true);
   };
 
@@ -227,6 +159,12 @@ export const AdminClients: React.FC = () => {
       return;
     }
 
+    const parsedOrder = formOrder.trim() === "" ? undefined : Number(formOrder);
+    if (parsedOrder !== undefined && (Number.isNaN(parsedOrder) || parsedOrder < 1)) {
+      setError("Display order must be a positive number.");
+      return;
+    }
+
     setSaving(true);
     setError("");
 
@@ -241,47 +179,51 @@ export const AdminClients: React.FC = () => {
                     name: formName.trim(),
                     logoUrl: formPreview || c.logoUrl,
                     isActive: formActive,
-                    showOnHomepage: formHomepage,
+                    displayOrder: parsedOrder ?? c.displayOrder,
                   }
                 : c
             )
           );
         } else {
-          const nextOrder =
-            clients.reduce((max, c) => Math.max(max, c.displayOrder), 0) + 1;
           setClients((prev) => [
             ...prev,
             {
               id: `seed-${Date.now()}`,
               name: formName.trim(),
               logoUrl: formPreview || "/images/sevenstarlogo.png",
-              displayOrder: nextOrder,
+              cloudinaryId: "",
+              displayOrder: parsedOrder ?? nextOrderSuggestion,
               isActive: formActive,
-              showOnHomepage: formHomepage,
               createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
             },
           ]);
         }
       } else if (editing) {
         const updated = await updateClient(editing.id, {
           name: formName.trim(),
-          file: formFile || undefined,
+          logo: formFile || undefined,
           isActive: formActive,
-          showOnHomepage: formHomepage,
+          displayOrder: parsedOrder,
         });
         setClients((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
       } else {
-        const created = await createClient(
-          formName.trim(),
-          formFile!,
-          undefined,
-          formActive,
-          formHomepage
-        );
+        const created = await createClient({
+          name: formName.trim(),
+          logo: formFile!,
+          isActive: formActive,
+          displayOrder: parsedOrder,
+        });
         setClients((prev) => [...prev, created]);
       }
       setShowModal(false);
       resetForm();
+      if (!usingSeed) {
+        // Re-fetch so the list reflects the server's authoritative order
+        // (in case the backend shifted other clients when inserting at a
+        // specific position).
+        loadClients();
+      }
     } catch (err: unknown) {
       setError(
         (err as { response?: { data?: { message?: string } }; message?: string })?.response
@@ -333,20 +275,18 @@ export const AdminClients: React.FC = () => {
     if (!dragId || dragId === overId) return;
 
     setClients((prev) => {
-      const homepage = [...prev]
-        .filter((c) => c.isActive && c.showOnHomepage)
+      const ordered = [...prev]
+        .filter((c) => c.isActive)
         .sort((a, b) => a.displayOrder - b.displayOrder);
-      const from = homepage.findIndex((c) => c.id === dragId);
-      const to = homepage.findIndex((c) => c.id === overId);
+      const from = ordered.findIndex((c) => c.id === dragId);
+      const to = ordered.findIndex((c) => c.id === overId);
       if (from < 0 || to < 0) return prev;
 
-      const reordered = [...homepage];
+      const reordered = [...ordered];
       const [moved] = reordered.splice(from, 1);
       reordered.splice(to, 0, moved);
 
-      const orderMap = new Map(
-        reordered.map((c, i) => [c.id, i + 1] as const)
-      );
+      const orderMap = new Map(reordered.map((c, i) => [c.id, i + 1] as const));
 
       return prev.map((c) =>
         orderMap.has(c.id) ? { ...c, displayOrder: orderMap.get(c.id)! } : c
@@ -359,7 +299,7 @@ export const AdminClients: React.FC = () => {
     setDragId(null);
 
     const order = [...clients]
-      .filter((c) => c.isActive && c.showOnHomepage)
+      .filter((c) => c.isActive)
       .sort((a, b) => a.displayOrder - b.displayOrder)
       .map((c, i) => ({ id: c.id, displayOrder: i + 1 }));
 
@@ -374,45 +314,6 @@ export const AdminClients: React.FC = () => {
       loadClients();
     }
   };
-
-    // Handle dropping a client from the All Clients grid onto the homepage display order area
-    const handleDrop = async (e: React.DragEvent) => {
-      e.preventDefault();
-      if (!dragId) return;
-      const droppedId = dragId;
-      setDragId(null);
-
-      let updatedClients: Client[] = [];
-      let newDisplayOrder = 1;
-      setClients((prev) => {
-        const client = prev.find((c) => c.id === droppedId);
-        if (!client) return prev;
-        const maxOrder = Math.max(
-          0,
-          ...prev.filter((c) => c.isActive && c.showOnHomepage).map((c) => c.displayOrder)
-        );
-        newDisplayOrder = maxOrder + 1;
-        const updatedClient = { ...client, showOnHomepage: true, displayOrder: newDisplayOrder };
-        const newList = prev.map((c) => (c.id === droppedId ? updatedClient : c));
-        updatedClients = newList;
-        return newList;
-      });
-
-      // Persist the new order (if not using seed data)
-      if (!usingSeed) {
-        try {
-          const order = updatedClients
-            .filter((c) => c.isActive && c.showOnHomepage)
-            .sort((a, b) => a.displayOrder - b.displayOrder)
-            .map((c, i) => ({ id: c.id, displayOrder: i + 1 }));
-          await reorderClients(order);
-        } catch (err: unknown) {
-          setError((err as { message?: string })?.message || "Failed to save display order.");
-          loadClients();
-        }
-      }
-    };
-
 
   return (
     <div className="min-h-screen w-full flex bg-[#18191c] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
@@ -490,7 +391,6 @@ export const AdminClients: React.FC = () => {
         </header>
 
         <main className="p-6 space-y-8 flex-1 max-w-[1600px] w-full mx-auto">
-          {/* Page header — matches Brand Management layout */}
           <div className="flex flex-col lg:flex-row lg:items-center gap-4">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight shrink-0">
               Client Management
@@ -531,7 +431,7 @@ export const AdminClients: React.FC = () => {
             </div>
           )}
 
-          {/* Homepage display order */}
+          {/* Display order */}
           <section className="space-y-3">
             <h2 className="text-sm font-bold text-gray-900">
               Homepage Display Order (Drag &amp; Reorder)
@@ -541,13 +441,13 @@ export const AdminClients: React.FC = () => {
               <div className="flex items-center justify-center py-16 text-gray-400">
                 <Loader2 className="w-6 h-6 animate-spin" />
               </div>
-            ) : homepageClients.length === 0 ? (
-              <div className="bg-white border border-gray-200 rounded-xl px-6 py-10 text-center text-sm text-gray-400 font-medium shadow-xs" onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
-                No active clients on the homepage yet. Add a client or enable an existing one.
+            ) : orderedActiveClients.length === 0 ? (
+              <div className="bg-white border border-gray-200 rounded-xl px-6 py-10 text-center text-sm text-gray-400 font-medium shadow-xs">
+                No active clients yet. Add a client to see it here.
               </div>
             ) : (
-              <div className="flex gap-4 overflow-x-auto pb-2" onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
-                {homepageClients.map((client) => (
+              <div className="flex gap-4 overflow-x-auto pb-2">
+                {orderedActiveClients.map((client) => (
                   <div
                     key={client.id}
                     draggable
@@ -573,6 +473,9 @@ export const AdminClients: React.FC = () => {
                       <p className="text-xs font-medium text-gray-800 text-center leading-tight truncate w-full">
                         {client.name}
                       </p>
+                      <span className="text-[10px] font-bold text-gray-400">
+                        #{client.displayOrder}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -597,8 +500,6 @@ export const AdminClients: React.FC = () => {
                 {filteredClients.map((client) => (
                   <div
                     key={client.id}
-                    draggable
-                    onDragStart={() => handleDragStart(client.id)}
                     className="bg-white border border-gray-200 rounded-xl shadow-xs p-4 flex gap-3.5 items-start"
                   >
                     <div className="w-16 h-16 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden p-1.5 shrink-0">
@@ -611,7 +512,12 @@ export const AdminClients: React.FC = () => {
                     </div>
 
                     <div className="flex-1 min-w-0 space-y-2">
-                      <p className="font-bold text-gray-900 text-sm truncate">{client.name}</p>
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-bold text-gray-900 text-sm truncate">{client.name}</p>
+                        <span className="shrink-0 text-[10px] font-bold text-gray-400">
+                          Order #{client.displayOrder}
+                        </span>
+                      </div>
 
                       <div className="flex items-center gap-2">
                         <button
@@ -701,6 +607,23 @@ export const AdminClients: React.FC = () => {
 
               <div className="space-y-1.5">
                 <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                  Display Order
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  value={formOrder}
+                  onChange={(e) => setFormOrder(e.target.value)}
+                  placeholder="e.g. 1 to show first"
+                  className="w-full bg-[#f8fafc] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                />
+                <p className="text-[11px] text-gray-400">
+                  Lower number = shown earlier. Type 1 to put this client first.
+                </p>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                   Logo
                 </label>
                 <label className="flex flex-col items-center justify-center gap-2 border border-dashed border-gray-300 rounded-lg bg-[#f8fafc] px-4 py-6 cursor-pointer hover:border-[#0b4226]/50 transition-colors">
@@ -735,15 +658,6 @@ export const AdminClients: React.FC = () => {
                     className="rounded border-gray-300 text-[#0b4226] focus:ring-[#0b4226]"
                   />
                   <span className="text-xs font-semibold text-gray-700">Active</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formHomepage}
-                    onChange={(e) => setFormHomepage(e.target.checked)}
-                    className="rounded border-gray-300 text-[#0b4226] focus:ring-[#0b4226]"
-                  />
-                  <span className="text-xs font-semibold text-gray-700">Show on homepage</span>
                 </label>
               </div>
 

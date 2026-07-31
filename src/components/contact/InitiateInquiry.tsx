@@ -1,24 +1,50 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, ShieldCheck, Award } from "lucide-react";
+import { ChevronDown, ShieldCheck, Award, Loader2 } from "lucide-react";
+import { submitContactForm } from "@/services/contact";
 
 export const InitiateInquiry: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     sector: "",
     message: "",
   });
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ name: "", email: "", sector: "", message: "" });
-    }, 4000);
+    setError("");
+    setSubmitting(true);
+
+    try {
+      await submitContactForm({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        sector: formData.sector,
+        details: formData.message.trim(),
+      });
+
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({ name: "", email: "", phone: "", sector: "", message: "" });
+      }, 4000);
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } }; message?: string })?.response
+          ?.data?.message ||
+        (err as { message?: string })?.message ||
+        "Failed to send your inquiry. Please try again.";
+      setError(message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -47,6 +73,12 @@ export const InitiateInquiry: React.FC = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-8">
+                {error && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 text-xs font-semibold px-4 py-3">
+                    {error}
+                  </div>
+                )}
+
                 {/* 2 Underline Inputs Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   <div className="relative">
@@ -74,25 +106,39 @@ export const InitiateInquiry: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Dropdown Select with Underline */}
-                <div className="relative">
-                  <select
-                    required
-                    value={formData.sector}
-                    onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
-                    className="w-full bg-transparent border-b border-gray-400 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-[#004E24] transition-colors appearance-none pr-8 cursor-pointer"
-                    style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
-                  >
-                    <option value="" disabled className="text-gray-400">
-                      Select Primary Sector
-                    </option>
-                    <option value="corporate" className="text-gray-900">Corporate & Commercial Security</option>
-                    <option value="vip" className="text-gray-900">VIP Escort & Executive Protection</option>
-                    <option value="industrial" className="text-gray-900">Industrial & Logistics Security</option>
-                    <option value="diplomatic" className="text-gray-900">Diplomatic & Embassy Services</option>
-                    <option value="event" className="text-gray-900">Event & Venue Operations</option>
-                  </select>
-                  <ChevronDown className="w-4 h-4 text-gray-500 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none" />
+                {/* Phone + Sector Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                  <div className="relative">
+                    <input
+                      type="tel"
+                      required
+                      placeholder="Contact Phone Number"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full bg-transparent border-b border-gray-400 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#004E24] transition-colors"
+                      style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+                    />
+                  </div>
+
+                  <div className="relative">
+                    <select
+                      required
+                      value={formData.sector}
+                      onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
+                      className="w-full bg-transparent border-b border-gray-400 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-[#004E24] transition-colors appearance-none pr-8 cursor-pointer"
+                      style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+                    >
+                      <option value="" disabled className="text-gray-400">
+                        Select Primary Sector
+                      </option>
+                      <option value="corporate" className="text-gray-900">Corporate & Commercial Security</option>
+                      <option value="vip" className="text-gray-900">VIP Escort & Executive Protection</option>
+                      <option value="industrial" className="text-gray-900">Industrial & Logistics Security</option>
+                      <option value="diplomatic" className="text-gray-900">Diplomatic & Embassy Services</option>
+                      <option value="event" className="text-gray-900">Event & Venue Operations</option>
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-gray-500 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
                 </div>
 
                 {/* Textarea with Underline */}
@@ -112,10 +158,12 @@ export const InitiateInquiry: React.FC = () => {
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="bg-[#004E24] hover:bg-[#003d1c] text-white font-bold text-xs uppercase tracking-widest px-8 py-3.5 rounded-none shadow-sm hover:shadow-md transition-all duration-200 inline-flex items-center justify-center"
+                    disabled={submitting}
+                    className="bg-[#004E24] hover:bg-[#003d1c] disabled:opacity-60 text-white font-bold text-xs uppercase tracking-widest px-8 py-3.5 rounded-none shadow-sm hover:shadow-md transition-all duration-200 inline-flex items-center justify-center gap-2 cursor-pointer"
                     style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
                   >
-                    SUBMIT INTELLIGENCE
+                    {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                    {submitting ? "TRANSMITTING..." : "SUBMIT INTELLIGENCE"}
                   </button>
                 </div>
               </form>

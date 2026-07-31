@@ -1,17 +1,19 @@
 import api from "./api";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
+// Confirmed from real API response (GET /api/admin/branches or /api/branches).
 
 export interface BranchStaff {
   id: string;
   branchId: string;
   name: string;
-  position?: string | null;
-  phone?: string | null;
+  designation?: string | null; // confirmed — was wrongly guessed as "position"
   displayOrder: number;
   isActive: boolean;
   createdAt: string;
-  updatedAt: string;
+  // Note: no "phone" or "updatedAt" field appeared in the real response.
+  // If your backend does have them, they were just omitted from this
+  // response — otherwise remove from any UI assuming they exist.
 }
 
 export interface Branch {
@@ -50,7 +52,7 @@ interface ApiResponse<T> {
 // Backend list-response shape is still unconfirmed. This defensively handles
 // several common shapes so the UI never crashes on an unexpected wrapper.
 // TODO: replace this with a direct mapping once a real Postman response for
-// GET /api/admin/branches is available.
+// GET /api/admin/branches (list) is available.
 
 function normalizePaginated<T>(raw: any): PaginatedResponse<T> {
   if (Array.isArray(raw)) {
@@ -181,8 +183,7 @@ export const getBranchStaffMember = async (
 
 export interface CreateStaffPayload {
   name: string;
-  position?: string;
-  phone?: string;
+  designation?: string;
   displayOrder?: number;
 }
 

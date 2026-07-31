@@ -62,7 +62,7 @@ export const AdminBranches: React.FC = () => {
     { name: "Gallery", icon: ImageIcon, href: "/admin/gallery" },
     { name: "Branches", icon: MapPin, href: "/admin/branches" },
     { name: "Clients", icon: Briefcase, href: "/admin/clients" },
-    { name: "Submissions", icon: Send, href: "#" },
+    { name: "Submissions", icon: Send, href: "/admin/submissions" },
     { name: "Services", icon: Wrench, href: "#" },
     { name: "Settings", icon: Settings, href: "/admin/settings" },
   ];

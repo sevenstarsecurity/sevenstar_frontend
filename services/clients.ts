@@ -1,17 +1,18 @@
 import api from "./api";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
+// Confirmed from real API response (GET /api/clients or /api/admin/clients).
 
 export interface Client {
   id: string;
   name: string;
   logoUrl: string;
-  cloudinaryId?: string | null;
+  cloudinaryId: string;
+  websiteUrl?: string | null;
   displayOrder: number;
   isActive: boolean;
-  showOnHomepage: boolean;
   createdAt: string;
-  updatedAt?: string;
+  updatedAt: string;
 }
 
 export interface PaginationMeta {
@@ -43,14 +44,8 @@ interface ApiResponse<T> {
   statusCode: number;
 }
 
-interface ListClientsParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  status?: "active" | "inactive" | "all";
-}
-
 // ─── Public Endpoint ────────────────────────────────────────────────────────
+// GET /api/clients -> active clients, displayOrder ASC
 
 export const getPublicClients = async (): Promise<Client[]> => {
   const res = await api.get<ApiResponse<Client[]>>("/clients");
@@ -58,6 +53,20 @@ export const getPublicClients = async (): Promise<Client[]> => {
 };
 
 // ─── Admin Endpoints ────────────────────────────────────────────────────────
+// GET    /api/admin/clients            (paginated: status filter)
+// GET    /api/admin/clients/:id
+// POST   /api/admin/clients            (multipart: logo file)
+// PUT    /api/admin/clients/:id        (replace logo/name/url/order)
+// PATCH  /api/admin/clients/:id/status
+// PATCH  /api/admin/clients/reorder
+// DELETE /api/admin/clients/:id
+
+interface ListClientsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: "active" | "inactive" | "all";
+}
 
 export const getAdminClients = async (
   params: ListClientsParams = {}
@@ -76,19 +85,29 @@ export const getAdminClient = async (id: string): Promise<Client> => {
   return res.data.data;
 };
 
+export interface CreateClientPayload {
+  name: string;
+  websiteUrl?: string;
+  displayOrder?: number;
+  isActive?: boolean;
+  logo?: File;
+}
+
 export const createClient = async (
-  name: string,
-  file: File,
-  displayOrder?: number,
-  isActive = true,
-  showOnHomepage = true
+  payload: CreateClientPayload
 ): Promise<Client> => {
   const formData = new FormData();
-  formData.append("name", name);
-  formData.append("file", file);
-  if (displayOrder !== undefined) formData.append("displayOrder", String(displayOrder));
-  formData.append("isActive", String(isActive));
-  formData.append("showOnHomepage", String(showOnHomepage));
+  formData.append("name", payload.name);
+  if (payload.websiteUrl) formData.append("websiteUrl", payload.websiteUrl);
+  if (payload.displayOrder !== undefined) {
+    formData.append("displayOrder", String(payload.displayOrder));
+  }
+  if (payload.isActive !== undefined) {
+    formData.append("isActive", String(payload.isActive));
+  }
+  if (payload.logo) {
+    formData.append("file", payload.logo);
+  }
 
   const res = await api.post<ApiResponse<Client>>("/admin/clients", formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -98,22 +117,22 @@ export const createClient = async (
 
 export const updateClient = async (
   id: string,
-  updates: {
-    name?: string;
-    file?: File;
-    displayOrder?: number;
-    isActive?: boolean;
-    showOnHomepage?: boolean;
-  }
+  updates: Partial<CreateClientPayload>
 ): Promise<Client> => {
   const formData = new FormData();
   if (updates.name !== undefined) formData.append("name", updates.name);
-  if (updates.file) formData.append("file", updates.file);
-  if (updates.displayOrder !== undefined)
+  if (updates.websiteUrl !== undefined) {
+    formData.append("websiteUrl", updates.websiteUrl);
+  }
+  if (updates.displayOrder !== undefined) {
     formData.append("displayOrder", String(updates.displayOrder));
-  if (updates.isActive !== undefined) formData.append("isActive", String(updates.isActive));
-  if (updates.showOnHomepage !== undefined)
-    formData.append("showOnHomepage", String(updates.showOnHomepage));
+  }
+  if (updates.isActive !== undefined) {
+    formData.append("isActive", String(updates.isActive));
+  }
+  if (updates.logo) {
+    formData.append("file", updates.logo);
+  }
 
   const res = await api.put<ApiResponse<Client>>(`/admin/clients/${id}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },

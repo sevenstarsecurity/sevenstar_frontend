@@ -56,8 +56,7 @@ const navItems = [
   { name: "Gallery", icon: ImageIcon, href: "/admin/gallery" },
   { name: "Branches", icon: MapPin, href: "/admin/branches" },
   { name: "Clients", icon: Briefcase, href: "/admin/clients" },
-  { name: "Submissions", icon: Send, href: "#" },
-  { name: "Services", icon: Wrench, href: "#" },
+  { name: "Submissions", icon: Send, href: "/admin/submissions" },
   { name: "Settings", icon: Settings, href: "/admin/settings" },
 ];
 
@@ -80,10 +79,25 @@ const ACTION_LABELS: Record<string, string> = {
   GALLERY_VIDEO_CREATE: "Gallery Video Added",
 };
 
+/**
+ * Builds a short "Entity · id" description for an activity log row.
+ * Guards against logs that don't carry an `entity` or `entityId`
+ * (e.g. LOGIN events, or any action not tied to a specific record) —
+ * calling .slice() on undefined/null was crashing the dashboard.
+ */
 const describeLog = (log: ActivityLog): string => {
-  const readableEntity = log.entity.replace(/([a-z])([A-Z])/g, "$1 $2");
-  return `${readableEntity} · ${log.entityId.slice(0, 24)}${log.entityId.length > 24 ? "…" : ""
-    }`;
+  const entity = log.entity ?? "";
+  const readableEntity = entity ? entity.replace(/([a-z])([A-Z])/g, "$1 $2") : "";
+
+  const entityId = log.entityId ?? "";
+  if (!entityId) {
+    return readableEntity || "—";
+  }
+
+  const shortId =
+    entityId.length > 24 ? `${entityId.slice(0, 24)}…` : entityId;
+
+  return readableEntity ? `${readableEntity} · ${shortId}` : shortId;
 };
 
 const timeAgo = (iso: string): string => {
