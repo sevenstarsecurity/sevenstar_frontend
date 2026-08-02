@@ -27,7 +27,7 @@ Explore the professional structure and background of our dedicated security team
         {/* Right CTA Button */}
         <div className="flex-shrink-0">
 <a
-  href="#contact"
+  href="/team"
   className="inline-flex w-[235px] h-[56px] items-center justify-center gap-3 bg-[#c8102e] hover:bg-[#a60d25] text-white font-extrabold text-[16px] uppercase tracking-wider rounded-xs shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 group"
 >
   <span>MEET OUR TEAM</span>
