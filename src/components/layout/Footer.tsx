@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ChevronRight,
@@ -13,13 +13,60 @@ import {
   GraduationCap,
   Phone,
   Mail,
-  Camera,
-  User,
-  Briefcase,
+  Share2,
 } from "lucide-react";
+import {
+  FaFacebook,
+  FaTwitter,
+  FaLinkedin,
+  FaInstagram,
+  FaYoutube,
+  FaTiktok,
+} from "react-icons/fa";
 import { ImageFallback } from "../ui/ImageFallback";
+import { getPublicSocialLinks, SocialLink, SocialPlatform } from "@/services/socialmedia";
+
+const PLATFORM_ICONS: Record<SocialPlatform, React.ReactNode> = {
+  FACEBOOK: <FaFacebook className="w-4 h-4" />,
+  INSTAGRAM: <FaInstagram className="w-4 h-4" />,
+  LINKEDIN: <FaLinkedin className="w-4 h-4" />,
+  YOUTUBE: <FaYoutube className="w-4 h-4" />,
+  TIKTOK: <FaTiktok className="w-4 h-4" />,
+  TWITTER: <FaTwitter className="w-4 h-4" />,
+};
+
+const PLATFORM_LABELS: Record<SocialPlatform, string> = {
+  FACEBOOK: "Facebook",
+  INSTAGRAM: "Instagram",
+  LINKEDIN: "LinkedIn",
+  YOUTUBE: "YouTube",
+  TIKTOK: "TikTok",
+  TWITTER: "Twitter / X",
+};
 
 export const Footer: React.FC = () => {
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+  const [isLoadingSocial, setIsLoadingSocial] = useState(true);
+
+  useEffect(() => {
+    const loadSocialLinks = async () => {
+      try {
+        const links = await getPublicSocialLinks();
+        console.log("[Footer DEBUG] raw links from API:", links);
+        const active = links.filter((link) => link.isActive);
+        console.log("[Footer DEBUG] active links after filter:", active);
+        setSocialLinks(active);
+      } catch (err) {
+        console.error("[Footer DEBUG] fetch error:", err);
+        setSocialLinks([]);
+      } finally {
+        setIsLoadingSocial(false);
+      }
+    };
+
+    loadSocialLinks();
+  }, []);
+
   return (
     <footer className="bg-[#131612] text-gray-300 pt-10 md:pt-14 pb-8 border-t border-[#1e231b]">
       <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
@@ -44,36 +91,37 @@ export const Footer: React.FC = () => {
               <p>2012.</p>
             </div>
 
-            {/* Social Square Icons */}
-            <div className="flex flex-wrap items-center gap-2.5 pt-2 justify-center sm:justify-start">
-              <a
-                href="#instagram"
-                aria-label="Instagram"
-                className="w-8 h-8 rounded-[3px] bg-[#004e24] flex items-center justify-center text-white hover:bg-[#006830] transition-colors"
-              >
-                <Camera className="w-4 h-4" />
-              </a>
-              <a
-                href="#facebook"
-                aria-label="Facebook"
-                className="w-8 h-8 rounded-[3px] bg-[#004e24] flex items-center justify-center text-white hover:bg-[#006830] transition-colors"
-              >
-                <User className="w-4 h-4" />
-              </a>
-              <a
-                href="#twitter"
-                aria-label="Twitter / X"
-                className="w-8 h-8 rounded-[3px] bg-[#004e24] flex items-center justify-center text-white hover:bg-[#006830] transition-colors"
-              >
-                <span className="font-bold text-sm">✕</span>
-              </a>
-              <a
-                href="#linkedin"
-                aria-label="LinkedIn"
-                className="w-8 h-8 rounded-[3px] bg-[#004e24] flex items-center justify-center text-white hover:bg-[#006830] transition-colors"
-              >
-                <Briefcase className="w-4 h-4" />
-              </a>
+            {/* Social Square Icons — dynamic from admin-managed API */}
+            {/* TEMP DEBUG: rendering unconditionally (no isLoadingSocial gate) so we can see state directly */}
+            <div className="flex flex-wrap items-center gap-2.5 pt-2 justify-center sm:justify-start min-h-[32px]">
+              {isLoadingSocial && (
+                <span className="text-[10px] text-yellow-400">[DEBUG] still loading...</span>
+              )}
+              {!isLoadingSocial && socialLinks.length === 0 && (
+                <span className="text-[10px] text-red-400">
+                  [DEBUG] loaded but 0 active links in state
+                </span>
+              )}
+              {socialLinks.map((link) => {
+                console.log(
+                  "[Footer DEBUG] rendering icon for platform:",
+                  link.platform,
+                  "icon exists:",
+                  !!PLATFORM_ICONS[link.platform]
+                );
+                return (
+                  <a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={PLATFORM_LABELS[link.platform] ?? link.platform}
+                    className="w-8 h-8 rounded-[3px] bg-[#004e24] flex items-center justify-center text-white hover:bg-[#006830] transition-colors"
+                  >
+                    {PLATFORM_ICONS[link.platform] ?? <Share2 className="w-4 h-4" />}
+                  </a>
+                );
+              })}
             </div>
           </div>
 
@@ -89,7 +137,8 @@ export const Footer: React.FC = () => {
             <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-center sm:items-start">
               {[
                 { name: "Home", href: "/" },
-                { name: "About Us", href: "#about" },
+                { name: "About Us", href: "/about" },
+                { name: "Our Team", href: "/team" },
                 { name: "Services", href: "#services" },
                 { name: "Careers", href: "#career" },
                 { name: "Contact Us", href: "#contact" },

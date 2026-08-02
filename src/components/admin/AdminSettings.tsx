@@ -19,6 +19,7 @@ import {
   ChevronUp,
   ChevronDown,
   Upload,
+  Download,
   Phone,
   Mail,
   AlertTriangle,
@@ -55,8 +56,16 @@ import {
   SocialLink,
   SocialPlatform,
 } from "@/services/socialmedia";
+import {
+  getAdminSubscribers,
+  deleteAdminSubscriber,
+  exportAdminSubscribers,
+  getAdminNewsletterStats,
+  NewsletterSubscriber,
+  NewsletterStats,
+} from "@/services/newsletter"; // adjust path to match your project
 
-type SettingsTab = "general" | "social-media" | "change-password";
+type SettingsTab = "general" | "social-media" | "newsletter" | "change-password";
 
 const PLATFORM_OPTIONS: SocialPlatform[] = [
   "FACEBOOK",
@@ -140,6 +149,7 @@ export const AdminSettings: React.FC = () => {
     if (activeTab === "social-media" && socialLinks.length === 0) {
       loadSocialLinks();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   const handleUpdateLinkUrl = async (link: SocialLink, newUrlValue: string) => {
@@ -227,6 +237,142 @@ export const AdminSettings: React.FC = () => {
     }
   };
 
+  // ── Newsletter State ────────────────────────────────────────────────────
+  const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
+  const [newsletterStats, setNewsletterStats] = useState<NewsletterStats | null>(null);
+  const [isLoadingNewsletter, setIsLoadingNewsletter] = useState(true);
+  const [newsletterError, setNewsletterError] = useState("");
+  const [newsletterSuccess, setNewsletterSuccess] = useState("");
+  const [deletingSubscriberId, setDeletingSubscriberId] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const [subSearch, setSubSearch] = useState("");
+  const [subSearchInput, setSubSearchInput] = useState("");
+  const [subStatus, setSubStatus] = useState<"all" | "subscribed" | "unsubscribed">("all");
+  const [subPage, setSubPage] = useState(1);
+  const [subMeta, setSubMeta] = useState<{
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  } | null>(null);
+
+  const showNewsletterSuccess = (message: string) => {
+    setNewsletterSuccess(message);
+    setTimeout(() => setNewsletterSuccess(""), 3000);
+  };
+
+  const loadSubscribers = async () => {
+    setIsLoadingNewsletter(true);
+    setNewsletterError("");
+    try {
+      const res = await getAdminSubscribers({
+        page: subPage,
+        limit: 10,
+        status: subStatus,
+        search: subSearch || undefined,
+      });
+      setSubscribers(res.items);
+      setSubMeta(res.meta);
+    } catch (err: any) {
+      setNewsletterError(
+        err?.response?.data?.message || err?.message || "Failed to load subscribers."
+      );
+      setSubscribers([]);
+      setSubMeta(null);
+    } finally {
+      setIsLoadingNewsletter(false);
+    }
+  };
+
+  const loadNewsletterStats = async () => {
+    try {
+      const stats = await getAdminNewsletterStats();
+      setNewsletterStats(stats);
+    } catch (err) {
+      // Non-blocking — stats card just won't render numbers
+      setNewsletterStats(null);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "newsletter") {
+      loadSubscribers();
+      loadNewsletterStats();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, subPage, subStatus, subSearch]);
+
+  const handleSubSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubPage(1);
+    setSubSearch(subSearchInput.trim());
+  };
+
+  const handleDeleteSubscriber = async (subscriber: NewsletterSubscriber) => {
+    if (
+      !confirm(
+        `Remove ${subscriber.email} from the subscriber list? This cannot be undone.`
+      )
+    )
+      return;
+    setDeletingSubscriberId(subscriber.id);
+    try {
+      await deleteAdminSubscriber(subscriber.id);
+      setSubscribers((prev) => prev.filter((s) => s.id !== subscriber.id));
+      showNewsletterSuccess(`${subscriber.email} removed successfully.`);
+      loadNewsletterStats();
+    } catch (err: any) {
+      setNewsletterError(
+        err?.response?.data?.message || err?.message || "Failed to delete subscriber."
+      );
+    } finally {
+      setDeletingSubscriberId(null);
+    }
+  };
+
+  const handleExportSubscribers = async () => {
+    setIsExporting(true);
+    setNewsletterError("");
+    try {
+      const blob = await exportAdminSubscribers({
+        status: subStatus,
+        search: subSearch || undefined,
+      });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `newsletter-subscribers-${new Date()
+        .toISOString()
+        .slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      setNewsletterError(
+        err?.response?.data?.message || err?.message || "Failed to export subscribers."
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const formatDate = (iso: string | null) => {
+    if (!iso) return "—";
+    try {
+      return new Date(iso).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch {
+      return iso;
+    }
+  };
+
   // ---- Change Password state ----
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -310,6 +456,7 @@ export const AdminSettings: React.FC = () => {
   const settingsTabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
     { id: "general", label: "General Settings", icon: <SlidersHorizontal className="w-4 h-4" /> },
     { id: "social-media", label: "Social Media", icon: <Share2 className="w-4 h-4" /> },
+    { id: "newsletter", label: "Newsletter", icon: <Mail className="w-4 h-4" /> },
     { id: "change-password", label: "Change Password", icon: <Lock className="w-4 h-4" /> },
   ];
 
@@ -776,6 +923,209 @@ export const AdminSettings: React.FC = () => {
                     ))}
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* ==================== NEWSLETTER TAB ==================== */}
+          {activeTab === "newsletter" && (
+            <div className="space-y-6">
+              {/* STATS ROW */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-white border border-gray-200/90 rounded-md shadow-xs p-5">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                    Total Subscribers
+                  </span>
+                  <span className="text-2xl font-extrabold text-gray-900">
+                    {newsletterStats?.totalSubscribers ?? subMeta?.total ?? "—"}
+                  </span>
+                </div>
+                <div className="bg-white border border-gray-200/90 rounded-md shadow-xs p-5">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                    Active
+                  </span>
+                  <span className="text-2xl font-extrabold text-[#0b4226]">
+                    {newsletterStats?.activeSubscribers ?? "—"}
+                  </span>
+                </div>
+                <div className="bg-white border border-gray-200/90 rounded-md shadow-xs p-5">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                    Unsubscribed
+                  </span>
+                  <span className="text-2xl font-extrabold text-red-600">
+                    {newsletterStats?.unsubscribedCount ?? "—"}
+                  </span>
+                </div>
+              </div>
+
+              {/* SUBSCRIBERS TABLE CARD */}
+              <div className="bg-white border border-gray-200/90 rounded-md shadow-xs overflow-hidden">
+                <div className="bg-[#f8fafc] p-4 px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <Mail className="w-4 h-4 text-[#0b4226]" />
+                    <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">
+                      NEWSLETTER SUBSCRIBERS
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <form onSubmit={handleSubSearchSubmit} className="relative">
+                      <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        value={subSearchInput}
+                        onChange={(e) => setSubSearchInput(e.target.value)}
+                        placeholder="Search email..."
+                        className="bg-white border border-gray-300 rounded-md pl-9 pr-3 py-1.5 text-xs text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] w-48"
+                      />
+                    </form>
+
+                    <select
+                      value={subStatus}
+                      onChange={(e) => {
+                        setSubStatus(e.target.value as typeof subStatus);
+                        setSubPage(1);
+                      }}
+                      className="bg-white border border-gray-300 rounded-md px-2.5 py-1.5 text-xs font-semibold text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                    >
+                      <option value="all">All</option>
+                      <option value="subscribed">Subscribed</option>
+                      <option value="unsubscribed">Unsubscribed</option>
+                    </select>
+
+                    <button
+                      onClick={handleExportSubscribers}
+                      disabled={isExporting}
+                      className="flex items-center gap-1.5 bg-[#0b4226] hover:bg-[#072c19] disabled:opacity-60 text-white font-bold text-[11px] uppercase tracking-wider px-3.5 py-2 rounded-sm shadow-xs transition-colors cursor-pointer"
+                    >
+                      {isExporting ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Download className="w-3.5 h-3.5" />
+                      )}
+                      Export
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-4">
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    Manage users who have opted into your public newsletter, and export the list for campaigns.
+                  </p>
+
+                  {newsletterSuccess && (
+                    <div className="p-2.5 text-xs bg-green-50 border border-green-200 text-green-700 rounded flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                      <span>{newsletterSuccess}</span>
+                    </div>
+                  )}
+
+                  {newsletterError && (
+                    <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
+                      {newsletterError}
+                    </div>
+                  )}
+
+                  {isLoadingNewsletter ? (
+                    <div className="flex items-center justify-center py-16 text-gray-400 gap-2">
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span className="text-sm font-semibold">Loading subscribers...</span>
+                    </div>
+                  ) : subscribers.length === 0 ? (
+                    <div className="text-center py-16 text-gray-400 text-sm font-semibold">
+                      No subscribers found.
+                    </div>
+                  ) : (
+                    <>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                          <thead>
+                            <tr className="border-b border-gray-200">
+                              <th className="text-[10px] font-bold text-gray-500 uppercase tracking-wider pb-2 pr-4">
+                                Email
+                              </th>
+                              <th className="text-[10px] font-bold text-gray-500 uppercase tracking-wider pb-2 pr-4">
+                                Status
+                              </th>
+                              <th className="text-[10px] font-bold text-gray-500 uppercase tracking-wider pb-2 pr-4">
+                                Subscribed
+                              </th>
+                              <th className="text-[10px] font-bold text-gray-500 uppercase tracking-wider pb-2 text-right">
+                                Actions
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {subscribers.map((sub) => (
+                              <tr
+                                key={sub.id}
+                                className="border-b border-gray-100 hover:bg-[#fafbfa] transition-colors"
+                              >
+                                <td className="py-3 pr-4 text-sm text-gray-900 font-medium">
+                                  {sub.email}
+                                </td>
+                                <td className="py-3 pr-4">
+                                  <span
+                                    className={`text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xs ${
+                                      sub.isSubscribed
+                                        ? "bg-[#22c55e]/10 text-[#16803c]"
+                                        : "bg-gray-100 text-gray-500"
+                                    }`}
+                                  >
+                                    {sub.isSubscribed ? "Subscribed" : "Unsubscribed"}
+                                  </span>
+                                </td>
+                                <td className="py-3 pr-4 text-xs text-gray-600">
+                                  {formatDate(sub.subscribedAt)}
+                                </td>
+                                
+                                <td className="py-3 text-right">
+                                  <button
+                                    onClick={() => handleDeleteSubscriber(sub)}
+                                    disabled={deletingSubscriberId === sub.id}
+                                    className="text-gray-400 hover:text-red-600 p-1.5 rounded transition-colors disabled:opacity-60 cursor-pointer"
+                                    title="Delete subscriber"
+                                  >
+                                    {deletingSubscriberId === sub.id ? (
+                                      <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                      <Trash2 className="w-4 h-4" />
+                                    )}
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* PAGINATION */}
+                      {subMeta && subMeta.totalPages > 1 && (
+                        <div className="flex items-center justify-between pt-2">
+                          <span className="text-xs text-gray-500 font-medium">
+                            Page {subMeta.page} of {subMeta.totalPages} · {subMeta.total} total
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setSubPage((p) => Math.max(1, p - 1))}
+                              disabled={!subMeta.hasPrevPage}
+                              className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider border border-gray-300 rounded-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              Prev
+                            </button>
+                            <button
+                              onClick={() => setSubPage((p) => p + 1)}
+                              disabled={!subMeta.hasNextPage}
+                              className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider border border-gray-300 rounded-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              Next
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           )}

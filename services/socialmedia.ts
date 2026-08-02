@@ -1,7 +1,7 @@
 import api from "./api";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
-// Confirmed exact shape from GET /social-links (or similar):
+// Confirmed exact shape from GET /social-media (public) and /admin/social-media (admin):
 // { success, message, data: [{ id, platform, url, displayOrder, isActive, updatedAt }], meta: {...}, statusCode }
 
 export type SocialPlatform =
@@ -54,7 +54,7 @@ interface ApiResponse<T> {
 // Returns active social links, sorted by displayOrder.
 
 export const getPublicSocialLinks = async (): Promise<SocialLink[]> => {
-  const res = await api.get<RawListResponse<SocialLink>>("/social-links", {
+  const res = await api.get<RawListResponse<SocialLink>>("/social-media", {
     public: true,
   });
   const items = Array.isArray(res.data.data) ? res.data.data : [];
@@ -122,7 +122,7 @@ export const toggleSocialLinkStatus = async (
 export const reorderSocialLinks = async (
   order: { id: string; displayOrder: number }[]
 ): Promise<void> => {
-  await api.patch("/admin/social-links/reorder", { order });
+  await api.patch("/admin/social-media/reorder", { order });
 };
 
 export const deleteSocialLink = async (id: string): Promise<void> => {

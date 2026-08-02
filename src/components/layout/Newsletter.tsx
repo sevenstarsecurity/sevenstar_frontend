@@ -1,17 +1,33 @@
 "use client";
 
 import React, { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { subscribeToNewsletter } from "@/services/newsletter"; // adjust path to match your project
 
 export const Newsletter: React.FC = () => {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (!email.trim()) return;
+
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      await subscribeToNewsletter(email.trim());
       setSubscribed(true);
       setEmail("");
       setTimeout(() => setSubscribed(false), 4000);
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.message || err?.message || "Failed to subscribe. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -48,30 +64,50 @@ export const Newsletter: React.FC = () => {
 
           ) : (
 
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto"
-            >
-
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="EMAIL ADDRESS"
-                required
-                className="bg-white text-gray-900 placeholder-gray-400 text-xs font-semibold px-4 py-3 rounded-xs w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-              />
-
-
-              <button
-                type="submit"
-                className="bg-[#c8102e] hover:bg-[#a60d25] text-white font-extrabold text-xs uppercase px-6 py-3 rounded-xs transition-colors tracking-wider w-full sm:w-auto flex-shrink-0"
+            <div className="w-full md:w-auto space-y-2">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto"
               >
-                SUBSCRIBE
-              </button>
+
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError("");
+                  }}
+                  placeholder="EMAIL ADDRESS"
+                  required
+                  disabled={isSubmitting}
+                  className="bg-white text-gray-900 placeholder-gray-400 text-xs font-semibold px-4 py-3 rounded-xs w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-emerald-400 disabled:opacity-70"
+                />
 
 
-            </form>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-[#c8102e] hover:bg-[#a60d25] disabled:opacity-60 disabled:cursor-not-allowed text-white font-extrabold text-xs uppercase px-6 py-3 rounded-xs transition-colors tracking-wider w-full sm:w-auto flex-shrink-0 flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>SUBSCRIBING...</span>
+                    </>
+                  ) : (
+                    "SUBSCRIBE"
+                  )}
+                </button>
+
+
+              </form>
+
+              {error && (
+                <p className="text-[11px] text-red-200 font-semibold text-center md:text-left">
+                  {error}
+                </p>
+              )}
+            </div>
 
           )}
 
