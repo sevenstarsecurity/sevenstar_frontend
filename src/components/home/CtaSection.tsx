@@ -14,8 +14,8 @@ export const CtaSection: React.FC = () => {
 
         <div>
           <a
-            href="#contact"
-            className="inline-flex items-center gap-3 bg-[#c8102e] hover:bg-[#a60d25] text-white font-black text-sm md:text-base uppercase tracking-wider px-6 md:px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 group"
+            href="/contact"
+            className="inline-flex items-center gap-3 bg-[#c8102e] hover:bg-[#a60d25] text-white font-bold text-sm md:text-base uppercase tracking-wider px-6 md:px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 group"
           >
             <span>YOUR SAFETY IS OUR MISSION — GET IN TOUCH TODAY</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

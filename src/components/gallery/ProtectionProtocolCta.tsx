@@ -27,7 +27,7 @@ export const ProtectionProtocolCta: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
           {/* Red Solid Button */}
           <Link
-            href="#contact"
+            href="/contact"
             className="w-full sm:w-auto bg-[#c8102e] hover:bg-[#a60d25] text-white font-semibold text-[16px] uppercase px-8 py-4 rounded-xs shadow-md transition-all duration-200 tracking-wider text-center"
             style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
           >

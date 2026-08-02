@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React, { useState } from "react";
 import { ImageFallback } from "../ui/ImageFallback";
-import { Menu, X } from "lucide-react";
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -73,12 +73,13 @@ export const Navbar: React.FC = () => {
 
         {/* Right CTA Button */}
         <div className="hidden lg:flex items-center">
-          <a
-            href="#contact"
+          <Link
+            href="/contact"
+            onClick={() => setMobileMenuOpen(false)}
             className="bg-[#c8102e] hover:bg-[#a60d25] text-white font-bold text-xs uppercase px-6 py-3 rounded-xs shadow-sm hover:shadow-md transition-all duration-200 tracking-wider"
           >
             GET A QUOTE
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -121,13 +122,13 @@ export const Navbar: React.FC = () => {
             );
           })}
           <div className="pt-2">
-            <a
-              href="#contact"
+            <Link
+              href="/contact"
               onClick={() => setMobileMenuOpen(false)}
               className="block text-center bg-[#c8102e] text-white font-bold text-xs uppercase py-3 rounded-xs tracking-wider"
             >
               GET A QUOTE
-            </a>
+            </Link>
           </div>
         </div>
       )}

@@ -12,7 +12,7 @@ export const ServicesHeaderCallout: React.FC = () => {
 
         <div>
           <a
-            href="#contact"
+            href="/contact"
             className="inline-block bg-[#c8102e] hover:bg-[#a60d25] text-white font-extrabold text-xs uppercase tracking-wider px-8 py-3.5 rounded-xs shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
           >
             REQUEST A CUSTOM QUOTE

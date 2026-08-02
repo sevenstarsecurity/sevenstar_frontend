@@ -92,7 +92,7 @@ export const HeroSection: React.FC = () => {
           {/* CTA */}
           <div className="pt-1 sm:pt-2 flex items-center gap-1.5 xs:gap-2 sm:gap-4">
             <a
-              href="#about"
+              href="/about"
               className="bg-[#0b4226] hover:bg-[#072c19] text-white font-extrabold text-[7px] xs:text-[9px] sm:text-xs uppercase px-2.5 xs:px-3.5 sm:px-7 py-1.5 xs:py-2 sm:py-4 rounded-xs shadow-md transition-all tracking-wider inline-block"
             >
               DISCOVER MORE
