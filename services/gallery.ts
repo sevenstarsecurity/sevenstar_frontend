@@ -1,28 +1,25 @@
 import api from "./api";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
-// All fields below are confirmed from a real API response
-// (GET /api/admin/gallery/images).
 
 export interface GalleryImage {
   id: string;
-  imageUrl: string;      // confirmed — was wrongly guessed as "url"
-  cloudinaryId: string;  // confirmed — was wrongly guessed as "publicId"
+  imageUrl: string;
+  cloudinaryId: string;
   caption?: string | null;
   displayOrder: number;
   createdAt: string;
-  // Note: no "isActive" or "updatedAt" field appeared in the real response.
-  // If your backend does have them, they were just omitted from this list
-  // response — otherwise remove from any UI assuming they exist.
 }
 
+// Confirmed exact shape from GET /gallery/videos:
+// { success, message, data: [{ id, youtubeUrl, title, createdAt }], statusCode }
+// No isActive, no updatedAt on the public list response.
 export interface GalleryVideo {
   id: string;
   title: string;
   youtubeUrl: string;
   createdAt: string;
   updatedAt?: string;
-  // isActive not yet confirmed for videos either — same caveat as above
   isActive?: boolean;
 }
 
@@ -34,8 +31,6 @@ export interface GalleryStats {
   oldestUpload: string;
 }
 
-// Confirmed exact wrapper shape: top-level "data" is a plain array,
-// and pagination info lives in a separate top-level "meta" object.
 export interface PaginationMeta {
   page: number;
   limit: number;
@@ -53,8 +48,15 @@ export interface PaginatedResponse<T> {
 interface RawListResponse<T> {
   success: boolean;
   message: string;
+  data: unknown; // admin list shape not yet confirmed — could be T[] or a wrapper object
+  meta?: PaginationMeta;
+  statusCode: number;
+}
+
+interface PlainArrayResponse<T> {
+  success: boolean;
+  message: string;
   data: T[];
-  meta: PaginationMeta;
   statusCode: number;
 }
 
@@ -65,15 +67,44 @@ interface ApiResponse<T> {
   statusCode: number;
 }
 
-// ─── Public Endpoints ───────────────────────────────────────────────────────
+// Defensive extractor for responses whose exact shape isn't confirmed yet
+// (currently used for images and admin lists). Handles a plain array OR a
+// nested wrapper object (e.g. { members: [...] }, { images: [...] }).
+function extractArray<T>(raw: unknown): T[] {
+  if (Array.isArray(raw)) return raw as T[];
+  if (raw && typeof raw === "object") {
+    const obj = raw as Record<string, unknown>;
+    for (const key of ["items", "images", "videos", "members", "results"]) {
+      if (Array.isArray(obj[key])) return obj[key] as T[];
+    }
+  }
+  return [];
+}
+
+function extractMeta(raw: unknown): PaginationMeta | undefined {
+  if (raw && typeof raw === "object") {
+    const obj = raw as Record<string, unknown>;
+    if (obj.pagination && typeof obj.pagination === "object") {
+      return obj.pagination as PaginationMeta;
+    }
+  }
+  return undefined;
+}
+
+// ─── Public Endpoints (no auth — must not send a token or redirect on 401) ─
 
 export const getPublicGalleryImages = async (): Promise<GalleryImage[]> => {
-  const res = await api.get<ApiResponse<GalleryImage[]>>("/gallery");
-  return Array.isArray(res.data.data) ? res.data.data : [];
+  const res = await api.get<RawListResponse<GalleryImage>>("/gallery", {
+    public: true,
+  });
+  return extractArray<GalleryImage>(res.data.data);
 };
 
-export const getPublicGalleryVideos = async (): Promise<GalleryVideo[]> => {
-  const res = await api.get<ApiResponse<GalleryVideo[]>>("/gallery/videos");
+export const getPublicGalleryVideos = async (p0: { _t: number; }): Promise<GalleryVideo[]> => {
+  // Confirmed shape: data is a plain array.
+  const res = await api.get<PlainArrayResponse<GalleryVideo>>("/gallery/videos", {
+    public: true,
+  });
   return Array.isArray(res.data.data) ? res.data.data : [];
 };
 
@@ -91,9 +122,19 @@ export const getAdminGalleryImages = async (
   const res = await api.get<RawListResponse<GalleryImage>>("/admin/gallery/images", {
     params,
   });
+  const items = extractArray<GalleryImage>(res.data.data);
+  const meta = res.data.meta ?? extractMeta(res.data.data);
+
   return {
-    items: Array.isArray(res.data.data) ? res.data.data : [],
-    meta: res.data.meta,
+    items,
+    meta: meta ?? {
+      page: 1,
+      limit: items.length,
+      total: items.length,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPrevPage: false,
+    },
   };
 };
 
@@ -130,12 +171,12 @@ export const bulkUploadGalleryImages = async (
   const formData = new FormData();
   files.forEach((file) => formData.append("files", file));
 
-  const res = await api.post<ApiResponse<GalleryImage[]>>(
+  const res = await api.post<RawListResponse<GalleryImage>>(
     "/admin/gallery/images/bulk",
     formData,
     { headers: { "Content-Type": "multipart/form-data" } }
   );
-  return Array.isArray(res.data.data) ? res.data.data : [];
+  return extractArray<GalleryImage>(res.data.data);
 };
 
 export const updateGalleryImage = async (
@@ -184,9 +225,19 @@ export const getAdminGalleryVideos = async (
   const res = await api.get<RawListResponse<GalleryVideo>>("/admin/gallery/videos", {
     params,
   });
+  const items = extractArray<GalleryVideo>(res.data.data);
+  const meta = res.data.meta ?? extractMeta(res.data.data);
+
   return {
-    items: Array.isArray(res.data.data) ? res.data.data : [],
-    meta: res.data.meta,
+    items,
+    meta: meta ?? {
+      page: 1,
+      limit: items.length,
+      total: items.length,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPrevPage: false,
+    },
   };
 };
 
@@ -232,4 +283,24 @@ export const deleteGalleryVideo = async (id: string): Promise<void> => {
 export const getGalleryStats = async (): Promise<GalleryStats> => {
   const res = await api.get<ApiResponse<GalleryStats>>("/admin/gallery/stats");
   return res.data.data;
+};
+
+// ─── Helper: convert a watch URL to an embeddable URL ──────────────────────
+// YouTube blocks watch?v= URLs inside <iframe>; embeds require /embed/VIDEO_ID.
+// Use this in your component when rendering: <iframe src={getYoutubeEmbedUrl(video.youtubeUrl)} />
+export const getYoutubeEmbedUrl = (youtubeUrl: string): string => {
+  try {
+    const url = new URL(youtubeUrl);
+    let videoId: string | null = null;
+
+    if (url.hostname.includes("youtu.be")) {
+      videoId = url.pathname.slice(1);
+    } else if (url.hostname.includes("youtube.com")) {
+      videoId = url.searchParams.get("v");
+    }
+
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : youtubeUrl;
+  } catch {
+    return youtubeUrl;
+  }
 };

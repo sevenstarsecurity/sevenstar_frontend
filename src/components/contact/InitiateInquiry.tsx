@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, ShieldCheck, Award, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { submitContactForm } from "@/services/contact";
 
 export const InitiateInquiry: React.FC = () => {
@@ -121,23 +121,15 @@ export const InitiateInquiry: React.FC = () => {
                   </div>
 
                   <div className="relative">
-                    <select
+                    <input
+                      type="text"
                       required
+                      placeholder="Primary Sector (e.g. Banking, Healthcare)"
                       value={formData.sector}
                       onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
-                      className="w-full bg-transparent border-b border-gray-400 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-[#004E24] transition-colors appearance-none pr-8 cursor-pointer"
+                      className="w-full bg-transparent border-b border-gray-400 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#004E24] transition-colors"
                       style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
-                    >
-                      <option value="" disabled className="text-gray-400">
-                        Select Primary Sector
-                      </option>
-                      <option value="corporate" className="text-gray-900">Corporate & Commercial Security</option>
-                      <option value="vip" className="text-gray-900">VIP Escort & Executive Protection</option>
-                      <option value="industrial" className="text-gray-900">Industrial & Logistics Security</option>
-                      <option value="diplomatic" className="text-gray-900">Diplomatic & Embassy Services</option>
-                      <option value="event" className="text-gray-900">Event & Venue Operations</option>
-                    </select>
-                    <ChevronDown className="w-4 h-4 text-gray-500 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    />
                   </div>
                 </div>
 

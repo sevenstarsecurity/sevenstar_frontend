@@ -24,6 +24,8 @@ import {
   EyeOff,
   ShieldAlert,
   Briefcase,
+  Video,
+  PlayCircle,
 } from "lucide-react";
 import { ImageFallback } from "../ui/ImageFallback";
 import {
@@ -33,8 +35,13 @@ import {
   updateGalleryImage,
   deleteGalleryImage,
   getGalleryStats,
+  getAdminGalleryVideos,
+  addGalleryVideo,
+  deleteGalleryVideo,
+  getYoutubeEmbedUrl,
   GalleryImage,
   GalleryStats,
+  GalleryVideo,
 } from "@/services/gallery";
 import {
   getAdminVigilanceImages,
@@ -45,7 +52,7 @@ import {
   VigilanceImage,
 } from "@/services/vigilance";
 
-type TabKey = "gallery" | "vigilance";
+type TabKey = "gallery" | "videos" | "vigilance";
 
 export const AdminGallery: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("gallery");
@@ -63,6 +70,17 @@ export const AdminGallery: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [caption, setCaption] = useState("");
   const [displayOrder, setDisplayOrder] = useState("");
+
+  // ── Videos State ─────────────────────────────────────────────────────────
+  const [videos, setVideos] = useState<GalleryVideo[]>([]);
+  const [isLoadingVideos, setIsLoadingVideos] = useState(true);
+  const [isSavingVideo, setIsSavingVideo] = useState(false);
+  const [videosError, setVideosError] = useState("");
+
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [previewVideo, setPreviewVideo] = useState<GalleryVideo | null>(null);
+  const [videoTitle, setVideoTitle] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
 
   // ── Vigilance State ─────────────────────────────────────────────────────
   const [vigilanceImages, setVigilanceImages] = useState<VigilanceImage[]>([]);
@@ -83,7 +101,7 @@ export const AdminGallery: React.FC = () => {
     { name: "Gallery", icon: ImageIcon, href: "/admin/gallery" },
     { name: "Branches", icon: MapPin, href: "/admin/branches" },
     { name: "Clients", icon: Briefcase, href: "/admin/clients" },
-    { name: "Submissions", icon: Send, href: "#" },
+    { name: "Submissions", icon: Send, href: "/admin/submissions" },
     { name: "Services", icon: Wrench, href: "#" },
     { name: "Settings", icon: Settings, href: "/admin/settings" },
   ];
@@ -129,6 +147,30 @@ export const AdminGallery: React.FC = () => {
     }, 400);
     return () => clearTimeout(timeout);
   }, [search]);
+
+  // ── Video Loaders ────────────────────────────────────────────────────────
+
+  const loadVideos = async () => {
+    setIsLoadingVideos(true);
+    setVideosError("");
+    try {
+      const res = await getAdminGalleryVideos({ limit: 60 });
+      setVideos(res.items ?? []);
+    } catch (err: any) {
+      setVideosError(
+        err?.response?.data?.message || err?.message || "Failed to load videos."
+      );
+      setVideos([]);
+    } finally {
+      setIsLoadingVideos(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "videos" && videos.length === 0) {
+      loadVideos();
+    }
+  }, [activeTab]);
 
   // ── Vigilance Loaders ───────────────────────────────────────────────────
 
@@ -222,6 +264,48 @@ export const AdminGallery: React.FC = () => {
     }
   };
 
+  // ── Video Handlers ───────────────────────────────────────────────────────
+
+  const resetVideoForm = () => {
+    setVideoTitle("");
+    setVideoUrl("");
+  };
+
+  const handleAddVideoSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!videoTitle.trim() || !videoUrl.trim()) {
+      setVideosError("Please provide both a title and a YouTube URL.");
+      return;
+    }
+
+    setIsSavingVideo(true);
+    setVideosError("");
+
+    try {
+      const created = await addGalleryVideo(videoTitle.trim(), videoUrl.trim());
+      setVideos((prev) => [created, ...(prev ?? [])]);
+      await loadStats();
+      setShowVideoModal(false);
+      resetVideoForm();
+    } catch (err: any) {
+      setVideosError(err?.response?.data?.message || err?.message || "Failed to add video.");
+    } finally {
+      setIsSavingVideo(false);
+    }
+  };
+
+  const handleDeleteVideo = async (video: GalleryVideo) => {
+    if (!confirm("Delete this video? This cannot be undone.")) return;
+    try {
+      await deleteGalleryVideo(video.id);
+      setVideos((prev) => (prev ?? []).filter((v) => v.id !== video.id));
+      setPreviewVideo(null);
+      await loadStats();
+    } catch (err: any) {
+      alert(err?.response?.data?.message || err?.message || "Failed to delete video.");
+    }
+  };
+
   // ── Vigilance Handlers ───────────────────────────────────────────────────
 
   const activeVigilanceCount = (vigilanceImages ?? []).filter((v) => v.isActive).length;
@@ -307,7 +391,11 @@ export const AdminGallery: React.FC = () => {
   };
 
   const safeImages = images ?? [];
+  const safeVideos = videos ?? [];
   const safeVigilance = vigilanceImages ?? [];
+
+  // Live preview thumbnail while typing a URL in the Add Video modal
+  const previewEmbedUrl = videoUrl.trim() ? getYoutubeEmbedUrl(videoUrl.trim()) : "";
 
   return (
     <div className="min-h-screen w-full flex bg-[#141518] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
@@ -393,7 +481,7 @@ export const AdminGallery: React.FC = () => {
               VISUAL ASSET LIBRARY
             </h1>
 
-            {activeTab === "gallery" ? (
+            {activeTab === "gallery" && (
               <button
                 onClick={() => setShowUploadModal(true)}
                 className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-sm shadow-xs flex items-center gap-2 transition-colors cursor-pointer self-start sm:self-auto"
@@ -401,7 +489,19 @@ export const AdminGallery: React.FC = () => {
                 <ImageIcon className="w-4 h-4" />
                 <span>+ UPLOAD ASSETS</span>
               </button>
-            ) : (
+            )}
+
+            {activeTab === "videos" && (
+              <button
+                onClick={() => setShowVideoModal(true)}
+                className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-sm shadow-xs flex items-center gap-2 transition-colors cursor-pointer self-start sm:self-auto"
+              >
+                <Video className="w-4 h-4" />
+                <span>+ ADD VIDEO</span>
+              </button>
+            )}
+
+            {activeTab === "vigilance" && (
               <button
                 onClick={() => setShowVigilanceModal(true)}
                 disabled={activeVigilanceCount >= 3}
@@ -430,6 +530,20 @@ export const AdminGallery: React.FC = () => {
             >
               <ImageIcon className="w-4 h-4" />
               Gallery
+            </button>
+            <button
+              onClick={() => setActiveTab("videos")}
+              className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-2 ${
+                activeTab === "videos"
+                  ? "border-[#0b4226] text-[#0b4226]"
+                  : "border-transparent text-gray-400 hover:text-gray-600"
+              }`}
+            >
+              <Video className="w-4 h-4" />
+              Videos
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px] font-extrabold bg-gray-100 text-gray-600">
+                {safeVideos.length}
+              </span>
             </button>
             <button
               onClick={() => setActiveTab("vigilance")}
@@ -546,6 +660,64 @@ export const AdminGallery: React.FC = () => {
                       <div className="absolute bottom-4 left-4 right-4 z-10">
                         <h3 className="text-sm font-bold text-white leading-tight group-hover:text-[#4ade80] transition-colors">
                           {image.caption || "Untitled"}
+                        </h3>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {/* ═══════════════ VIDEOS TAB ═══════════════ */}
+          {activeTab === "videos" && (
+            <>
+              {videosError && (
+                <div className="p-3 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
+                  {videosError}
+                </div>
+              )}
+
+              {isLoadingVideos ? (
+                <div className="flex items-center justify-center py-20 text-gray-400 gap-2">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span className="text-sm font-semibold">Loading videos...</span>
+                </div>
+              ) : safeVideos.length === 0 ? (
+                <div className="text-center py-20 text-gray-400 text-sm font-semibold">
+                  No videos yet. Add your first one.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {safeVideos.map((video) => (
+                    <div
+                      key={video.id}
+                      onClick={() => setPreviewVideo(video)}
+                      className="group bg-gray-900 rounded-sm overflow-hidden shadow-md relative aspect-video cursor-pointer border border-gray-200/50"
+                    >
+                      <iframe
+                        src={getYoutubeEmbedUrl(video.youtubeUrl)}
+                        className="w-full h-full pointer-events-none"
+                        title={video.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      />
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70 group-hover:opacity-50 transition-opacity pointer-events-none" />
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteVideo(video);
+                        }}
+                        className="absolute top-3 left-3 bg-black/60 hover:bg-red-600 text-white p-1.5 rounded-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Delete video"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      <div className="absolute bottom-3 left-3 right-3 z-10 pointer-events-none">
+                        <h3 className="text-sm font-bold text-white leading-tight drop-shadow">
+                          {video.title}
                         </h3>
                       </div>
                     </div>
@@ -799,6 +971,139 @@ export const AdminGallery: React.FC = () => {
               </div>
               <button
                 onClick={() => handleDeleteImage(previewImage)}
+                className="flex-shrink-0 flex items-center gap-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold px-3 py-2 rounded transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                DELETE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ADD VIDEO MODAL */}
+      {showVideoModal && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-gray-200 rounded-md shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="bg-[#0b4226] text-white p-4 px-6 flex items-center justify-between sticky top-0 z-10">
+              <h3 className="text-base font-bold uppercase tracking-wider flex items-center gap-2">
+                <Video className="w-5 h-5 text-[#4ade80]" />
+                <span>Add Video</span>
+              </h3>
+              <button
+                onClick={() => {
+                  setShowVideoModal(false);
+                  resetVideoForm();
+                }}
+                className="text-white/80 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddVideoSubmit} className="p-6 space-y-4">
+              {videosError && (
+                <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
+                  {videosError}
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
+                  TITLE
+                </label>
+                <input
+                  type="text"
+                  value={videoTitle}
+                  onChange={(e) => setVideoTitle(e.target.value)}
+                  placeholder="e.g. Security Best Practices Guide"
+                  className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
+                  YOUTUBE URL
+                </label>
+                <input
+                  type="text"
+                  value={videoUrl}
+                  onChange={(e) => setVideoUrl(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                />
+                <p className="text-[10px] text-gray-400">
+                  Accepts youtube.com or youtu.be links.
+                </p>
+              </div>
+
+              {previewEmbedUrl && (
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
+                    PREVIEW
+                  </label>
+                  <div className="aspect-video w-full bg-black rounded overflow-hidden border border-gray-200">
+                    <iframe
+                      src={previewEmbedUrl}
+                      className="w-full h-full"
+                      title="Video preview"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-4 flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowVideoModal(false);
+                    resetVideoForm();
+                  }}
+                  className="flex-1 py-2.5 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer"
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingVideo}
+                  className="flex-1 py-2.5 bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider rounded shadow-xs transition-colors cursor-pointer disabled:opacity-60"
+                >
+                  {isSavingVideo ? "SAVING..." : "ADD VIDEO"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* VIDEO PREVIEW MODAL */}
+      {previewVideo && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="relative max-w-4xl w-full bg-black rounded-lg overflow-hidden border border-gray-800">
+            <button
+              onClick={() => setPreviewVideo(null)}
+              className="absolute top-4 right-4 z-10 text-white/80 hover:text-white bg-black/50 rounded-full p-2"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <div className="aspect-video w-full">
+              <iframe
+                src={getYoutubeEmbedUrl(previewVideo.youtubeUrl)}
+                className="w-full h-full"
+                title={previewVideo.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              />
+            </div>
+            <div className="p-4 bg-gray-900 text-white flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <h3 className="text-base font-bold text-white">{previewVideo.title}</h3>
+                <span className="text-xs text-gray-400">
+                  Added {new Date(previewVideo.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+              <button
+                onClick={() => handleDeleteVideo(previewVideo)}
                 className="flex-shrink-0 flex items-center gap-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold px-3 py-2 rounded transition-colors"
               >
                 <Trash2 className="w-4 h-4" />

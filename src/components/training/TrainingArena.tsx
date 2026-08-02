@@ -2,10 +2,13 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { ImageFallback } from "../ui/ImageFallback";
+import { getPublicVigilanceImages, VigilanceImage } from "@/services/vigilance";
 
 export const TrainingArena: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const [images, setImages] = useState<VigilanceImage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -17,6 +20,35 @@ export const TrainingArena: React.FC = () => {
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchImages = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getPublicVigilanceImages();
+        if (mounted) {
+          const sorted = [...data].sort((a, b) => a.displayOrder - b.displayOrder);
+          setImages(sorted.slice(0, 2));
+        }
+      } catch (err) {
+        console.error("Failed to fetch training arena images:", err);
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    };
+
+    fetchImages();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Fallback to static images if the API returns nothing (e.g. no active
+  // vigilance images yet), so the section never renders empty.
+  const photo1 = images[0];
+  const photo2 = images[1];
 
   return (
     <section className="py-20 md:py-24 bg-[#0b4226] text-white overflow-hidden" ref={ref}>
@@ -50,14 +82,14 @@ export const TrainingArena: React.FC = () => {
               high-risks, industrial zones, and residential <br />
               clusters.
             </p>
-              <div className="pt-2">
-                <a
-                  href="#contact"
-                  className="inline-block border border-[#deb853] text-[#FFDF96] hover:bg-[#deb853] hover:text-[#0b4226] font-extrabold text-xs uppercase tracking-wider px-7 py-3.5 rounded-xs transition-all duration-300 transform hover:-translate-y-0.5 shadow-md"
-                >
-                  TOUR THE FACILITY
-                </a>
-              </div>
+            <div className="pt-2">
+              <a
+                href="#contact"
+                className="inline-block border border-[#deb853] text-[#FFDF96] hover:bg-[#deb853] hover:text-[#0b4226] font-extrabold text-xs uppercase tracking-wider px-7 py-3.5 rounded-xs transition-all duration-300 transform hover:-translate-y-0.5 shadow-md"
+              >
+                TOUR THE FACILITY
+              </a>
+            </div>
           </div>
 
           {/* Right Column: 2 Gold Framed Photos Side-by-Side (lg:col-span-7) */}
@@ -65,27 +97,31 @@ export const TrainingArena: React.FC = () => {
             className={`lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6 transition-all duration-700 delay-200 ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
               }`}
           >
-            {/* Photo 1: salam.png */}
+            {/* Photo 1 */}
             <div className="border-4 border-[#deb853] shadow-2xl rounded-xs overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
-              <div className="h-[387px] w-full overflow-hidden relative">
-                <ImageFallback
-                  src="/images/salam.png"
-                  alt="Seven Star Guards Formation"
-                  className="w-full h-full object-cover object-center"
-                  fallbackText="salam.png"
-                />
+              <div className="h-[387px] w-full overflow-hidden relative bg-black/20">
+                {!isLoading && (
+                  <ImageFallback
+                    src={photo1?.imageUrl || "/images/salam.png"}
+                    alt={photo1?.caption || "Seven Star Guards Formation"}
+                    className="w-full h-full object-cover object-center"
+                    fallbackText={photo1?.caption || "Training Arena"}
+                  />
+                )}
               </div>
             </div>
 
-            {/* Photo 2: mic123.png */}
+            {/* Photo 2 */}
             <div className="border-4 border-[#deb853] shadow-2xl rounded-xs overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
-              <div className="h-[387px] w-full overflow-hidden relative">
-                <ImageFallback
-                  src="/images/mic123.png"
-                  alt="Seven Star Radio Officer"
-                  className="w-full h-full object-cover object-center"
-                  fallbackText="mic123.png"
-                />
+              <div className="h-[387px] w-full overflow-hidden relative bg-black/20">
+                {!isLoading && (
+                  <ImageFallback
+                    src={photo2?.imageUrl || "/images/mic123.png"}
+                    alt={photo2?.caption || "Seven Star Radio Officer"}
+                    className="w-full h-full object-cover object-center"
+                    fallbackText={photo2?.caption || "Training Arena"}
+                  />
+                )}
               </div>
             </div>
           </div>
