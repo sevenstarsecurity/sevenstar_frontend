@@ -33,14 +33,13 @@ interface ApiPagination {
   hasPrevPage?: boolean;
 }
 
-// The actual shape: { success, message, data: { members: [...], pagination: {...} }, statusCode }
-interface ApiResponse<T> {
+// Confirmed exact shape from GET /admin/executive:
+// { success, message, data: [ {...}, {...} ], meta: { page, limit, total, totalPages, hasNextPage, hasPrevPage }, statusCode }
+interface ApiListResponse<T> {
   success: boolean;
   message: string;
-  data: {
-    members: T[];
-    pagination: ApiPagination;
-  };
+  data: T[];
+  meta: ApiPagination;
   statusCode: number;
 }
 
@@ -56,16 +55,16 @@ export interface ListExecutivesParams {
 export const getAdminExecutives = async (
   params: ListExecutivesParams = {}
 ): Promise<PaginatedResponse<Executive>> => {
-  const res = await api.get<ApiResponse<Executive>>("/admin/executive", { params });
-  const items = res.data.data?.members ?? [];
-  const pagination = res.data.data?.pagination;
+  const res = await api.get<ApiListResponse<Executive>>("/admin/executive", { params });
+  const items = Array.isArray(res.data.data) ? res.data.data : [];
+  const meta = res.data.meta;
 
   return {
     items,
-    total: pagination?.total ?? items.length,
-    page: pagination?.page ?? 1,
-    limit: pagination?.limit ?? items.length,
-    totalPages: pagination?.totalPages ?? 1,
+    total: meta?.total ?? items.length,
+    page: meta?.page ?? 1,
+    limit: meta?.limit ?? items.length,
+    totalPages: meta?.totalPages ?? 1,
   };
 };
 
@@ -83,10 +82,10 @@ export const getExecutiveById = getAdminExecutive;
 // ─── Public endpoint (no auth) ─────────────────────────────────────────────
 
 export const getPublicExecutives = async (): Promise<Executive[]> => {
-  const res = await api.get<ApiResponse<Executive>>("/executive", {
+  const res = await api.get<ApiListResponse<Executive>>("/executive", {
     public: true,
   });
-  return res.data.data?.members ?? [];
+  return Array.isArray(res.data.data) ? res.data.data : [];
 };
 
 export const getPublicExecutive = async (id: string): Promise<Executive> => {
