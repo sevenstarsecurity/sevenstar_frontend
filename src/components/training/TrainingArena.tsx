@@ -83,8 +83,8 @@ export const TrainingArena: React.FC = () => {
               clusters.
             </p>
             <div className="pt-2">
-              
-                <a href="#contact"
+              <a
+                href="#contact"
                 className="inline-block border border-[#deb853] text-[#FFDF96] hover:bg-[#deb853] hover:text-[#0b4226] font-extrabold text-xs uppercase tracking-wider px-7 py-3.5 rounded-xs transition-all duration-300 transform hover:-translate-y-0.5 shadow-md"
               >
                 TOUR THE FACILITY

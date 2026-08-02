@@ -16,7 +16,7 @@ export const JoinEliteForce: React.FC = () => {
     fontStyle: "normal",
     fontSize: "56px",
     lineHeight: "61.6px",
-    letterSpacing: "-1.60px",
+    letterSpacing: "-1.9px",
     verticalAlign: "middle",
     textTransform: "uppercase",
     color: "#004E24",
@@ -45,21 +45,21 @@ export const JoinEliteForce: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
           <a
             href="#contact"
-            className="w-full sm:w-auto bg-[#c8102e] hover:bg-[#a60d25] text-white font-extrabold text-xs uppercase tracking-wider px-8 py-4 rounded-xs shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+            className="w-full sm:w-auto bg-[#c8102e] hover:bg-[#a60d25] text-white font-normal text-[18px] uppercase tracking-wider px-8 py-4 rounded-xs shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
           >
             APPLY FOR RECRUITMENT
           </a>
 
           <a
             href="#contact"
-            className="w-full sm:w-auto border border-[#0b4226] text-[#0b4226] hover:bg-[#0b4226] hover:text-white font-extrabold text-xs uppercase tracking-wider px-8 py-4 rounded-xs transition-all duration-200 transform hover:-translate-y-0.5"
+            className="w-full sm:w-auto border border-[#0b4226] text-[#0b4226] hover:bg-[#0b4226] hover:text-white font-normal text-[18px] uppercase tracking-wider px-8 py-4 rounded-xs transition-all duration-200 transform hover:-translate-y-0.5"
           >
             CORPORATE PARTNERSHIP
           </a>
         </div>
 
         {/* Subtext */}
-        <p className="text-gray-400 text-[11px] font-medium tracking-wide pt-4">
+        <p className="text-gray-400 text-[16px] font-medium tracking-wide pt-4">
           Seven Star Security is an Equal Opportunity Employer. ISO 9001:2015 Certified.
         </p>
       </div>
