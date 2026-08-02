@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { AdminSidebar } from "./AdminSidebar";
 import {
   Shield,
   LayoutGrid,
@@ -261,55 +262,9 @@ export const AdminTeam: React.FC = () => {
   const addButtonLabel = activeSection === "Team" ? "Add Team Member" : "Add Leader";
 
   return (
-    <div className="min-h-screen w-full flex bg-[#18191c] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
       {/* LEFT SIDEBAR NAVIGATION */}
-      <aside className="w-60 bg-[#141518] border-r border-[#26282e] flex flex-col justify-between flex-shrink-0 min-h-screen sticky top-0 h-screen overflow-y-auto">
-        <div>
-          <div className="p-6 flex items-center gap-3 border-b border-[#26282e]">
-            <div className="w-9 h-9 rounded-lg bg-[#0b4226] flex items-center justify-center text-white shadow-sm">
-              <Shield className="w-5 h-5 fill-white/20" />
-            </div>
-            <div>
-              <h1 className="text-white font-bold text-base tracking-wider uppercase leading-none font-['Public_Sans']">
-                SHIELD<span className="text-[#4ade80]">CMS</span>
-              </h1>
-              <p className="text-[10px] font-semibold text-[#86efac] tracking-widest uppercase mt-0.5">
-                Admin Terminal
-              </p>
-            </div>
-          </div>
-
-          <nav className="p-4 space-y-1.5">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = item.name === "Team";
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md font-semibold text-sm transition-all ${isActive
-                      ? "bg-[#0b4226] text-white shadow-sm"
-                      : "text-gray-400 hover:bg-[#1e2025] hover:text-white"
-                    }`}
-                >
-                  <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-400"}`} />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-
-        <div className="p-4 border-t border-[#26282e]">
-          <Link
-            href="/admin/login"
-            className="flex items-center gap-3 px-4 py-2.5 text-gray-400 hover:text-red-400 hover:bg-[#1e2025] rounded-md text-sm font-semibold transition-all"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </Link>
-        </div>
-      </aside>
+      <AdminSidebar currentPath="/admin/team" />
 
       {/* CENTER & MAIN WORKSPACE */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#f4f6f3]">

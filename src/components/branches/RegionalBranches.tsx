@@ -93,8 +93,8 @@ export const RegionalBranches: React.FC = () => {
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#c8102e] flex-shrink-0" />
               <span>
-                {member.position ? (
-                  <span className="font-semibold">{member.position}: </span>
+                {member.designation ? (
+                  <span className="font-semibold">{member.designation}: </span>
                 ) : null}
                 {member.name}
               </span>

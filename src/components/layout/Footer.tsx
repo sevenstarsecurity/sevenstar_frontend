@@ -1,30 +1,30 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
+import { getPublicSocialLinks, SocialLink, SocialPlatform } from "@/services/socialmedia";
 import {
+  Calendar,
   ChevronRight,
+  GraduationCap,
+  Mail,
+  MapPin,
+  Phone,
+  Share2,
   Shield,
+  Truck,
   UserCheck,
   Video,
-  Calendar,
-  Truck,
-  MapPin,
-  GraduationCap,
-  Phone,
-  Mail,
-  Share2,
 } from "lucide-react";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import {
   FaFacebook,
-  FaTwitter,
-  FaLinkedin,
   FaInstagram,
-  FaYoutube,
+  FaLinkedin,
   FaTiktok,
+  FaTwitter,
+  FaYoutube,
 } from "react-icons/fa";
 import { ImageFallback } from "../ui/ImageFallback";
-import { getPublicSocialLinks, SocialLink, SocialPlatform } from "@/services/socialmedia";
 
 const PLATFORM_ICONS: Record<SocialPlatform, React.ReactNode> = {
   FACEBOOK: <FaFacebook className="w-4 h-4" />,

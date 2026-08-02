@@ -3,29 +3,21 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  Shield,
-  LayoutGrid,
-  Users,
-  FileText,
-  Image as ImageIcon,
-  MapPin,
-  Send,
-  Wrench,
-  Settings,
-  LogOut,
   Search,
   Bell,
   User,
   Trash2,
   X,
   Loader2,
-  Briefcase,
   Mail,
   Phone,
   Building2,
   Eye,
   CheckSquare,
   Square,
+  Calendar,
+  Send,
+  CheckCircle,
 } from "lucide-react";
 import {
   ContactSubmission,
@@ -35,18 +27,7 @@ import {
   deleteSubmission,
   bulkUpdateStatus,
 } from "@/services/contact";
-
-const navItems = [
-  { name: "Overview", icon: LayoutGrid, href: "/admin/dashboard" },
-  { name: "Team", icon: Users, href: "/admin/team" },
-  { name: "Blog", icon: FileText, href: "#" },
-  { name: "Gallery", icon: ImageIcon, href: "/admin/gallery" },
-  { name: "Branches", icon: MapPin, href: "/admin/branches" },
-  { name: "Clients", icon: Briefcase, href: "/admin/clients" },
-  { name: "Submissions", icon: Send, href: "/admin/submissions" },
-  { name: "Services", icon: Wrench, href: "#" },
-  { name: "Settings", icon: Settings, href: "/admin/settings" },
-];
+import { AdminSidebar } from "./AdminSidebar";
 
 const STATUS_OPTIONS: (ContactStatus | "all")[] = [
   "all",
@@ -57,10 +38,10 @@ const STATUS_OPTIONS: (ContactStatus | "all")[] = [
 ];
 
 const STATUS_STYLES: Record<ContactStatus, string> = {
-  NEW: "bg-blue-50 text-blue-600 border-blue-200",
-  IN_PROGRESS: "bg-amber-50 text-amber-700 border-amber-200",
-  RESOLVED: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  ARCHIVED: "bg-gray-100 text-gray-500 border-gray-200",
+  NEW: "bg-blue-50 text-blue-700 border-blue-200",
+  IN_PROGRESS: "bg-amber-50 text-amber-800 border-amber-200",
+  RESOLVED: "bg-emerald-50 text-emerald-800 border-emerald-200",
+  ARCHIVED: "bg-gray-100 text-gray-700 border-gray-200",
 };
 
 const STATUS_LABELS: Record<ContactStatus, string> = {
@@ -70,7 +51,7 @@ const STATUS_LABELS: Record<ContactStatus, string> = {
   ARCHIVED: "Archived",
 };
 
-/** Demo seed so the page still renders something if the API is offline. */
+/** Demo seed data if API is offline */
 const SEED_SUBMISSIONS: ContactSubmission[] = [
   {
     id: "seed-1",
@@ -194,10 +175,16 @@ export const AdminSubmissions: React.FC = () => {
         setSubmissions((prev) =>
           prev.map((s) => (s.id === submission.id ? { ...s, status } : s))
         );
+        if (viewing?.id === submission.id) {
+          setViewing((prev) => (prev ? { ...prev, status } : null));
+        }
         return;
       }
       const updated = await updateSubmission(submission.id, { status });
       setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+      if (viewing?.id === submission.id) {
+        setViewing(updated);
+      }
     } catch (err: unknown) {
       setError((err as { message?: string })?.message || "Failed to update status.");
     } finally {
@@ -211,10 +198,12 @@ export const AdminSubmissions: React.FC = () => {
     try {
       if (usingSeed) {
         setSubmissions((prev) => prev.filter((s) => s.id !== submission.id));
+        if (viewing?.id === submission.id) setViewing(null);
         return;
       }
       await deleteSubmission(submission.id);
       setSubmissions((prev) => prev.filter((s) => s.id !== submission.id));
+      if (viewing?.id === submission.id) setViewing(null);
       setSelectedIds((prev) => {
         const next = new Set(prev);
         next.delete(submission.id);
@@ -244,111 +233,79 @@ export const AdminSubmissions: React.FC = () => {
       }
       setSelectedIds(new Set());
     } catch (err: unknown) {
-      setError(
-        (err as { message?: string })?.message || "Failed to bulk update status."
-      );
+      setError((err as { message?: string })?.message || "Failed to bulk update status.");
     } finally {
       setBulkSaving(false);
     }
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-[#18191c] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
-      <aside className="w-60 bg-[#141518] border-r border-[#26282e] flex flex-col justify-between flex-shrink-0 min-h-screen sticky top-0 h-screen overflow-y-auto">
-        <div>
-          <div className="p-6 flex items-center gap-3 border-b border-[#26282e]">
-            <div className="w-9 h-9 rounded-lg bg-[#0b4226] flex items-center justify-center text-white shadow-sm">
-              <Shield className="w-5 h-5 fill-white/20" />
-            </div>
-            <div>
-              <h1 className="text-white font-bold text-base tracking-wider uppercase leading-none font-['Public_Sans']">
-                SHIELD<span className="text-[#4ade80]">CMS</span>
-              </h1>
-              <p className="text-[10px] font-semibold text-[#86efac] tracking-widest uppercase mt-0.5">
-                Admin Terminal
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-900 font-sans selection:bg-[#0b4226] selection:text-white">
+      {/* Unified Light Sidebar */}
+      <AdminSidebar currentPath="/admin/submissions" />
 
-          <nav className="p-4 space-y-1.5">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = item.name === "Submissions";
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-md font-semibold text-sm transition-all ${
-                    isActive
-                      ? "bg-[#0b4226] text-white shadow-sm"
-                      : "text-gray-400 hover:bg-[#1e2025] hover:text-white"
-                  }`}
-                >
-                  <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-400"}`} />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-
-        <div className="p-4 border-t border-[#26282e]">
-          <Link
-            href="/admin/login"
-            className="flex items-center gap-3 px-4 py-2.5 text-gray-400 hover:text-red-400 hover:bg-[#1e2025] rounded-md text-sm font-semibold transition-all"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </Link>
-        </div>
-      </aside>
-
-      <div className="flex-1 flex flex-col min-w-0 bg-[#f4f6f3]">
-        <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-xs sticky top-0 z-10">
+      {/* Main Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Header Bar */}
+        <header className="bg-white border-b border-gray-200 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xs sticky top-0 z-10">
           <div className="flex items-center gap-3">
-            <h2 className="text-sm font-bold text-gray-900">Security Firm CMS</h2>
+            <h2 className="text-xs sm:text-sm font-bold text-gray-900 uppercase tracking-wider">
+              Seven Star CMS
+            </h2>
             <span className="text-gray-300">|</span>
-            <nav className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <nav className="text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:block">
               <span>MAIN CONSOLE</span> &gt;{" "}
-              <span className="text-gray-800">SUBMISSIONS</span>
+              <span className="text-[#0b4226] font-extrabold">SUBMISSIONS</span>
             </nav>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               aria-label="Notifications"
-              className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
             >
               <Bell className="w-4 h-4" />
             </button>
-            <div className="w-7 h-7 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-700 cursor-pointer">
-              <User className="w-4 h-4" />
+            <div className="flex items-center gap-2 border-l border-gray-200 pl-3">
+              <div className="w-8 h-8 rounded-full bg-[#0b4226] text-white flex items-center justify-center font-bold text-xs">
+                A
+              </div>
+              <span className="text-xs font-bold text-gray-800 hidden md:inline">Administrator</span>
             </div>
           </div>
         </header>
 
-        <main className="p-6 space-y-6 flex-1 max-w-[1600px] w-full mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight shrink-0">
-              Contact Submissions
-            </h1>
+        {/* Content Body */}
+        <main className="p-4 sm:p-6 lg:p-8 space-y-6 flex-1 max-w-[1600px] w-full mx-auto">
+          {/* Header & Controls */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+                Contact & Quote Submissions
+              </h1>
+              <p className="text-xs text-gray-500 mt-1">
+                Manage inquiries and security requests submitted by clients.
+              </p>
+            </div>
 
-            <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:justify-end">
-              <div className="relative w-full sm:max-w-md lg:max-w-lg">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              {/* Search */}
+              <div className="relative w-full sm:w-72">
                 <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search by name, email, or sector"
-                  className="w-full bg-white border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-xs focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                  placeholder="Search name, email, or sector"
+                  className="w-full bg-white border border-gray-200 rounded-lg pl-10 pr-4 py-2 text-xs font-medium text-gray-800 placeholder:text-gray-400 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#0b4226]"
                 />
               </div>
 
+              {/* Status Filter */}
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as ContactStatus | "all")}
-                className="shrink-0 bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-800 shadow-xs focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-800 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#0b4226] cursor-pointer"
               >
                 {STATUS_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>
@@ -359,22 +316,23 @@ export const AdminSubmissions: React.FC = () => {
             </div>
           </div>
 
+          {/* Banner Messages */}
           {error && !usingSeed && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-md px-4 py-3">
+            <div className="bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-lg px-4 py-3">
               {error}
             </div>
           )}
 
           {usingSeed && (
-            <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold rounded-md px-4 py-3">
-              Showing demo submission data — connect the contact API to manage live records.
+            <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold rounded-lg px-4 py-3">
+              Showing demo submission data — live submissions will automatically appear here when submitted.
             </div>
           )}
 
-          {/* Bulk action bar */}
+          {/* Bulk Selection Action Bar */}
           {selectedIds.size > 0 && (
-            <div className="bg-[#0b4226] text-white rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-              <span className="text-sm font-semibold">
+            <div className="bg-[#0b4226] text-white rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-md">
+              <span className="text-xs font-bold tracking-wide">
                 {selectedIds.size} submission{selectedIds.size > 1 ? "s" : ""} selected
               </span>
               <div className="flex items-center gap-2 flex-wrap">
@@ -385,7 +343,7 @@ export const AdminSubmissions: React.FC = () => {
                       type="button"
                       disabled={bulkSaving}
                       onClick={() => handleBulkStatus(status)}
-                      className="text-xs font-bold uppercase tracking-wider bg-white/10 hover:bg-white/20 disabled:opacity-50 px-3 py-1.5 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
+                      className="text-xs font-extrabold uppercase tracking-wider bg-white/10 hover:bg-white/20 disabled:opacity-50 px-3 py-1.5 rounded-md transition-colors cursor-pointer flex items-center gap-1.5"
                     >
                       {bulkSaving && <Loader2 className="w-3 h-3 animate-spin" />}
                       Mark {STATUS_LABELS[status]}
@@ -403,27 +361,29 @@ export const AdminSubmissions: React.FC = () => {
             </div>
           )}
 
-          {/* Submissions table */}
-          <section className="bg-white border border-gray-200 rounded-xl shadow-xs overflow-hidden">
+          {/* Table Container */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
             {loading ? (
-              <div className="flex items-center justify-center py-16 text-gray-400">
-                <Loader2 className="w-6 h-6 animate-spin" />
+              <div className="p-12 flex flex-col items-center justify-center text-gray-500 space-y-3">
+                <Loader2 className="w-8 h-8 animate-spin text-[#0b4226]" />
+                <span className="text-xs font-bold uppercase tracking-wider">Loading Submissions...</span>
               </div>
             ) : filteredSubmissions.length === 0 ? (
-              <div className="px-6 py-16 text-center text-sm text-gray-400 font-medium">
-                No submissions found.
+              <div className="p-12 text-center text-gray-500 space-y-2">
+                <Send className="w-10 h-10 text-gray-300 mx-auto" />
+                <p className="text-sm font-bold text-gray-800">No submissions found</p>
+                <p className="text-xs text-gray-500">Try adjusting your search query or status filter.</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-left border-collapse min-w-[700px]">
                   <thead>
-                    <tr className="border-b border-gray-100 bg-gray-50">
-                      <th className="w-10 px-4 py-3">
+                    <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-extrabold text-gray-600 uppercase tracking-wider">
+                      <th className="py-3.5 px-4 w-10 text-center">
                         <button
                           type="button"
                           onClick={toggleSelectAll}
-                          aria-label="Select all"
-                          className="text-gray-400 hover:text-gray-700 cursor-pointer"
+                          className="text-gray-400 hover:text-[#0b4226] cursor-pointer"
                         >
                           {allVisibleSelected ? (
                             <CheckSquare className="w-4 h-4 text-[#0b4226]" />
@@ -432,187 +392,249 @@ export const AdminSubmissions: React.FC = () => {
                           )}
                         </button>
                       </th>
-                      <th className="text-left px-4 py-3 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                        Contact
-                      </th>
-                      <th className="text-left px-4 py-3 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                        Sector
-                      </th>
-                      <th className="text-left px-4 py-3 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="text-left px-4 py-3 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                        Received
-                      </th>
-                      <th className="text-right px-4 py-3 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
+                      <th className="py-3.5 px-4">Contact Person</th>
+                      <th className="py-3.5 px-4">Sector</th>
+                      <th className="py-3.5 px-4">Details</th>
+                      <th className="py-3.5 px-4">Status</th>
+                      <th className="py-3.5 px-4">Date</th>
+                      <th className="py-3.5 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {filteredSubmissions.map((s) => (
-                      <tr
-                        key={s.id}
-                        className="border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors"
-                      >
-                        <td className="px-4 py-3 align-top">
-                          <button
-                            type="button"
-                            onClick={() => toggleSelect(s.id)}
-                            aria-label={`Select ${s.name}`}
-                            className="text-gray-400 hover:text-gray-700 cursor-pointer"
-                          >
-                            {selectedIds.has(s.id) ? (
-                              <CheckSquare className="w-4 h-4 text-[#0b4226]" />
-                            ) : (
-                              <Square className="w-4 h-4" />
-                            )}
-                          </button>
-                        </td>
-                        <td className="px-4 py-3 align-top">
-                          <p className="font-bold text-gray-900">{s.name}</p>
-                          <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
-                            <Mail className="w-3 h-3" />
-                            <span className="truncate max-w-[200px]">{s.email}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
-                            <Phone className="w-3 h-3" />
-                            <span>{s.phone}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 align-top">
-                          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600">
-                            <Building2 className="w-3.5 h-3.5 text-gray-400" />
-                            {s.sector}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 align-top">
-                          <select
-                            value={s.status}
-                            disabled={statusSavingId === s.id}
-                            onChange={(e) =>
-                              handleStatusChange(s, e.target.value as ContactStatus)
-                            }
-                            className={`text-xs font-bold uppercase tracking-wider border rounded-md px-2 py-1 cursor-pointer focus:outline-none disabled:opacity-50 ${STATUS_STYLES[s.status]}`}
-                          >
-                            {(["NEW", "IN_PROGRESS", "RESOLVED", "ARCHIVED"] as ContactStatus[]).map(
-                              (opt) => (
-                                <option key={opt} value={opt}>
-                                  {STATUS_LABELS[opt]}
-                                </option>
-                              )
-                            )}
-                          </select>
-                        </td>
-                        <td className="px-4 py-3 align-top text-xs text-gray-500">
-                          {new Date(s.createdAt).toLocaleDateString(undefined, {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </td>
-                        <td className="px-4 py-3 align-top">
-                          <div className="flex items-center justify-end gap-3">
+                  <tbody className="divide-y divide-gray-100 text-xs text-gray-700 font-medium">
+                    {filteredSubmissions.map((submission) => {
+                      const isSelected = selectedIds.has(submission.id);
+                      const isSaving = statusSavingId === submission.id;
+
+                      return (
+                        <tr
+                          key={submission.id}
+                          className={`hover:bg-emerald-50/40 transition-colors ${
+                            isSelected ? "bg-emerald-50/60" : ""
+                          }`}
+                        >
+                          <td className="py-3.5 px-4 text-center">
                             <button
                               type="button"
-                              onClick={() => setViewing(s)}
-                              className="flex items-center gap-1.5 text-xs font-medium text-gray-700 hover:text-[#0b4226] cursor-pointer transition-colors"
+                              onClick={() => toggleSelect(submission.id)}
+                              className="text-gray-400 hover:text-[#0b4226] cursor-pointer"
                             >
-                              <Eye className="w-3.5 h-3.5" />
-                              View
+                              {isSelected ? (
+                                <CheckSquare className="w-4 h-4 text-[#0b4226]" />
+                              ) : (
+                                <Square className="w-4 h-4" />
+                              )}
                             </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(s)}
-                              className="flex items-center gap-1.5 text-xs font-medium text-red-500 hover:text-red-600 cursor-pointer transition-colors"
+                          </td>
+
+                          <td className="py-3.5 px-4">
+                            <div className="font-bold text-gray-900 text-sm">{submission.name}</div>
+                            <div className="text-[11px] text-gray-500 flex items-center gap-2 mt-0.5">
+                              <span className="flex items-center gap-1">
+                                <Mail className="w-3 h-3 text-gray-400" />
+                                {submission.email}
+                              </span>
+                              {submission.phone && (
+                                <span className="flex items-center gap-1">
+                                  <Phone className="w-3 h-3 text-gray-400" />
+                                  {submission.phone}
+                                </span>
+                              )}
+                            </div>
+                          </td>
+
+                          <td className="py-3.5 px-4">
+                            <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md border border-gray-200">
+                              <Building2 className="w-3 h-3 text-gray-500" />
+                              {submission.sector}
+                            </span>
+                          </td>
+
+                          <td className="py-3.5 px-4 max-w-xs">
+                            <p className="line-clamp-2 text-gray-600 leading-relaxed text-xs">
+                              {submission.details}
+                            </p>
+                          </td>
+
+                          <td className="py-3.5 px-4">
+                            <select
+                              value={submission.status}
+                              disabled={isSaving}
+                              onChange={(e) =>
+                                handleStatusChange(
+                                  submission,
+                                  e.target.value as ContactStatus
+                                )
+                              }
+                              className={`text-[11px] font-extrabold tracking-wider uppercase px-2.5 py-1 rounded-md border shadow-2xs focus:outline-none cursor-pointer ${
+                                STATUS_STYLES[submission.status]
+                              }`}
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                              {(["NEW", "IN_PROGRESS", "RESOLVED", "ARCHIVED"] as ContactStatus[]).map(
+                                (st) => (
+                                  <option key={st} value={st}>
+                                    {STATUS_LABELS[st]}
+                                  </option>
+                                )
+                              )}
+                            </select>
+                          </td>
+
+                          <td className="py-3.5 px-4 text-gray-500 text-[11px]">
+                            {new Date(submission.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                          </td>
+
+                          <td className="py-3.5 px-4 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => setViewing(submission)}
+                                className="p-1.5 text-gray-500 hover:text-[#0b4226] hover:bg-emerald-50 rounded-md transition-colors cursor-pointer"
+                                title="View Details"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDelete(submission)}
+                                className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
+                                title="Delete Submission"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
             )}
-          </section>
+          </div>
         </main>
       </div>
 
-      {/* View submission modal */}
+      {/* Submission Detail Modal */}
       {viewing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-              <h3 className="text-base font-bold text-gray-900">Submission Details</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full overflow-hidden border border-gray-200 animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="bg-[#0b4226] text-white p-5 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-200">
+                  Submission Details
+                </span>
+                <h3 className="text-lg font-bold mt-0.5">{viewing.name}</h3>
+              </div>
               <button
                 type="button"
                 onClick={() => setViewing(null)}
-                className="p-1 text-gray-400 hover:text-gray-700 rounded transition-colors cursor-pointer"
+                className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-md transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-5 space-y-4">
-              <div className="flex items-center justify-between">
-                <p className="text-lg font-bold text-gray-900">{viewing.name}</p>
-                <span
-                  className={`text-xs font-bold uppercase tracking-wider border rounded-md px-2 py-1 ${STATUS_STYLES[viewing.status]}`}
-                >
-                  {STATUS_LABELS[viewing.status]}
-                </span>
-              </div>
+            {/* Modal Content */}
+            <div className="p-6 space-y-5">
+              <div className="grid grid-cols-2 gap-4 text-xs border-b border-gray-100 pb-4">
+                <div>
+                  <span className="text-gray-400 uppercase font-bold text-[10px] block mb-1">
+                    Email Address
+                  </span>
+                  <a
+                    href={`mailto:${viewing.email}`}
+                    className="font-semibold text-emerald-800 hover:underline flex items-center gap-1.5"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    {viewing.email}
+                  </a>
+                </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                    Email
-                  </p>
-                  <p className="text-sm text-gray-800">{viewing.email}</p>
+                <div>
+                  <span className="text-gray-400 uppercase font-bold text-[10px] block mb-1">
+                    Phone Number
+                  </span>
+                  <span className="font-semibold text-gray-800 flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-gray-400" />
+                    {viewing.phone || "Not provided"}
+                  </span>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                    Phone
-                  </p>
-                  <p className="text-sm text-gray-800">{viewing.phone}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+
+                <div>
+                  <span className="text-gray-400 uppercase font-bold text-[10px] block mb-1">
                     Sector
-                  </p>
-                  <p className="text-sm text-gray-800">{viewing.sector}</p>
+                  </span>
+                  <span className="font-extrabold text-gray-800 uppercase bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                    {viewing.sector}
+                  </span>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                    Received
-                  </p>
-                  <p className="text-sm text-gray-800">
+
+                <div>
+                  <span className="text-gray-400 uppercase font-bold text-[10px] block mb-1">
+                    Submitted Date
+                  </span>
+                  <span className="font-semibold text-gray-800 flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-gray-400" />
                     {new Date(viewing.createdAt).toLocaleString()}
-                  </p>
+                  </span>
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                  Message
-                </p>
-                <p className="text-sm text-gray-700 bg-gray-50 border border-gray-100 rounded-lg p-3 leading-relaxed">
+              {/* Message Details */}
+              <div>
+                <span className="text-gray-400 uppercase font-bold text-[10px] block mb-1">
+                  Message & Request Details
+                </span>
+                <p className="text-xs text-gray-800 bg-gray-50 border border-gray-200 rounded-lg p-4 leading-relaxed whitespace-pre-wrap">
                   {viewing.details}
                 </p>
               </div>
 
-              <div className="flex justify-end pt-2">
-                <button
-                  type="button"
-                  onClick={() => setViewing(null)}
-                  className="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-[#1a1c1e] hover:bg-black text-white rounded-lg transition-colors cursor-pointer"
+              {/* Status Selector in Modal */}
+              <div className="flex items-center justify-between pt-2">
+                <span className="text-xs font-bold text-gray-600">Update Status:</span>
+                <select
+                  value={viewing.status}
+                  onChange={(e) =>
+                    handleStatusChange(viewing, e.target.value as ContactStatus)
+                  }
+                  className={`text-xs font-extrabold uppercase px-3 py-1.5 rounded-md border cursor-pointer ${
+                    STATUS_STYLES[viewing.status]
+                  }`}
                 >
-                  Close
-                </button>
+                  {(["NEW", "IN_PROGRESS", "RESOLVED", "ARCHIVED"] as ContactStatus[]).map(
+                    (st) => (
+                      <option key={st} value={st}>
+                        {STATUS_LABELS[st]}
+                      </option>
+                    )
+                  )}
+                </select>
               </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => handleDelete(viewing)}
+                className="text-xs font-bold text-red-600 hover:text-red-800 flex items-center gap-1 px-3 py-1.5 hover:bg-red-50 rounded-md transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete Record
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewing(null)}
+                className="bg-gray-800 hover:bg-gray-900 text-white text-xs font-bold uppercase tracking-wider px-5 py-2 rounded-md transition-colors"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
