@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import React from "react";
 import { ImageFallback } from "../ui/ImageFallback";
 
@@ -41,19 +42,43 @@ export const HeroSection: React.FC = () => {
           </div>
 
           {/* Title */}
-          <h1
-            className="font-black text-[#0F6835] tracking-normal leading-[1.02] lg:leading-none"
-            style={{
-              fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(1.15rem, 5.5vw, 4.5rem)",
-              letterSpacing: "0px",
-            }}
-          >
-            PROFESSIONAL <br />
-            SECURITY &amp; <br />
-            PROTECTION
-          </h1>
+<motion.h1
+  className="font-black text-[#0F6835] tracking-normal leading-[1.02] lg:leading-none"
+  style={{
+    fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
+    fontWeight: 800,
+    fontSize: "clamp(1.15rem, 5.5vw, 4.5rem)",
+    letterSpacing: "0px",
+  }}
+>
+  <motion.span
+    initial={{ opacity: 0, x: 100 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.7, ease: "easeOut" }}
+    className="block"
+  >
+    PROFESSIONAL
+  </motion.span>
+
+  <motion.span
+    initial={{ opacity: 0, x: 100 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+    className="block"
+  >
+    SECURITY &amp;
+  </motion.span>
+
+  <motion.span
+    initial={{ opacity: 0, x: 100 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+    className="block"
+  >
+    PROTECTION
+  </motion.span>
+</motion.h1>
+
 
           {/* Description */}
           <p className="text-gray-600 text-[8px] xs:text-[10px] sm:text-sm md:text-base leading-relaxed max-w-md">

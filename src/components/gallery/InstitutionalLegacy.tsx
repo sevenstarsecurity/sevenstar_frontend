@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
 import { ShieldCheck } from "lucide-react";
+import React from "react";
 
 export const InstitutionalLegacy: React.FC = () => {
   return (
@@ -19,10 +19,10 @@ export const InstitutionalLegacy: React.FC = () => {
 
           {/* Heading */}
           <h2
-            className="text-3xl md:text-4xl lg:text-[40px] font-extrabold text-[#004E24] leading-tight uppercase mb-5"
+            className="text-3xl md:text-4xl lg:text-[56px] font-semibold text-[#004E24] leading-tight uppercase mb-5"
             style={{
               fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-              letterSpacing: "0.02em",
+              letterSpacing: "-0.02em",
             }}
           >
             THE ARCHIVE OF VIGILANCE
@@ -35,7 +35,7 @@ export const InstitutionalLegacy: React.FC = () => {
               fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
             }}
           >
-            A visual testament to our commitment to global security standards, institutional excellence, and the quiet precision of elite protection.
+            A visual testament to our commitment to global security <br></br>standards, institutional excellence, and the quiet precision of <br></br>elite protection.
           </p>
         </div>
 

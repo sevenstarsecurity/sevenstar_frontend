@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
+import React from "react";
 
 export const ProtectionProtocolCta: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ export const ProtectionProtocolCta: React.FC = () => {
       <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 text-center flex flex-col items-center justify-center">
         {/* Title */}
         <h2
-          className="text-2xl md:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight mb-4"
+          className="text-2xl md:text-4xl lg:text-5xl font-semibold uppercase tracking-tight mb-4"
           style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
         >
           BEGIN YOUR PROTECTION PROTOCOL
@@ -20,7 +20,7 @@ export const ProtectionProtocolCta: React.FC = () => {
           className="text-emerald-100/90 text-sm md:text-base max-w-2xl mb-10 leading-relaxed"
           style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
         >
-          Request an institutional audit or a confidential briefing with our executive specialists.
+          Request an institutional audit or a confidential briefing with our executive<br></br> specialists.
         </p>
 
         {/* Action Buttons */}
@@ -28,16 +28,16 @@ export const ProtectionProtocolCta: React.FC = () => {
           {/* Red Solid Button */}
           <Link
             href="#contact"
-            className="w-full sm:w-auto bg-[#c8102e] hover:bg-[#a60d25] text-white font-bold text-xs uppercase px-8 py-4 rounded-xs shadow-md transition-all duration-200 tracking-wider text-center"
+            className="w-full sm:w-auto bg-[#c8102e] hover:bg-[#a60d25] text-white font-semibold text-[16px] uppercase px-8 py-4 rounded-xs shadow-md transition-all duration-200 tracking-wider text-center"
             style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
           >
-            SECURE BRIEFING REQUEST
+            SECURE BRIEFING REQUEST 
           </Link>
 
           {/* Outlined Green/Dark Button */}
           <a
             href="#download"
-            className="w-full sm:w-auto bg-[#003d1c] hover:bg-[#002e15] border border-[#00662f] text-white font-bold text-xs uppercase px-8 py-4 rounded-xs shadow-md transition-all duration-200 tracking-wider text-center"
+            className="w-full sm:w-auto  hover:bg-[#002e15] border border-[#FFDF96] text-[#FFDF96] font-semibold text-[16px] uppercase px-8 py-4 rounded-xs shadow-md transition-all duration-200 tracking-wider text-center"
             style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
           >
             DOWNLOAD PORTFOLIO

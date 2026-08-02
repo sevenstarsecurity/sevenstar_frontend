@@ -113,14 +113,14 @@ export const FeaturedBranches: React.FC = () => {
 
             {/* Quote */}
             <blockquote className="border-l-4 border-l-[#C8102E] pl-3.5 mb-6 font-['Public_Sans'] text-xs sm:text-sm leading-relaxed text-[#3F4940]">
-              "Forging professionals through rigorous physical and psychological conditioning since 2012."
+              "Forging professionals through rigorous physical and psychological conditioning since<br></br> 2012."
             </blockquote>
 
             {/* CTA Button */}
             <div>
               <a
                 href="#training"
-                className="inline-block bg-[#004E24] hover:bg-[#00391a] text-white font-['Public_Sans'] font-bold text-[11px] tracking-wider uppercase px-5 py-3 rounded-sm transition-colors"
+                className="inline-block bg-[#004E24] hover:bg-[#00391a] text-white font-['Public_Sans'] font-regular text-[14px] tracking-wider uppercase px-5 py-3  transition-colors"
               >
                 TRAINING PROGRAMS
               </a>
