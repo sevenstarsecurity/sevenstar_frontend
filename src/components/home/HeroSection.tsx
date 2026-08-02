@@ -42,42 +42,42 @@ export const HeroSection: React.FC = () => {
           </div>
 
           {/* Title */}
-<motion.h1
-  className="font-black text-[#0F6835] tracking-normal leading-[1.02] lg:leading-none"
-  style={{
-    fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-    fontWeight: 800,
-    fontSize: "clamp(1.15rem, 5.5vw, 4.5rem)",
-    letterSpacing: "0px",
-  }}
->
-  <motion.span
-    initial={{ opacity: 0, x: 100 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.7, ease: "easeOut" }}
-    className="block"
-  >
-    PROFESSIONAL
-  </motion.span>
+          <motion.h1
+            className="font-black text-[#0F6835] tracking-normal leading-[1.02] lg:leading-none"
+            style={{
+              fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
+              fontWeight: 800,
+              fontSize: "clamp(1.15rem, 5.5vw, 4.5rem)",
+              letterSpacing: "0px",
+            }}
+          >
+            <motion.span
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className="block"
+            >
+              PROFESSIONAL
+            </motion.span>
 
-  <motion.span
-    initial={{ opacity: 0, x: 100 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-    className="block"
-  >
-    SECURITY &amp;
-  </motion.span>
+            <motion.span
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+              className="block"
+            >
+              SECURITY &amp;
+            </motion.span>
 
-  <motion.span
-    initial={{ opacity: 0, x: 100 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-    className="block"
-  >
-    PROTECTION
-  </motion.span>
-</motion.h1>
+            <motion.span
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+              className="block"
+            >
+              PROTECTION
+            </motion.span>
+          </motion.h1>
 
 
           {/* Description */}
@@ -98,12 +98,12 @@ export const HeroSection: React.FC = () => {
               DISCOVER MORE
             </a>
 
-            <div className="w-3 h-3 xs:w-4 xs:h-4 sm:w-8 sm:h-8 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 xs:w-10 xs:h-10 sm:w-16 sm:h-16 flex items-center justify-center flex-shrink-0 ml-2 translate-x-1 -translate-y-5">
               <ImageFallback
-                src="/images/arrow.png"
+                src="/images/arrow.webp"
                 alt="Green Arrow Vector"
                 className="w-full h-full object-contain"
-                fallbackText="arrow.png"
+                fallbackText="arrow.webp"
               />
             </div>
           </div>

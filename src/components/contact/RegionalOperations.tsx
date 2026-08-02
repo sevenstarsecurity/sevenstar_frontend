@@ -29,7 +29,7 @@ export const RegionalOperations: React.FC = () => {
             <Link
               key={region.name}
               href={region.href}
-              className="bg-[#f0f5ea] border border-[#004E24]/60 hover:bg-[#004E24] text-[#004E24] hover:text-white font-extrabold text-xs tracking-wider uppercase px-6 py-2.5 rounded-none shadow-2xs transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+              className="bg-[#f0f5ea] border border-[#004E24]/60 hover:bg-[#004E24] text-[#004E24] hover:text-white font-extrabold text-xs tracking-wider uppercase px-10 py-2.5 rounded-none shadow-2xs transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 min-w-[140px] text-center"
               style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
             >
               {region.name}

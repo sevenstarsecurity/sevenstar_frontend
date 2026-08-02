@@ -48,30 +48,25 @@ export const PresenceSection: React.FC = () => {
 
 
             {/* Description */}
-          <p
-            className={`${publicSans.className} font-normal text-base md:text-lg leading-relaxed max-w-md mb-6`}
-          >
-            From the heart of Kathmandu to the far-western industrial
-            <br />
-            zones, we are the trusted shield for Nepal's growing
-            <br />
-            economy.
-          </p>
+            <p
+              className={`${publicSans.className} font-normal text-base md:text-lg leading-relaxed max-w-md mb-6`}
+            >
+              From the heart of Kathmandu to the far-western industrial
+              zones, we are the trusted shield for Nepal's growing
+              economy.
+            </p>
 
 
             {/* Link */}
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FFDF96] hover:text-white transition-colors group"
-            >
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FFDF96]">
               <MapPin className="w-4 h-4 text-[#FFDF96]" />
 
               <span className="text-[#FFDF96]">
                 GUARANTEED VIGILANCE
               </span>
 
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </a>
+              {/* <ArrowRight className="w-4 h-4" /> */}
+            </div>
 
           </div>
 

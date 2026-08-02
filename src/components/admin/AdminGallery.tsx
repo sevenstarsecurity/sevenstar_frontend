@@ -7,6 +7,7 @@ import {
   Shield,
   LayoutGrid,
   Users,
+  User,
   FileText,
   Image as ImageIcon,
   MapPin,
@@ -405,40 +406,57 @@ export const AdminGallery: React.FC = () => {
 
       {/* CENTER & MAIN WORKSPACE */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#f4f6f3]">
-        <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-xs sticky top-0 z-10">
-          <div className="relative max-w-lg w-full">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search visual library..."
-              disabled={activeTab !== "gallery"}
-              className="w-full bg-[#f4f6f8] border border-gray-200 rounded-md pl-10 pr-4 py-1.5 text-xs text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] disabled:opacity-50"
-            />
+        {/* TOP WHITE HEADER BAR */}
+        <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-2.5 sm:py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shadow-xs relative lg:sticky lg:top-0 z-10">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <h2 className="text-xs sm:text-sm font-bold text-gray-900 truncate">Security Firm CMS</h2>
+            <span className="text-gray-300">|</span>
+            <nav className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider truncate">
+              <span className="hidden xs:inline">MAIN CONSOLE &gt; </span>
+              <span className="text-gray-800">GALLERY</span>
+            </nav>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0 flex-1 sm:flex-none justify-end">
+            <div className="relative w-full sm:w-64 max-w-[240px] sm:max-w-none">
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search visual library..."
+                disabled={activeTab !== "gallery"}
+                className="w-full bg-[#f4f6f8] border border-gray-200 rounded-md pl-9 pr-3 py-1.5 text-xs text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] disabled:opacity-50"
+              />
+            </div>
             <button
               aria-label="Notifications"
               className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
             >
               <Bell className="w-4 h-4" />
             </button>
+            <div className="w-7 h-7 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-700 cursor-pointer">
+              <User className="w-4 h-4" />
+            </div>
           </div>
         </header>
 
-        <main className="p-6 md:p-8 space-y-6 flex-1 max-w-[1600px] w-full mx-auto">
-          {/* TOP HEADLINE */}
+        <main className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 flex-1 max-w-[1600px] w-full mx-auto">
+          {/* TOP HEADLINE & ACTIONS */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight uppercase font-['Public_Sans']">
-              VISUAL ASSET LIBRARY
-            </h1>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight uppercase font-['Public_Sans']">
+                VISUAL ASSET LIBRARY
+              </h1>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                Manage high-resolution gallery photography, video streams, and vigilance assets.
+              </p>
+            </div>
 
             {activeTab === "gallery" && (
               <button
                 onClick={() => setShowUploadModal(true)}
-                className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-sm shadow-xs flex items-center gap-2 transition-colors cursor-pointer self-start sm:self-auto"
+                className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-sm shadow-xs flex items-center justify-center gap-2 transition-colors cursor-pointer w-full sm:w-auto"
               >
                 <ImageIcon className="w-4 h-4" />
                 <span>+ UPLOAD ASSETS</span>
@@ -448,7 +466,7 @@ export const AdminGallery: React.FC = () => {
             {activeTab === "videos" && (
               <button
                 onClick={() => setShowVideoModal(true)}
-                className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-sm shadow-xs flex items-center gap-2 transition-colors cursor-pointer self-start sm:self-auto"
+                className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-sm shadow-xs flex items-center justify-center gap-2 transition-colors cursor-pointer w-full sm:w-auto"
               >
                 <Video className="w-4 h-4" />
                 <span>+ ADD VIDEO</span>
@@ -459,7 +477,7 @@ export const AdminGallery: React.FC = () => {
               <button
                 onClick={() => setShowVigilanceModal(true)}
                 disabled={activeVigilanceCount >= 3}
-                className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-sm shadow-xs flex items-center gap-2 transition-colors cursor-pointer self-start sm:self-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-sm shadow-xs flex items-center justify-center gap-2 transition-colors cursor-pointer w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 title={
                   activeVigilanceCount >= 3
                     ? "Max 3 active vigilance images reached"
@@ -473,10 +491,10 @@ export const AdminGallery: React.FC = () => {
           </div>
 
           {/* TAB SWITCHER */}
-          <div className="flex items-center gap-2 border-b border-gray-200">
+          <div className="flex items-center gap-2 border-b border-gray-200 overflow-x-auto no-scrollbar">
             <button
               onClick={() => setActiveTab("gallery")}
-              className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-2 ${
+              className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "gallery"
                   ? "border-[#0b4226] text-[#0b4226]"
                   : "border-transparent text-gray-400 hover:text-gray-600"
@@ -487,7 +505,7 @@ export const AdminGallery: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab("videos")}
-              className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-2 ${
+              className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "videos"
                   ? "border-[#0b4226] text-[#0b4226]"
                   : "border-transparent text-gray-400 hover:text-gray-600"
@@ -501,7 +519,7 @@ export const AdminGallery: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab("vigilance")}
-              className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-2 ${
+              className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "vigilance"
                   ? "border-[#0b4226] text-[#0b4226]"
                   : "border-transparent text-gray-400 hover:text-gray-600"
@@ -525,36 +543,36 @@ export const AdminGallery: React.FC = () => {
           {activeTab === "gallery" && (
             <>
               {stats && (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="bg-white border border-gray-200/90 rounded-md p-4 shadow-xs">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                  <div className="bg-white border border-gray-200/90 rounded-md p-3.5 sm:p-4 shadow-xs">
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">
                       Total Images
                     </span>
-                    <span className="text-xl font-extrabold text-gray-900">
+                    <span className="text-lg sm:text-xl font-extrabold text-gray-900">
                       {stats.totalImages}
                     </span>
                   </div>
-                  <div className="bg-white border border-gray-200/90 rounded-md p-4 shadow-xs">
+                  <div className="bg-white border border-gray-200/90 rounded-md p-3.5 sm:p-4 shadow-xs">
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">
                       Total Videos
                     </span>
-                    <span className="text-xl font-extrabold text-gray-900">
+                    <span className="text-lg sm:text-xl font-extrabold text-gray-900">
                       {stats.totalVideos}
                     </span>
                   </div>
-                  <div className="bg-white border border-gray-200/90 rounded-md p-4 shadow-xs col-span-2 sm:col-span-1">
+                  <div className="bg-white border border-gray-200/90 rounded-md p-3.5 sm:p-4 shadow-xs col-span-2 sm:col-span-1">
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">
                       Storage
                     </span>
-                    <span className="text-xs font-bold text-gray-900">
+                    <span className="text-xs font-bold text-gray-900 truncate block">
                       {stats.cloudinaryStorageUsed}
                     </span>
                   </div>
-                  <div className="bg-white border border-gray-200/90 rounded-md p-4 shadow-xs col-span-2 sm:col-span-1">
+                  <div className="bg-white border border-gray-200/90 rounded-md p-3.5 sm:p-4 shadow-xs col-span-2 sm:col-span-1">
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">
                       Newest Upload
                     </span>
-                    <span className="text-xs font-bold text-gray-900">
+                    <span className="text-xs font-bold text-gray-900 truncate block">
                       {new Date(stats.newestUpload).toLocaleDateString()}
                     </span>
                   </div>
@@ -577,7 +595,7 @@ export const AdminGallery: React.FC = () => {
                   No images yet. Upload your first one.
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                   {safeImages.map((image) => (
                     <div
                       key={image.id}
@@ -642,7 +660,7 @@ export const AdminGallery: React.FC = () => {
                   No videos yet. Add your first one.
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {safeVideos.map((video) => (
                     <div
                       key={video.id}
@@ -710,7 +728,7 @@ export const AdminGallery: React.FC = () => {
                   No vigilance images yet. Add your first one.
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {safeVigilance.map((image) => (
                     <div
                       key={image.id}
@@ -802,7 +820,7 @@ export const AdminGallery: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleUploadSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleUploadSubmit} className="p-4 sm:p-6 space-y-4">
               {galleryError && (
                 <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
                   {galleryError}
@@ -907,8 +925,8 @@ export const AdminGallery: React.FC = () => {
                 fallbackText={previewImage.caption || "Image"}
               />
             </div>
-            <div className="p-4 bg-gray-900 text-white flex items-center justify-between gap-4">
-              <div className="flex-1">
+            <div className="p-4 bg-gray-900 text-white flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex-1 min-w-0">
                 <span className="text-xs font-bold text-[#4ade80] uppercase tracking-wider block">
                   Order #{previewImage.displayOrder}
                 </span>
@@ -920,12 +938,12 @@ export const AdminGallery: React.FC = () => {
                     }
                   }}
                   placeholder="Add a caption..."
-                  className="bg-transparent text-base font-bold text-white border-b border-gray-700 focus:border-[#4ade80] outline-none w-full mt-1"
+                  className="bg-transparent text-sm sm:text-base font-bold text-white border-b border-gray-700 focus:border-[#4ade80] outline-none w-full mt-1"
                 />
               </div>
               <button
                 onClick={() => handleDeleteImage(previewImage)}
-                className="flex-shrink-0 flex items-center gap-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold px-3 py-2 rounded transition-colors"
+                className="flex-shrink-0 flex items-center justify-center gap-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold px-3 py-2 rounded transition-colors w-full sm:w-auto"
               >
                 <Trash2 className="w-4 h-4" />
                 DELETE
@@ -955,7 +973,7 @@ export const AdminGallery: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleAddVideoSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleAddVideoSubmit} className="p-4 sm:p-6 space-y-4">
               {videosError && (
                 <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
                   {videosError}
@@ -1049,16 +1067,16 @@ export const AdminGallery: React.FC = () => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               />
             </div>
-            <div className="p-4 bg-gray-900 text-white flex items-center justify-between gap-4">
-              <div className="flex-1">
-                <h3 className="text-base font-bold text-white">{previewVideo.title}</h3>
+            <div className="p-4 bg-gray-900 text-white flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm sm:text-base font-bold text-white truncate">{previewVideo.title}</h3>
                 <span className="text-xs text-gray-400">
                   Added {new Date(previewVideo.createdAt).toLocaleDateString()}
                 </span>
               </div>
               <button
                 onClick={() => handleDeleteVideo(previewVideo)}
-                className="flex-shrink-0 flex items-center gap-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold px-3 py-2 rounded transition-colors"
+                className="flex-shrink-0 flex items-center justify-center gap-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold px-3 py-2 rounded transition-colors w-full sm:w-auto"
               >
                 <Trash2 className="w-4 h-4" />
                 DELETE
@@ -1088,7 +1106,7 @@ export const AdminGallery: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleVigilanceUploadSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleVigilanceUploadSubmit} className="p-4 sm:p-6 space-y-4">
               {vigilanceError && (
                 <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
                   {vigilanceError}
@@ -1179,8 +1197,8 @@ export const AdminGallery: React.FC = () => {
                 fallbackText={previewVigilance.caption || "Image"}
               />
             </div>
-            <div className="p-4 bg-gray-900 text-white flex items-center justify-between gap-4">
-              <div className="flex-1">
+            <div className="p-4 bg-gray-900 text-white flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span
                     className={`text-[9px] font-extrabold px-2 py-0.5 rounded-xs uppercase tracking-wider ${
@@ -1203,13 +1221,13 @@ export const AdminGallery: React.FC = () => {
                     }
                   }}
                   placeholder="Add a caption..."
-                  className="bg-transparent text-base font-bold text-white border-b border-gray-700 focus:border-[#4ade80] outline-none w-full mt-1"
+                  className="bg-transparent text-sm sm:text-base font-bold text-white border-b border-gray-700 focus:border-[#4ade80] outline-none w-full mt-1"
                 />
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
                 <button
                   onClick={() => handleToggleVigilanceStatus(previewVigilance)}
-                  className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-2 rounded transition-colors"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-2 rounded transition-colors"
                 >
                   {previewVigilance.isActive ? (
                     <EyeOff className="w-4 h-4" />
@@ -1220,7 +1238,7 @@ export const AdminGallery: React.FC = () => {
                 </button>
                 <button
                   onClick={() => handleDeleteVigilance(previewVigilance)}
-                  className="flex items-center gap-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold px-3 py-2 rounded transition-colors"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold px-3 py-2 rounded transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                   DELETE

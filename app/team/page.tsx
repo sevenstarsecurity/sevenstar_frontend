@@ -3,7 +3,7 @@ import { Navbar } from "@/src/components/layout/Navbar";
 import { TopBar } from "@/src/components/layout/TopBar";
 import { ExecutiveCommittee } from "@/src/components/team/ExecutiveCommittee";
 import { FireSafetyAffiliate } from "@/src/components/team/FireSafetyAffiliate";
-import { NationalScale } from "@/src/components/team/NationalScale";
+// import { NationalScale } from "@/src/components/team/NationalScale";
 import { OperationsDivisions } from "@/src/components/team/OperationsDivisions";
 import { StrategicAdvisors } from "@/src/components/team/StrategicAdvisors";
 import { TeamHeroBanner } from "@/src/components/team/TeamHeroBanner";
@@ -39,7 +39,7 @@ export default function TeamPage() {
         <OperationsDivisions />
 
         {/* 5. National Scale Hubs */}
-        <NationalScale />
+        {/* <NationalScale /> */}
 
         {/* 6. Fire & Safety Premium Affiliate */}
         <FireSafetyAffiliate />
