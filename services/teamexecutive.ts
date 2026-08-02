@@ -24,7 +24,7 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-interface ApiMeta {
+interface ApiPagination {
   page: number;
   limit: number;
   total: number;
@@ -33,18 +33,18 @@ interface ApiMeta {
   hasPrevPage?: boolean;
 }
 
+// The actual shape: { success, message, data: { members: [...], pagination: {...} }, statusCode }
 interface ApiResponse<T> {
   success: boolean;
   message: string;
-  data: T;
-  meta?: ApiMeta;
+  data: {
+    members: T[];
+    pagination: ApiPagination;
+  };
   statusCode: number;
 }
 
-// ─── List endpoint (works for both public + authenticated admin calls) ────
-// The backend uses ONE route for executives — /executives — for reading.
-// Admin auth is handled via the Bearer token attached in api.ts, not via a
-// separate /admin/* path. There is no /admin/executives route.
+// ─── Admin endpoint (auth required) ────────────────────────────────────────
 
 export interface ListExecutivesParams {
   page?: number;
@@ -53,42 +53,51 @@ export interface ListExecutivesParams {
   status?: "active" | "inactive" | "all";
 }
 
-export const getExecutives = async (
+export const getAdminExecutives = async (
   params: ListExecutivesParams = {}
 ): Promise<PaginatedResponse<Executive>> => {
-  const res = await api.get<ApiResponse<Executive[]>>("/admin/executive", { params });
-  const items = Array.isArray(res.data.data) ? res.data.data : [];
-  const meta = res.data.meta;
+  const res = await api.get<ApiResponse<Executive>>("/admin/executive", { params });
+  const items = res.data.data?.members ?? [];
+  const pagination = res.data.data?.pagination;
 
   return {
     items,
-    total: meta?.total ?? items.length,
-    page: meta?.page ?? 1,
-    limit: meta?.limit ?? items.length,
-    totalPages: meta?.totalPages ?? 1,
+    total: pagination?.total ?? items.length,
+    page: pagination?.page ?? 1,
+    limit: pagination?.limit ?? items.length,
+    totalPages: pagination?.totalPages ?? 1,
   };
 };
 
-// Kept as an alias so existing imports (getAdminExecutives) don't break.
-export const getAdminExecutives = getExecutives;
-export const getPublicExecutives = async (): Promise<Executive[]> => {
-  const res = await getExecutives();
-  return res.items;
-};
+// Back-compat alias
+export const getExecutives = getAdminExecutives;
 
-export const getExecutiveById = async (id: string): Promise<Executive> => {
-  const res = await api.get<ApiResponse<Executive>>(`/admin/executive/${id}`);
+export const getAdminExecutive = async (id: string): Promise<Executive> => {
+  const res = await api.get<{ success: boolean; message: string; data: Executive; statusCode: number }>(
+    `/admin/executive/${id}`
+  );
   return res.data.data;
 };
-export const getAdminExecutive = getExecutiveById;
-export const getPublicExecutive = getExecutiveById;
+export const getExecutiveById = getAdminExecutive;
 
-// ─── Create / Update / Delete ──────────────────────────────────────────────
+// ─── Public endpoint (no auth) ─────────────────────────────────────────────
 
-// The backend accepts multipart/form-data directly on this route — the
-// image file goes under the field name "file" (confirmed via Postman on the
-// matching /admin/leadership route). It uploads to Cloudinary server-side
-// and returns imageUrl + cloudinaryId in the response.
+export const getPublicExecutives = async (): Promise<Executive[]> => {
+  const res = await api.get<ApiResponse<Executive>>("/executive", {
+    public: true,
+  });
+  return res.data.data?.members ?? [];
+};
+
+export const getPublicExecutive = async (id: string): Promise<Executive> => {
+  const res = await api.get<{ success: boolean; message: string; data: Executive; statusCode: number }>(
+    `/executive/${id}`,
+    { public: true }
+  );
+  return res.data.data;
+};
+
+// ─── Create / Update / Delete (admin-only, always authenticated) ──────────
 
 export interface CreateExecutivePayload {
   name: string;
@@ -116,9 +125,11 @@ export const createExecutive = async (
     formData.append("file", payload.image);
   }
 
-  const res = await api.post<ApiResponse<Executive>>("/admin/executive", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const res = await api.post<{ success: boolean; message: string; data: Executive; statusCode: number }>(
+    "/admin/executive",
+    formData,
+    { headers: { "Content-Type": "multipart/form-data" } }
+  );
   return res.data.data;
 };
 
@@ -140,9 +151,11 @@ export const updateExecutive = async (
     formData.append("file", updates.image);
   }
 
-  const res = await api.put<ApiResponse<Executive>>(`/admin/executive/${id}`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const res = await api.put<{ success: boolean; message: string; data: Executive; statusCode: number }>(
+    `/admin/executive/${id}`,
+    formData,
+    { headers: { "Content-Type": "multipart/form-data" } }
+  );
   return res.data.data;
 };
 
@@ -150,9 +163,10 @@ export const toggleExecutiveStatus = async (
   id: string,
   isActive: boolean
 ): Promise<Executive> => {
-  const res = await api.patch<ApiResponse<Executive>>(`/admin/executive/${id}/status`, {
-    isActive,
-  });
+  const res = await api.patch<{ success: boolean; message: string; data: Executive; statusCode: number }>(
+    `/admin/executive/${id}/status`,
+    { isActive }
+  );
   return res.data.data;
 };
 
