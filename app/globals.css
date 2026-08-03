@@ -115,3 +115,20 @@ body {
   transform: scaleX(1);
   opacity: 1;
 }
+
+/* Clean Outward Pulse animation for WhatsApp button (no inner glow) */
+@keyframes whatsappGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgba(37, 211, 102, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
+
+.whatsapp-glow {
+  animation: whatsappGlow 2s infinite;
+}
