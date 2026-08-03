@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "./api";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -52,13 +53,35 @@ interface ApiResponse<T> {
 
 // ─── Public Endpoint (no auth) ─────────────────────────────────────────────
 // Returns active social links, sorted by displayOrder.
+// NOTE: if the public route isn't deployed yet (404), falls back to the
+// admin route on a plain axios instance so visitors aren't redirected to
+// the admin login and the site still loads.
+
+const publicApi = axios.create({
+  baseURL: api.defaults.baseURL,
+});
 
 export const getPublicSocialLinks = async (): Promise<SocialLink[]> => {
-  const res = await api.get<RawListResponse<SocialLink>>("/social-media", {
-    public: true,
-  });
-  const items = Array.isArray(res.data.data) ? res.data.data : [];
-  return [...items].sort((a, b) => a.displayOrder - b.displayOrder);
+  try {
+    const res = await publicApi.get<RawListResponse<SocialLink>>("/social-media");
+    const items = Array.isArray(res.data.data) ? res.data.data : [];
+    return [...items].sort((a, b) => a.displayOrder - b.displayOrder);
+  } catch (err: any) {
+    if (err?.response?.status === 404) {
+      try {
+        const fallbackRes = await publicApi.get<RawListResponse<SocialLink>>(
+          "/admin/social-media"
+        );
+        const items = Array.isArray(fallbackRes.data.data)
+          ? fallbackRes.data.data
+          : [];
+        return [...items].sort((a, b) => a.displayOrder - b.displayOrder);
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
 };
 
 // ─── Admin Endpoints ────────────────────────────────────────────────────────

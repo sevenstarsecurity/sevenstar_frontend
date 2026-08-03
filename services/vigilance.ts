@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "./api";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -45,10 +46,34 @@ interface ApiResponse<T> {
 
 // ─── Public Endpoint ────────────────────────────────────────────────────────
 // Confirmed: GET /api/vigilance -> active images, displayOrder ASC
+// NOTE: if the public route isn't deployed yet (404), falls back to the
+// admin route on a plain axios instance so visitors aren't redirected to
+// the admin login and the site still loads.
+
+const publicApi = axios.create({
+  baseURL: api.defaults.baseURL,
+});
 
 export const getPublicVigilanceImages = async (): Promise<VigilanceImage[]> => {
-  const res = await api.get<ApiResponse<VigilanceImage[]>>("/vigilance");
-  return Array.isArray(res.data.data) ? res.data.data : [];
+  try {
+    const res = await publicApi.get<ApiResponse<VigilanceImage[]>>("/vigilance");
+    return Array.isArray(res.data.data) ? res.data.data : [];
+  } catch (err: any) {
+    if (err?.response?.status === 404) {
+      try {
+        const fallbackRes = await publicApi.get<RawListResponse<VigilanceImage>>(
+          "/admin/vigilance"
+        );
+        const items = Array.isArray(fallbackRes.data.data)
+          ? fallbackRes.data.data
+          : [];
+        return items;
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
 };
 
 // ─── Admin Endpoints ────────────────────────────────────────────────────────
