@@ -97,9 +97,9 @@ export const LeadershipSection: React.FC = () => {
                 }`}
                 style={{ transitionDelay: `${i * 120}ms` }}
               >
-                {/* Circular Photo with Outer Golden Border Ring */}
-                <div className="p-1 rounded-full border-2 border-[#f3d37a] shadow-sm mb-6 group-hover:scale-105 transition-transform duration-300">
-                  <div className="w-40 h-40 md:w-44 md:h-44 rounded-full overflow-hidden bg-gray-100 shadow-inner">
+                {/* Rectangular Photo with Gold Frame */}
+                <div className="p-1 border-4 border-[#deb853] bg-[#FFDF96] shadow-md w-[270px] h-[306px] mx-auto mb-6 group-hover:scale-105 transition-transform duration-300 opacity-100">
+                  <div className="w-full h-full overflow-hidden bg-gray-100">
                     <ImageFallback
                       src={leader.imageUrl}
                       alt={leader.name}

@@ -2,8 +2,8 @@ import { Footer } from "@/src/components/layout/Footer";
 import { Navbar } from "@/src/components/layout/Navbar";
 import { TopBar } from "@/src/components/layout/TopBar";
 import { ExecutiveCommittee } from "@/src/components/team/ExecutiveCommittee";
+import { TeamStaffSection } from "@/src/components/team/TeamStaffSection";
 import { FireSafetyAffiliate } from "@/src/components/team/FireSafetyAffiliate";
-// import { NationalScale } from "@/src/components/team/NationalScale";
 import { OperationsDivisions } from "@/src/components/team/OperationsDivisions";
 import { StrategicAdvisors } from "@/src/components/team/StrategicAdvisors";
 import { TeamHeroBanner } from "@/src/components/team/TeamHeroBanner";
@@ -12,7 +12,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Our Team | Seven Star Security Services",
   description:
-    "Meet the team behind your safety — executive leadership, strategic advisors, operations divisions, and national command hubs of Seven Star Security Services.",
+    "Meet the team behind your safety — executive leadership, staff members, strategic advisors, operations divisions, and national command hubs of Seven Star Security Services.",
 };
 
 export default function TeamPage() {
@@ -32,20 +32,18 @@ export default function TeamPage() {
         {/* 2. Executive Committee */}
         <ExecutiveCommittee />
 
-        {/* 3. Strategic Advisors */}
+        {/* 3. Our Staff */}
+        <TeamStaffSection />
+
+        {/* 4. Strategic Advisors */}
         <StrategicAdvisors />
 
-        {/* 4. Tabbed Operations Divisions */}
+        {/* 5. Tabbed Operations Divisions */}
         <OperationsDivisions />
-
-        {/* 5. National Scale Hubs */}
-        {/* <NationalScale /> */}
 
         {/* 6. Fire & Safety Premium Affiliate */}
         <FireSafetyAffiliate />
       </main>
-
-      {/* Newsletter Bar */}
 
       {/* Footer */}
       <Footer />

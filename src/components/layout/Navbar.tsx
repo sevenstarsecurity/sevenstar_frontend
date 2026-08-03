@@ -52,8 +52,8 @@ export const Navbar: React.FC = () => {
                 key={item.name}
                 href={item.href}
                 className={`transition-colors relative py-1 inline-flex items-center nav-heartbeat-item ${isActive
-                    ? "text-[#004E24] active-nav font-bold"
-                    : "text-[#3F4940] hover:text-[#004E24] font-medium"
+                  ? "text-[#004E24] active-nav font-bold"
+                  : "text-[#3F4940] hover:text-[#004E24] font-medium"
                   }`}
                 style={{
                   fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
@@ -74,7 +74,7 @@ export const Navbar: React.FC = () => {
         {/* Right CTA Button */}
         <div className="hidden lg:flex items-center">
           <Link
-            href="/contact"
+            href="/pdf/sevenstar%20.pdf"
             onClick={() => setMobileMenuOpen(false)}
             className="bg-[#c8102e] hover:bg-[#a60d25] text-white font-bold text-xs uppercase px-6 py-3 rounded-xs shadow-sm hover:shadow-md transition-all duration-200 tracking-wider"
           >

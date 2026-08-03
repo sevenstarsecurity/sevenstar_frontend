@@ -8,7 +8,7 @@ export const NotFoundUI: React.FC = () => {
   return (
     <main className="min-h-screen w-full  text-white flex flex-col items-center justify-between p-6 relative overflow-hidden font-sans select-none">
       {/* Background Subtle Gradient Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-950/20 via-[#060913] to-[#060913] pointer-events-none" />
+<div className="absolute inset-0 pointer-events-none bg-gradient-radial from-blue-950/20 via-[#060913] to-[#060913]" />
 
       {/* Top Spacer / Balance */}
       <div className="w-full" />
@@ -33,9 +33,9 @@ export const NotFoundUI: React.FC = () => {
         </div>
 
         {/* Giant Gradient 404 Text */}
-        <h1 className="text-8xl sm:text-9xl md:text-[150px] font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-b from-red-400 via-red-500 to-red-600 my-1 drop-shadow-2xl">
-          404
-        </h1>
+  <h1 className="text-8xl sm:text-9xl md:text-[150px] font-black tracking-tight leading-none text-red-600 my-1 drop-shadow-2xl">
+  404
+</h1>
 
         {/* Main Subheading */}
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#f83b3b] tracking-wider uppercase mb-5">
@@ -53,12 +53,12 @@ export const NotFoundUI: React.FC = () => {
         </p>
 
         {/* Return to Base CTA Button */}
-        <Link
-          href="/"
-          className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-md bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-extrabold text-sm sm:text-base tracking-wider uppercase shadow-lg shadow-red-950/60 hover:shadow-red-600/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
-        >
-          RETURN TO BASE &rarr;
-        </Link>
+<Link
+  href="/"
+  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-md bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm sm:text-base tracking-wider uppercase shadow-lg shadow-red-600/30 transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
+>
+  RETURN TO BASE &rarr;
+</Link>
       </div>
 
       {/* Footer Status Incident ID */}
