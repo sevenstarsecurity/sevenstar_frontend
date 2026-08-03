@@ -1,10 +1,10 @@
 "use client";
 
+import { Client, getPublicClients } from "@/services/clients";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { companyLogos } from "../../data/companyLogos";
 import { ImageFallback } from "../ui/ImageFallback";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Client, getPublicClients } from "@/services/clients";
 
 interface CarouselLogo {
   id: string;
@@ -87,7 +87,7 @@ export const LogoCarousel: React.FC = () => {
             {marqueeLogos.map((logo, index) => (
               <div
                 key={`${logo.id}-${index}`}
-                className="flex items-center justify-center flex-shrink-0 h-14 w-40 grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300 transform hover:scale-105"
+className="flex items-center justify-center flex-shrink-0 h-14 w-40 transition-all duration-300 transform hover:scale-105"
               >
                 <ImageFallback
                   src={logo.src}

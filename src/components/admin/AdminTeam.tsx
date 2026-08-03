@@ -51,11 +51,20 @@ import {
   deleteLeader,
 } from "@/services/leadership";
 
+import {
+  Staff,
+  getAdminStaff,
+  createStaff,
+  updateStaff,
+  toggleStaffStatus,
+  deleteStaff,
+} from "@/services/staff";
+
 
 // ─── Shared types ───────────────────────────────────────────────────────────
 
-type SectionKey = "Team" | "Leadership";
-type Person = Executive | Leader;
+type SectionKey = "Team" | "Leadership" | "Staff";
+type Person = Executive | Leader | Staff;
 
 const navItems = [
   { name: "Overview", icon: LayoutGrid, href: "/admin/dashboard" },
@@ -80,12 +89,18 @@ export const AdminTeam: React.FC = () => {
   // ─── Data state ─────────────────────────────────────────────────────────
   const [executives, setExecutives] = useState<Executive[]>([]);
   const [leaders, setLeaders] = useState<Leader[]>([]);
+  const [staffMembers, setStaffMembers] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const currentList: Person[] = activeSection === "Team" ? executives : leaders;
+  const currentList: Person[] =
+    activeSection === "Team"
+      ? executives
+      : activeSection === "Leadership"
+      ? leaders
+      : staffMembers;
 
-  // ─── Form state (shared shape for both Executive & Leader) ────────────────
+  // ─── Form state (shared shape for Executive, Leader & Staff) ──────────────
   const [editingId, setEditingId] = useState<string | null>(null);
   const [fullName, setFullName] = useState("");
   const [officialRole, setOfficialRole] = useState("");
@@ -123,9 +138,23 @@ export const AdminTeam: React.FC = () => {
     }
   };
 
+  const loadStaff = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await getAdminStaff();
+      setStaffMembers(res.items);
+    } catch (err: any) {
+      setError(err?.message || "Failed to load staff members");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const refreshCurrentSection = () => {
     if (activeSection === "Team") loadExecutives();
-    else loadLeaders();
+    else if (activeSection === "Leadership") loadLeaders();
+    else loadStaff();
   };
 
   useEffect(() => {
@@ -168,9 +197,12 @@ export const AdminTeam: React.FC = () => {
       if (activeSection === "Team") {
         const updated = await toggleExecutiveStatus(person.id, !person.isActive);
         setExecutives((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-      } else {
+      } else if (activeSection === "Leadership") {
         const updated = await toggleLeaderStatus(person.id, !person.isActive);
         setLeaders((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+      } else {
+        const updated = await toggleStaffStatus(person.id, !person.isActive);
+        setStaffMembers((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
       }
     } catch (err: any) {
       setError(err?.message || "Failed to update status");
@@ -183,9 +215,12 @@ export const AdminTeam: React.FC = () => {
       if (activeSection === "Team") {
         await deleteExecutive(id);
         setExecutives((prev) => prev.filter((p) => p.id !== id));
-      } else {
+      } else if (activeSection === "Leadership") {
         await deleteLeader(id);
         setLeaders((prev) => prev.filter((p) => p.id !== id));
+      } else {
+        await deleteStaff(id);
+        setStaffMembers((prev) => prev.filter((p) => p.id !== id));
       }
     } catch (err: any) {
       setError(err?.message || "Failed to delete");
@@ -225,13 +260,21 @@ export const AdminTeam: React.FC = () => {
           const created = await createExecutive(payload);
           setExecutives((prev) => [created, ...prev]);
         }
-      } else {
+      } else if (activeSection === "Leadership") {
         if (editingId) {
           const updated = await updateLeader(editingId, payload);
           setLeaders((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
         } else {
           const created = await createLeader(payload);
           setLeaders((prev) => [created, ...prev]);
+        }
+      } else {
+        if (editingId) {
+          const updated = await updateStaff(editingId, payload);
+          setStaffMembers((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+        } else {
+          const created = await createStaff(payload);
+          setStaffMembers((prev) => [created, ...prev]);
         }
       }
       setShowConfigPanel(false);
@@ -258,8 +301,18 @@ export const AdminTeam: React.FC = () => {
     currentPage * pageSize
   );
 
-  const sectionLabel = activeSection === "Team" ? "TEAM MEMBERS" : "LEADERSHIP";
-  const addButtonLabel = activeSection === "Team" ? "Add Team Member" : "Add Leader";
+  const sectionLabel =
+    activeSection === "Team"
+      ? "TEAM MEMBERS"
+      : activeSection === "Leadership"
+      ? "LEADERSHIP"
+      : "STAFF";
+  const addButtonLabel =
+    activeSection === "Team"
+      ? "Add Team Member"
+      : activeSection === "Leadership"
+      ? "Add Leader"
+      : "Add Staff Member";
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
@@ -308,9 +361,9 @@ export const AdminTeam: React.FC = () => {
 
         {/* MAIN BODY AREA */}
         <main className="p-4 sm:p-6 space-y-4 sm:space-y-6 flex-1 max-w-[1600px] w-full mx-auto">
-          {/* SECTION TABS: Team / Leadership */}
+          {/* SECTION TABS: Team / Leadership / Staff */}
           <div className="flex items-center gap-2 border-b border-gray-200 overflow-x-auto no-scrollbar">
-            {(["Team", "Leadership"] as SectionKey[]).map((section) => (
+            {(["Team", "Leadership", "Staff"] as SectionKey[]).map((section) => (
               <button
                 key={section}
                 onClick={() => setActiveSection(section)}
@@ -320,7 +373,11 @@ export const AdminTeam: React.FC = () => {
                     : "border-transparent text-gray-400 hover:text-gray-700"
                 }`}
               >
-                {section === "Team" ? "Team Members" : "Leadership"}
+                {section === "Team"
+                  ? "Team Members"
+                  : section === "Leadership"
+                  ? "Leadership"
+                  : "Staff"}
               </button>
             ))}
           </div>
@@ -329,12 +386,18 @@ export const AdminTeam: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">
-                {activeSection === "Team" ? "Team Members" : "Leadership"}
+                {activeSection === "Team"
+                  ? "Team Members"
+                  : activeSection === "Leadership"
+                  ? "Leadership"
+                  : "Staff Members"}
               </h1>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
                 {activeSection === "Team"
                   ? "Manage security personnel, administrative staff, and field agents."
-                  : "Manage executive leadership profiles shown on the public site."}
+                  : activeSection === "Leadership"
+                  ? "Manage executive leadership profiles shown on the public site."
+                  : "Manage general staff members and operational team profiles."}
               </p>
             </div>
 
@@ -357,7 +420,12 @@ export const AdminTeam: React.FC = () => {
           <div className="bg-white border border-gray-200/90 rounded-md p-3.5 sm:p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 shadow-xs">
             <div className="space-y-1 flex-1">
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
-                SEARCH {activeSection === "Team" ? "MEMBER" : "LEADER"}
+                SEARCH{" "}
+                {activeSection === "Team"
+                  ? "MEMBER"
+                  : activeSection === "Leadership"
+                  ? "LEADER"
+                  : "STAFF"}
               </label>
               <div className="relative flex items-center">
                 <input
@@ -398,13 +466,24 @@ export const AdminTeam: React.FC = () => {
               {loading && (
                 <div className="py-10 text-center text-gray-400">
                   <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2" />
-                  Loading {activeSection === "Team" ? "team members" : "leadership"}...
+                  Loading{" "}
+                  {activeSection === "Team"
+                    ? "team members"
+                    : activeSection === "Leadership"
+                    ? "leadership"
+                    : "staff members"}...
                 </div>
               )}
 
               {!loading && pagedList.length === 0 && (
                 <div className="py-10 text-center text-gray-400 font-semibold text-xs">
-                  No {activeSection === "Team" ? "team members" : "leaders"} found.
+                  No{" "}
+                  {activeSection === "Team"
+                    ? "team members"
+                    : activeSection === "Leadership"
+                    ? "leaders"
+                    : "staff members"}{" "}
+                  found.
                 </div>
               )}
 
@@ -506,7 +585,12 @@ export const AdminTeam: React.FC = () => {
                     <tr>
                       <td colSpan={6} className="py-10 text-center text-gray-400">
                         <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2" />
-                        Loading {activeSection === "Team" ? "team members" : "leadership"}...
+                        Loading{" "}
+                        {activeSection === "Team"
+                          ? "team members"
+                          : activeSection === "Leadership"
+                          ? "leadership"
+                          : "staff members"}...
                       </td>
                     </tr>
                   )}
@@ -514,7 +598,13 @@ export const AdminTeam: React.FC = () => {
                   {!loading && pagedList.length === 0 && (
                     <tr>
                       <td colSpan={6} className="py-10 text-center text-gray-400 font-semibold">
-                        No {activeSection === "Team" ? "team members" : "leaders"} found.
+                        No{" "}
+                        {activeSection === "Team"
+                          ? "team members"
+                          : activeSection === "Leadership"
+                          ? "leaders"
+                          : "staff members"}{" "}
+                        found.
                       </td>
                     </tr>
                   )}
@@ -666,7 +756,11 @@ export const AdminTeam: React.FC = () => {
                 <div>
                   <h3 className="text-base font-bold text-gray-900 tracking-tight">
                     {editingId ? "Edit" : "New"}{" "}
-                    {activeSection === "Team" ? "Team Member" : "Leader"}
+                    {activeSection === "Team"
+                      ? "Team Member"
+                      : activeSection === "Leadership"
+                      ? "Leader"
+                      : "Staff Member"}
                   </h3>
                   <p className="text-[10px] font-bold text-gray-500 tracking-widest uppercase mt-0.5">
                     IDENTITY &amp; PROFILE DETAILS
