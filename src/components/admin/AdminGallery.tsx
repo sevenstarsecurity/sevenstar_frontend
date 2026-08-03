@@ -319,7 +319,7 @@ export const AdminGallery: React.FC = () => {
       const updated = await updateGalleryImage(editingImage.id, {
         caption: editCaption || undefined,
         displayOrder: editDisplayOrder ? Number(editDisplayOrder) : undefined,
-        image: editImageFile || undefined,
+        file: editImageFile || undefined,
       });
       setImages((prev) =>
         (prev ?? []).map((img) => (img.id === updated.id ? updated : img))
@@ -501,7 +501,7 @@ export const AdminGallery: React.FC = () => {
         displayOrder: editVigilanceDisplayOrder
           ? Number(editVigilanceDisplayOrder)
           : undefined,
-        image: editVigilanceFile || undefined,
+        file: editVigilanceFile || undefined,
       });
       setVigilanceImages((prev) =>
         (prev ?? []).map((img) => (img.id === updated.id ? updated : img))
