@@ -26,6 +26,10 @@ import {
   Building,
   Loader2,
   Briefcase,
+  UserPlus,
+  UserCog,
+  EyeOff,
+  Eye,
 } from "lucide-react";
 import { ImageFallback } from "../ui/ImageFallback";
 import {
@@ -33,8 +37,15 @@ import {
   createBranch,
   updateBranch,
   deleteBranch,
+  getBranchStaff,
+  addBranchStaff,
+  updateBranchStaff,
+  toggleBranchStaffStatus,
+  deleteBranchStaff,
   Branch,
+  BranchStaff,
   CreateBranchPayload,
+  CreateStaffPayload,
 } from "@/services/branches";
 
 export const AdminBranches: React.FC = () => {
@@ -49,6 +60,30 @@ export const AdminBranches: React.FC = () => {
   // Read-only profile view — separate from the edit modal, no form/inputs
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewBranch, setViewBranch] = useState<Branch | null>(null);
+
+  // Staff management (shared between the View Profile modal AND the
+  // Edit Branch modal — both read/write the same state + handlers)
+  const [staffList, setStaffList] = useState<BranchStaff[]>([]);
+  const [isLoadingStaff, setIsLoadingStaff] = useState(false);
+  const [staffError, setStaffError] = useState("");
+  const [showStaffForm, setShowStaffForm] = useState(false);
+  const [editingStaff, setEditingStaff] = useState<BranchStaff | null>(null);
+  const [staffName, setStaffName] = useState("");
+  const [staffDesignation, setStaffDesignation] = useState("");
+  const [staffDisplayOrder, setStaffDisplayOrder] = useState("");
+  const [isSavingStaff, setIsSavingStaff] = useState(false);
+
+  // The branch currently "active" for staff operations — works whether
+  // we're inside the Edit modal (selectedBranch) or the View modal (viewBranch)
+  const activeStaffBranch = selectedBranch ?? viewBranch;
+
+  // Staff queued up while creating a brand-new branch (no id yet, so these
+  // can't hit the API until the branch itself is saved). Each gets a
+  // temporary local id just for list rendering/removal.
+  const [pendingStaff, setPendingStaff] = useState<
+    (CreateStaffPayload & { _tempId: string })[]
+  >([]);
+  const isNewBranch = showAddModal && !selectedBranch;
 
   // Form State
   const [branchName, setBranchName] = useState("");
@@ -116,17 +151,184 @@ export const AdminBranches: React.FC = () => {
     setLongitude(branch.longitude != null ? String(branch.longitude) : "");
     setGoogleMapsUrl(branch.googleMapsUrl ?? "");
     setShowAddModal(true);
+
+    // Load staff so it's manageable right here in the edit modal too,
+    // not just from "View Full Profile".
+    resetStaffForm();
+    setStaffList(branch.staffMembers ?? []);
+    loadStaff(branch.id);
   };
 
   const handleCreateNew = () => {
     setSelectedBranch(null);
     resetForm();
+    setStaffList([]);
+    setPendingStaff([]);
+    setStaffError("");
+    setShowStaffForm(false);
+    resetStaffForm();
     setShowAddModal(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setShowAddModal(false);
+    setSelectedBranch(null);
+    setStaffList([]);
+    setPendingStaff([]);
+    setStaffError("");
+    setShowStaffForm(false);
+    resetStaffForm();
   };
 
   const handleView = (branch: Branch) => {
     setViewBranch(branch);
     setShowViewModal(true);
+    // Seed with whatever staffMembers came embedded on the branch,
+    // then refresh from the dedicated endpoint for the latest state.
+    setStaffList(branch.staffMembers ?? []);
+    loadStaff(branch.id);
+  };
+
+  const loadStaff = async (branchId: string) => {
+    setIsLoadingStaff(true);
+    setStaffError("");
+    try {
+      const staff = await getBranchStaff(branchId);
+      setStaffList(Array.isArray(staff) ? staff : []);
+    } catch (err: any) {
+      setStaffError(
+        err?.response?.data?.message || err?.message || "Failed to load staff."
+      );
+    } finally {
+      setIsLoadingStaff(false);
+    }
+  };
+
+  const resetStaffForm = () => {
+    setEditingStaff(null);
+    setStaffName("");
+    setStaffDesignation("");
+    setStaffDisplayOrder("");
+    setStaffError("");
+  };
+
+  const handleOpenAddStaff = () => {
+    resetStaffForm();
+    setShowStaffForm(true);
+  };
+
+  const handleOpenEditStaff = (staff: BranchStaff) => {
+    setEditingStaff(staff);
+    setStaffName(staff.name ?? "");
+    setStaffDesignation(staff.designation ?? "");
+    setStaffDisplayOrder(staff.displayOrder != null ? String(staff.displayOrder) : "");
+    setStaffError("");
+    setShowStaffForm(true);
+  };
+
+  const handleStaffSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!staffName.trim()) {
+      setStaffError("Please enter a staff member's name.");
+      return;
+    }
+
+    const payload: CreateStaffPayload = {
+      name: staffName.trim(),
+      designation: staffDesignation.trim() || undefined,
+      displayOrder: staffDisplayOrder ? Number(staffDisplayOrder) : undefined,
+    };
+
+    // No saved branch yet (still on "Register New Branch") — queue locally,
+    // no API call, nothing to send a branchId to.
+    if (!activeStaffBranch) {
+      if (editingStaff && "_tempId" in editingStaff) {
+        const tempId = (editingStaff as any)._tempId;
+        setPendingStaff((prev) =>
+          prev.map((s) => (s._tempId === tempId ? { ...payload, _tempId: tempId } : s))
+        );
+      } else {
+        setPendingStaff((prev) => [
+          ...prev,
+          { ...payload, _tempId: `tmp_${Date.now()}_${Math.random().toString(36).slice(2)}` },
+        ]);
+      }
+      setShowStaffForm(false);
+      resetStaffForm();
+      return;
+    }
+
+    setIsSavingStaff(true);
+    setStaffError("");
+
+    try {
+      if (editingStaff) {
+        const updated = await updateBranchStaff(
+          activeStaffBranch.id,
+          editingStaff.id,
+          payload
+        );
+        setStaffList((prev) =>
+          (prev ?? []).map((s) => (s.id === updated.id ? updated : s))
+        );
+      } else {
+        const created = await addBranchStaff(activeStaffBranch.id, payload);
+        setStaffList((prev) => [...(prev ?? []), created]);
+      }
+      setShowStaffForm(false);
+      resetStaffForm();
+    } catch (err: any) {
+      setStaffError(
+        err?.response?.data?.message || err?.message || "Failed to save staff member."
+      );
+    } finally {
+      setIsSavingStaff(false);
+    }
+  };
+
+  const handleToggleStaffStatus = async (staff: BranchStaff) => {
+    if (!activeStaffBranch) return;
+    try {
+      const updated = await toggleBranchStaffStatus(
+        activeStaffBranch.id,
+        staff.id,
+        !staff.isActive
+      );
+      setStaffList((prev) =>
+        (prev ?? []).map((s) => (s.id === updated.id ? updated : s))
+      );
+    } catch (err: any) {
+      alert(
+        err?.response?.data?.message || err?.message || "Failed to update status."
+      );
+    }
+  };
+
+  const handleDeleteStaff = async (staff: BranchStaff) => {
+    if (!activeStaffBranch) return;
+    if (!confirm(`Remove "${staff.name}" from this branch?`)) return;
+    try {
+      await deleteBranchStaff(activeStaffBranch.id, staff.id);
+      setStaffList((prev) => (prev ?? []).filter((s) => s.id !== staff.id));
+    } catch (err: any) {
+      alert(
+        err?.response?.data?.message || err?.message || "Failed to remove staff member."
+      );
+    }
+  };
+
+  const handleRemovePendingStaff = (tempId: string) => {
+    setPendingStaff((prev) => prev.filter((s) => s._tempId !== tempId));
+  };
+
+  const handleOpenEditPendingStaff = (staff: CreateStaffPayload & { _tempId: string }) => {
+    setEditingStaff({ ...staff, id: staff._tempId } as any);
+    setStaffName(staff.name ?? "");
+    setStaffDesignation(staff.designation ?? "");
+    setStaffDisplayOrder(staff.displayOrder != null ? String(staff.displayOrder) : "");
+    setStaffError("");
+    setShowStaffForm(true);
   };
 
   const handleDelete = async (branch: Branch) => {
@@ -161,12 +363,43 @@ export const AdminBranches: React.FC = () => {
         setBranches((prev) =>
           (prev ?? []).map((b) => (b.id === updated.id ? updated : b))
         );
+        // Keep editing the same branch (with its staff list intact) instead
+        // of closing, since staff was likely just added/edited too.
+        setSelectedBranch(updated);
       } else {
         const created = await createBranch(payload);
-        setBranches((prev) => [...(prev ?? []), created]);
+        let finalBranch = created;
+        let savedStaff: BranchStaff[] = created.staffMembers ?? [];
+
+        // Flush any staff that were queued locally while the branch didn't
+        // have an id yet.
+        if (pendingStaff.length > 0) {
+          for (const p of pendingStaff) {
+            try {
+              const addedStaffMember = await addBranchStaff(created.id, {
+                name: p.name,
+                designation: p.designation,
+                displayOrder: p.displayOrder,
+              });
+              savedStaff = [...savedStaff, addedStaffMember];
+            } catch (staffErr: any) {
+              setStaffError(
+                staffErr?.response?.data?.message ||
+                  staffErr?.message ||
+                  `Failed to add staff member "${p.name}".`
+              );
+            }
+          }
+          finalBranch = { ...created, staffMembers: savedStaff };
+          setPendingStaff([]);
+        }
+
+        setBranches((prev) => [...(prev ?? []), finalBranch]);
+        // Newly created branch now has an id — switch into "edit mode" for
+        // it so the person can immediately add more staff without reopening.
+        setSelectedBranch(finalBranch);
+        setStaffList(savedStaff);
       }
-      setShowAddModal(false);
-      resetForm();
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || "Failed to save branch.");
     } finally {
@@ -181,6 +414,223 @@ export const AdminBranches: React.FC = () => {
     (sum, b) => sum + (b.staffMembers?.length || 0),
     0
   );
+
+  // Reusable staff section — rendered inside BOTH the Edit modal and the
+  // View Profile modal, driven by the same state/handlers above.
+  const renderStaffSection = () => {
+    const usingPending = !activeStaffBranch; // brand-new, unsaved branch
+    const count = usingPending ? pendingStaff.length : staffList.length;
+
+    return (
+    <div className="space-y-2.5">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+          Staff Members ({count})
+        </span>
+        <button
+          type="button"
+          onClick={handleOpenAddStaff}
+          className="flex items-center gap-1 text-[11px] font-bold text-[#0b4226] hover:underline uppercase tracking-wider cursor-pointer"
+        >
+          <UserPlus className="w-3.5 h-3.5" />
+          Add Staff
+        </button>
+      </div>
+
+      {usingPending && (
+        <p className="text-[10px] text-amber-600 font-semibold -mt-1">
+          Not saved yet — these will be added once you save the branch.
+        </p>
+      )}
+
+      {staffError && (
+        <div className="p-2 text-[11px] bg-red-50 border border-red-200 text-red-700 rounded">
+          {staffError}
+        </div>
+      )}
+
+      {usingPending ? (
+        pendingStaff.length === 0 ? (
+          <p className="text-xs text-gray-400 py-2">
+            No staff members yet. Add the first one.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {pendingStaff.map((staff) => (
+              <div
+                key={staff._tempId}
+                className="flex items-center justify-between gap-2 bg-[#fffbeb] border border-amber-200 rounded p-2.5"
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <p className="text-xs font-bold text-gray-900 truncate">
+                      {staff.name}
+                    </p>
+                    <span className="px-1.5 py-0.5 rounded-xs text-[8px] font-extrabold uppercase tracking-wider bg-amber-300 text-amber-900">
+                      PENDING
+                    </span>
+                  </div>
+                  {staff.designation && (
+                    <p className="text-[11px] text-gray-500 truncate">
+                      {staff.designation}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenEditPendingStaff(staff)}
+                    className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                    title="Edit staff member"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRemovePendingStaff(staff._tempId)}
+                    className="p-1.5 text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
+                    title="Remove staff member"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      ) : isLoadingStaff ? (
+        <div className="flex items-center gap-2 text-gray-400 py-3">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span className="text-xs font-semibold">Loading staff...</span>
+        </div>
+      ) : staffList.length === 0 ? (
+        <p className="text-xs text-gray-400 py-2">
+          No staff members yet. Add the first one.
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {staffList.map((staff) => (
+            <div
+              key={staff.id}
+              className="flex items-center justify-between gap-2 bg-[#f8fafc] border border-gray-200 rounded p-2.5"
+            >
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <p className="text-xs font-bold text-gray-900 truncate">
+                    {staff.name}
+                  </p>
+                  <span
+                    className={`px-1.5 py-0.5 rounded-xs text-[8px] font-extrabold uppercase tracking-wider ${
+                      staff.isActive
+                        ? "bg-[#22c55e] text-white"
+                        : "bg-gray-300 text-gray-700"
+                    }`}
+                  >
+                    {staff.isActive ? "ACTIVE" : "INACTIVE"}
+                  </span>
+                </div>
+                {staff.designation && (
+                  <p className="text-[11px] text-gray-500 truncate">
+                    {staff.designation}
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleOpenEditStaff(staff)}
+                  className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  title="Edit staff member"
+                >
+                  <Edit2 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleStaffStatus(staff)}
+                  className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  title={staff.isActive ? "Disable" : "Enable"}
+                >
+                  {staff.isActive ? (
+                    <EyeOff className="w-3.5 h-3.5" />
+                  ) : (
+                    <Eye className="w-3.5 h-3.5" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDeleteStaff(staff)}
+                  className="p-1.5 text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
+                  title="Remove staff member"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showStaffForm && (
+        <form
+          onSubmit={handleStaffSubmit}
+          className="mt-2 p-3 bg-white border border-gray-200 rounded space-y-2.5"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+              <UserCog className="w-3.5 h-3.5" />
+              {editingStaff ? "Edit Staff Member" : "New Staff Member"}
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setShowStaffForm(false);
+                resetStaffForm();
+              }}
+              className="text-gray-400 hover:text-gray-600 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <input
+            type="text"
+            required
+            value={staffName}
+            onChange={(e) => setStaffName(e.target.value)}
+            placeholder="Full name"
+            className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+          />
+          <input
+            type="text"
+            value={staffDesignation}
+            onChange={(e) => setStaffDesignation(e.target.value)}
+            placeholder="Designation (e.g. Branch Manager)"
+            className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+          />
+          <input
+            type="number"
+            value={staffDisplayOrder}
+            onChange={(e) => setStaffDisplayOrder(e.target.value)}
+            placeholder="Display order (optional)"
+            className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+          />
+
+          <button
+            type="submit"
+            disabled={isSavingStaff}
+            className="w-full py-2 bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-[11px] uppercase tracking-wider rounded transition-colors cursor-pointer disabled:opacity-60"
+          >
+            {isSavingStaff
+              ? "SAVING..."
+              : editingStaff
+              ? "SAVE CHANGES"
+              : "ADD STAFF MEMBER"}
+          </button>
+        </form>
+      )}
+    </div>
+    );
+  };
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
@@ -446,7 +896,7 @@ export const AdminBranches: React.FC = () => {
                 <span>{selectedBranch ? "Edit Branch Profile" : "Register New Branch"}</span>
               </h3>
               <button
-                onClick={() => setShowAddModal(false)}
+                onClick={handleCloseAddModal}
                 className="text-white/80 hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
@@ -578,7 +1028,7 @@ export const AdminBranches: React.FC = () => {
               <div className="pt-4 flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowAddModal(false)}
+                  onClick={handleCloseAddModal}
                   className="flex-1 py-2.5 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer"
                 >
                   CANCEL
@@ -592,11 +1042,20 @@ export const AdminBranches: React.FC = () => {
                 </button>
               </div>
             </form>
+
+            {/* STAFF MANAGEMENT — inline in Create/Edit modal, available
+                even before the branch is saved. When creating a brand-new
+                branch, staff are queued locally (pendingStaff) and pushed
+                to the API right after the branch itself is created. */}
+            <div className="px-6 pb-6 pt-4 border-t border-gray-100 mt-2">
+              {renderStaffSection()}
+            </div>
           </div>
         </div>
       )}
 
-      {/* READ-ONLY VIEW MODAL — display only, no editable fields */}
+      {/* READ-ONLY VIEW MODAL — display only, no editable branch fields
+          (staff management is still available, same as before) */}
       {showViewModal && viewBranch && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white border border-gray-200 rounded-md shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
@@ -606,7 +1065,12 @@ export const AdminBranches: React.FC = () => {
                 <span>Branch Profile</span>
               </h3>
               <button
-                onClick={() => setShowViewModal(false)}
+                onClick={() => {
+                  setShowViewModal(false);
+                  setViewBranch(null);
+                  setStaffList([]);
+                  setStaffError("");
+                }}
                 className="text-white/80 hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
@@ -658,23 +1122,18 @@ export const AdminBranches: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
-                    Email
-                  </span>
-                  <p className="text-sm font-semibold text-gray-900 mt-0.5">
-                    {viewBranch.email || "—"}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
-                    Staff Members
-                  </span>
-                  <p className="text-sm font-semibold text-gray-900 mt-0.5">
-                    {viewBranch.staffMembers?.length ?? 0} Personnel
-                  </p>
-                </div>
+              <div>
+                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+                  Email
+                </span>
+                <p className="text-sm font-semibold text-gray-900 mt-0.5">
+                  {viewBranch.email || "—"}
+                </p>
+              </div>
+
+              {/* STAFF MEMBERS — full list + management, not just a count */}
+              <div className="pt-2 border-t border-gray-100">
+                {renderStaffSection()}
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
@@ -715,7 +1174,12 @@ export const AdminBranches: React.FC = () => {
               <div className="pt-4">
                 <button
                   type="button"
-                  onClick={() => setShowViewModal(false)}
+                  onClick={() => {
+                    setShowViewModal(false);
+                    setViewBranch(null);
+                    setStaffList([]);
+                    setStaffError("");
+                  }}
                   className="w-full py-2.5 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer"
                 >
                   CLOSE

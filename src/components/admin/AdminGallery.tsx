@@ -21,6 +21,7 @@ import {
   X,
   Loader2,
   Trash2,
+  Edit2,
   GripVertical,
   Eye,
   EyeOff,
@@ -73,6 +74,15 @@ export const AdminGallery: React.FC = () => {
   const [caption, setCaption] = useState("");
   const [displayOrder, setDisplayOrder] = useState("");
 
+  // Gallery Edit modal state (separate from upload — edits an existing image)
+  const [showEditImageModal, setShowEditImageModal] = useState(false);
+  const [editingImage, setEditingImage] = useState<GalleryImage | null>(null);
+  const [editCaption, setEditCaption] = useState("");
+  const [editDisplayOrder, setEditDisplayOrder] = useState("");
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [isSavingEditImage, setIsSavingEditImage] = useState(false);
+  const [editImageError, setEditImageError] = useState("");
+
   // ── Videos State ─────────────────────────────────────────────────────────
   const [videos, setVideos] = useState<GalleryVideo[]>([]);
   const [isLoadingVideos, setIsLoadingVideos] = useState(true);
@@ -95,6 +105,15 @@ export const AdminGallery: React.FC = () => {
   const [vigilanceFile, setVigilanceFile] = useState<File | null>(null);
   const [vigilanceCaption, setVigilanceCaption] = useState("");
   const [vigilanceDisplayOrder, setVigilanceDisplayOrder] = useState("");
+
+  // Vigilance Edit modal state (separate from upload — edits an existing image)
+  const [showEditVigilanceModal, setShowEditVigilanceModal] = useState(false);
+  const [editingVigilance, setEditingVigilance] = useState<VigilanceImage | null>(null);
+  const [editVigilanceCaption, setEditVigilanceCaption] = useState("");
+  const [editVigilanceDisplayOrder, setEditVigilanceDisplayOrder] = useState("");
+  const [editVigilanceFile, setEditVigilanceFile] = useState<File | null>(null);
+  const [isSavingEditVigilance, setIsSavingEditVigilance] = useState(false);
+  const [editVigilanceError, setEditVigilanceError] = useState("");
 
   const navItems = [
     { name: "Overview", icon: LayoutGrid, href: "/admin/dashboard" },
@@ -266,6 +285,58 @@ export const AdminGallery: React.FC = () => {
     }
   };
 
+  // Open the Edit modal for a gallery image, pre-filled with its current values
+  const handleOpenEditImage = (image: GalleryImage) => {
+    setEditingImage(image);
+    setEditCaption(image.caption || "");
+    setEditDisplayOrder(image.displayOrder != null ? String(image.displayOrder) : "");
+    setEditImageFile(null);
+    setEditImageError("");
+    setShowEditImageModal(true);
+  };
+
+  const resetEditImageForm = () => {
+    setEditingImage(null);
+    setEditCaption("");
+    setEditDisplayOrder("");
+    setEditImageFile(null);
+    setEditImageError("");
+  };
+
+  const handleEditImageFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditImageFile(e.target.files?.[0] ?? null);
+  };
+
+  // Saves caption, displayOrder, and (optionally) a replacement image file
+  const handleEditImageSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingImage) return;
+
+    setIsSavingEditImage(true);
+    setEditImageError("");
+
+    try {
+      const updated = await updateGalleryImage(editingImage.id, {
+        caption: editCaption || undefined,
+        displayOrder: editDisplayOrder ? Number(editDisplayOrder) : undefined,
+        image: editImageFile || undefined,
+      });
+      setImages((prev) =>
+        (prev ?? []).map((img) => (img.id === updated.id ? updated : img))
+      );
+      if (previewImage?.id === updated.id) setPreviewImage(updated);
+      await loadStats();
+      setShowEditImageModal(false);
+      resetEditImageForm();
+    } catch (err: any) {
+      setEditImageError(
+        err?.response?.data?.message || err?.message || "Failed to save changes."
+      );
+    } finally {
+      setIsSavingEditImage(false);
+    }
+  };
+
   // ── Video Handlers ───────────────────────────────────────────────────────
 
   const resetVideoForm = () => {
@@ -389,6 +460,61 @@ export const AdminGallery: React.FC = () => {
       setPreviewVigilance(updated);
     } catch (err: any) {
       alert(err?.response?.data?.message || err?.message || "Failed to update caption.");
+    }
+  };
+
+  // Open the Edit modal for a vigilance image, pre-filled with its current values
+  const handleOpenEditVigilance = (image: VigilanceImage) => {
+    setEditingVigilance(image);
+    setEditVigilanceCaption(image.caption || "");
+    setEditVigilanceDisplayOrder(
+      image.displayOrder != null ? String(image.displayOrder) : ""
+    );
+    setEditVigilanceFile(null);
+    setEditVigilanceError("");
+    setShowEditVigilanceModal(true);
+  };
+
+  const resetEditVigilanceForm = () => {
+    setEditingVigilance(null);
+    setEditVigilanceCaption("");
+    setEditVigilanceDisplayOrder("");
+    setEditVigilanceFile(null);
+    setEditVigilanceError("");
+  };
+
+  const handleEditVigilanceFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditVigilanceFile(e.target.files?.[0] ?? null);
+  };
+
+  // Saves caption, displayOrder, and (optionally) a replacement image file
+  const handleEditVigilanceSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingVigilance) return;
+
+    setIsSavingEditVigilance(true);
+    setEditVigilanceError("");
+
+    try {
+      const updated = await updateVigilanceImage(editingVigilance.id, {
+        caption: editVigilanceCaption || undefined,
+        displayOrder: editVigilanceDisplayOrder
+          ? Number(editVigilanceDisplayOrder)
+          : undefined,
+        image: editVigilanceFile || undefined,
+      });
+      setVigilanceImages((prev) =>
+        (prev ?? []).map((img) => (img.id === updated.id ? updated : img))
+      );
+      if (previewVigilance?.id === updated.id) setPreviewVigilance(updated);
+      setShowEditVigilanceModal(false);
+      resetEditVigilanceForm();
+    } catch (err: any) {
+      setEditVigilanceError(
+        err?.response?.data?.message || err?.message || "Failed to save changes."
+      );
+    } finally {
+      setIsSavingEditVigilance(false);
     }
   };
 
@@ -618,16 +744,28 @@ export const AdminGallery: React.FC = () => {
                         </span>
                       </div>
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteImage(image);
-                        }}
-                        className="absolute top-3 left-3 bg-black/60 hover:bg-red-600 text-white p-1.5 rounded-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                        title="Delete image"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="absolute top-3 left-3 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenEditImage(image);
+                          }}
+                          className="bg-black/60 hover:bg-black/80 text-white p-1.5 rounded-xs"
+                          title="Edit image"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteImage(image);
+                          }}
+                          className="bg-black/60 hover:bg-red-600 text-white p-1.5 rounded-xs"
+                          title="Delete image"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
 
                       <div className="absolute bottom-4 left-4 right-4 z-10">
                         <h3 className="text-sm font-bold text-white leading-tight group-hover:text-[#4ade80] transition-colors">
@@ -757,6 +895,16 @@ export const AdminGallery: React.FC = () => {
                       </div>
 
                       <div className="absolute top-3 left-3 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenEditVigilance(image);
+                          }}
+                          className="bg-black/60 hover:bg-black/80 text-white p-1.5 rounded-xs"
+                          title="Edit image"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -907,6 +1055,113 @@ export const AdminGallery: React.FC = () => {
         </div>
       )}
 
+      {/* GALLERY EDIT MODAL — caption, display order, and optional image replacement */}
+      {showEditImageModal && editingImage && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-gray-200 rounded-md shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="bg-[#0b4226] text-white p-4 px-6 flex items-center justify-between sticky top-0 z-10">
+              <h3 className="text-base font-bold uppercase tracking-wider flex items-center gap-2">
+                <Edit2 className="w-5 h-5 text-[#4ade80]" />
+                <span>Edit Image</span>
+              </h3>
+              <button
+                onClick={() => {
+                  setShowEditImageModal(false);
+                  resetEditImageForm();
+                }}
+                className="text-white/80 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditImageSubmit} className="p-4 sm:p-6 space-y-4">
+              {editImageError && (
+                <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
+                  {editImageError}
+                </div>
+              )}
+
+              {/* Current image preview */}
+              <div className="aspect-[4/3] w-full rounded overflow-hidden bg-gray-900 border border-gray-200">
+                <ImageFallback
+                  src={
+                    editImageFile
+                      ? URL.createObjectURL(editImageFile)
+                      : editingImage.imageUrl
+                  }
+                  alt={editingImage.caption || "Current image"}
+                  className="w-full h-full object-cover"
+                  fallbackText={editingImage.caption || "Image"}
+                />
+              </div>
+
+              <label className="border-2 border-dashed border-gray-300 rounded p-4 bg-[#f8fafc] flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-100/60 transition-colors">
+                <Upload className="w-6 h-6 text-gray-400 mb-1.5" />
+                <span className="text-xs font-bold text-gray-800 uppercase tracking-wide">
+                  {editImageFile ? editImageFile.name : "Replace Image (optional)"}
+                </span>
+                <span className="text-[10px] text-gray-400 mt-1">
+                  JPG, PNG, WEBP (Up to 5MB) — leave blank to keep current image
+                </span>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  onChange={handleEditImageFileSelect}
+                  className="hidden"
+                />
+              </label>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
+                  CAPTION
+                </label>
+                <input
+                  type="text"
+                  value={editCaption}
+                  onChange={(e) => setEditCaption(e.target.value)}
+                  placeholder="e.g. Tactical Ops Training Drill"
+                  className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
+                  DISPLAY ORDER
+                </label>
+                <input
+                  type="number"
+                  value={editDisplayOrder}
+                  onChange={(e) => setEditDisplayOrder(e.target.value)}
+                  placeholder="e.g. 3"
+                  className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                />
+              </div>
+
+              <div className="pt-4 flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEditImageModal(false);
+                    resetEditImageForm();
+                  }}
+                  className="flex-1 py-2.5 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer"
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingEditImage}
+                  className="flex-1 py-2.5 bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider rounded shadow-xs transition-colors cursor-pointer disabled:opacity-60"
+                >
+                  {isSavingEditImage ? "SAVING..." : "SAVE CHANGES"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* GALLERY PREVIEW MODAL */}
       {previewImage && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
@@ -930,24 +1185,26 @@ export const AdminGallery: React.FC = () => {
                 <span className="text-xs font-bold text-[#4ade80] uppercase tracking-wider block">
                   Order #{previewImage.displayOrder}
                 </span>
-                <input
-                  defaultValue={previewImage.caption || ""}
-                  onBlur={(e) => {
-                    if (e.target.value !== previewImage.caption) {
-                      handleUpdateCaption(previewImage, e.target.value);
-                    }
-                  }}
-                  placeholder="Add a caption..."
-                  className="bg-transparent text-sm sm:text-base font-bold text-white border-b border-gray-700 focus:border-[#4ade80] outline-none w-full mt-1"
-                />
+                <p className="text-sm sm:text-base font-bold text-white truncate mt-1">
+                  {previewImage.caption || "Untitled"}
+                </p>
               </div>
-              <button
-                onClick={() => handleDeleteImage(previewImage)}
-                className="flex-shrink-0 flex items-center justify-center gap-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold px-3 py-2 rounded transition-colors w-full sm:w-auto"
-              >
-                <Trash2 className="w-4 h-4" />
-                DELETE
-              </button>
+              <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+                <button
+                  onClick={() => handleOpenEditImage(previewImage)}
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-2 rounded transition-colors"
+                >
+                  <Edit2 className="w-4 h-4" />
+                  EDIT
+                </button>
+                <button
+                  onClick={() => handleDeleteImage(previewImage)}
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-red-600/20 hover:bg-red-600/40 text-red-400 text-xs font-bold px-3 py-2 rounded transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  DELETE
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1179,6 +1436,113 @@ export const AdminGallery: React.FC = () => {
         </div>
       )}
 
+      {/* VIGILANCE EDIT MODAL — caption, display order, and optional image replacement */}
+      {showEditVigilanceModal && editingVigilance && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-gray-200 rounded-md shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="bg-[#0b4226] text-white p-4 px-6 flex items-center justify-between sticky top-0 z-10">
+              <h3 className="text-base font-bold uppercase tracking-wider flex items-center gap-2">
+                <Edit2 className="w-5 h-5 text-[#4ade80]" />
+                <span>Edit Vigilance Image</span>
+              </h3>
+              <button
+                onClick={() => {
+                  setShowEditVigilanceModal(false);
+                  resetEditVigilanceForm();
+                }}
+                className="text-white/80 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditVigilanceSubmit} className="p-4 sm:p-6 space-y-4">
+              {editVigilanceError && (
+                <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
+                  {editVigilanceError}
+                </div>
+              )}
+
+              {/* Current image preview */}
+              <div className="aspect-[4/3] w-full rounded overflow-hidden bg-gray-900 border border-gray-200">
+                <ImageFallback
+                  src={
+                    editVigilanceFile
+                      ? URL.createObjectURL(editVigilanceFile)
+                      : editingVigilance.imageUrl
+                  }
+                  alt={editingVigilance.caption || "Current image"}
+                  className="w-full h-full object-cover"
+                  fallbackText={editingVigilance.caption || "Image"}
+                />
+              </div>
+
+              <label className="border-2 border-dashed border-gray-300 rounded p-4 bg-[#f8fafc] flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-100/60 transition-colors">
+                <Upload className="w-6 h-6 text-gray-400 mb-1.5" />
+                <span className="text-xs font-bold text-gray-800 uppercase tracking-wide">
+                  {editVigilanceFile ? editVigilanceFile.name : "Replace Image (optional)"}
+                </span>
+                <span className="text-[10px] text-gray-400 mt-1">
+                  JPG, PNG, WEBP (Up to 5MB) — leave blank to keep current image
+                </span>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  onChange={handleEditVigilanceFileSelect}
+                  className="hidden"
+                />
+              </label>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
+                  CAPTION
+                </label>
+                <input
+                  type="text"
+                  value={editVigilanceCaption}
+                  onChange={(e) => setEditVigilanceCaption(e.target.value)}
+                  placeholder="e.g. 24/7 Monitoring"
+                  className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
+                  DISPLAY ORDER
+                </label>
+                <input
+                  type="number"
+                  value={editVigilanceDisplayOrder}
+                  onChange={(e) => setEditVigilanceDisplayOrder(e.target.value)}
+                  placeholder="e.g. 2"
+                  className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                />
+              </div>
+
+              <div className="pt-4 flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEditVigilanceModal(false);
+                    resetEditVigilanceForm();
+                  }}
+                  className="flex-1 py-2.5 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer"
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingEditVigilance}
+                  className="flex-1 py-2.5 bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider rounded shadow-xs transition-colors cursor-pointer disabled:opacity-60"
+                >
+                  {isSavingEditVigilance ? "SAVING..." : "SAVE CHANGES"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* VIGILANCE PREVIEW MODAL */}
       {previewVigilance && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
@@ -1213,18 +1577,18 @@ export const AdminGallery: React.FC = () => {
                     Order #{previewVigilance.displayOrder}
                   </span>
                 </div>
-                <input
-                  defaultValue={previewVigilance.caption || ""}
-                  onBlur={(e) => {
-                    if (e.target.value !== previewVigilance.caption) {
-                      handleUpdateVigilanceCaption(previewVigilance, e.target.value);
-                    }
-                  }}
-                  placeholder="Add a caption..."
-                  className="bg-transparent text-sm sm:text-base font-bold text-white border-b border-gray-700 focus:border-[#4ade80] outline-none w-full mt-1"
-                />
+                <p className="text-sm sm:text-base font-bold text-white truncate mt-1">
+                  {previewVigilance.caption || "Untitled"}
+                </p>
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+              <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto flex-wrap">
+                <button
+                  onClick={() => handleOpenEditVigilance(previewVigilance)}
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-2 rounded transition-colors"
+                >
+                  <Edit2 className="w-4 h-4" />
+                  EDIT
+                </button>
                 <button
                   onClick={() => handleToggleVigilanceStatus(previewVigilance)}
                   className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-2 rounded transition-colors"
