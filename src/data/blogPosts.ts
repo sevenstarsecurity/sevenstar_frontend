@@ -45,8 +45,8 @@ export const blogPosts: BlogPost[] = [
       role: "Chief of Operations",
       avatar: "/images/purna.png",
     },
-    image: "/images/girl typing.jpg",
-    fallback: "girl typing.jpg",
+    image: "/images/bankseurity.jpg",
+    fallback: "bankseurity.jpg",
     content: {
       intro:
         "Financial institutions, banks, and currency vaults demand an uncompromising security posture. In response to evolving security threats and increased cash transaction volumes across urban centers, Seven Star Security Services is proud to announce an enhanced Banking Security Protocol across Nepal.",
@@ -94,8 +94,8 @@ export const blogPosts: BlogPost[] = [
       role: "Senior Risk Auditor",
       avatar: "/images/ramesh.png",
     },
-    image: "/images/corporatesecurityguard.jpg",
-    fallback: "corporatesecurityguard.jpg",
+    image: "/images/needguard.jpeg",
+    fallback: "needguard.jpeg",
     content: {
       intro:
         "Commercial properties, office towers, and retail hubs face continuous security challenges. From unmonitored entry points to rising theft risks, assessing your security weaknesses is critical for business continuity.",
@@ -142,8 +142,8 @@ export const blogPosts: BlogPost[] = [
       role: "Director of Security Systems",
       avatar: "/images/majorganesh.png",
     },
-    image: "/images/aisurveillancebank.jpg",
-    fallback: "aisurveillancebank.jpg",
+    image: "/images/aiinbank.webp",
+    fallback: "aiinbank.webp",
     content: {
       intro:
         "Artificial Intelligence is revolutionizing modern facility protection. By merging smart video analytics with disciplined physical guards on the ground, Seven Star Security is delivering next-generation protection for commercial clients.",
@@ -186,8 +186,8 @@ export const blogPosts: BlogPost[] = [
       role: "Head of Tactical Training",
       avatar: "/images/arjun.jpg",
     },
-    image: "/images/tacticalresponseguard.jpg",
-    fallback: "tacticalresponseguard.jpg",
+    image: "/images/emergency.jpeg",
+    fallback: "emergency.jpeg",
     content: {
       intro:
         "Every quarter, Seven Star Security conducts intensive tactical refreshers for our field personnel, supervisors, and rapid response officers. Our 2024 Q3 workshop brought together over 150 guards for advanced scenario drills.",
@@ -226,7 +226,7 @@ export const blogPosts: BlogPost[] = [
       role: "Chief of Operations",
       avatar: "/images/purna.png",
     },
-    image: "/images/patrolguardnight.jpg",
+    image: "/images/warehouse.webp",
     fallback: "patrolguardnight.jpg",
     content: {
       intro:
@@ -266,7 +266,7 @@ export const blogPosts: BlogPost[] = [
       role: "Event Protocol Officer",
       avatar: "/images/anjali.jpg",
     },
-    image: "/images/eventsecurityguard.jpg",
+    image: "/images/vip.jpg",
     fallback: "eventsecurityguard.jpg",
     content: {
       intro:
@@ -306,7 +306,7 @@ export const blogPosts: BlogPost[] = [
       role: "Chief of Operations",
       avatar: "/images/purna.png",
     },
-    image: "/images/commandcenterguard.jpg",
+    image: "/images/rapisresponse.png",
     fallback: "commandcenterguard.jpg",
     content: {
       intro:
