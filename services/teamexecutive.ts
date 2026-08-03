@@ -33,13 +33,26 @@ interface ApiPagination {
   hasPrevPage?: boolean;
 }
 
-// Confirmed exact shape from GET /admin/executive:
-// { success, message, data: [ {...}, {...} ], meta: { page, limit, total, totalPages, hasNextPage, hasPrevPage }, statusCode }
+// Shape used by /admin/executive (list):
+// { success, message, data: [ {...}, {...} ], meta: {...}, statusCode }
 interface ApiListResponse<T> {
   success: boolean;
   message: string;
   data: T[];
   meta: ApiPagination;
+  statusCode: number;
+}
+
+// Shape used by /executive (public list) — data is an OBJECT with a
+// nested "members" array + "pagination", NOT a bare array like admin.
+// { success, message, data: { members: [...], pagination: {...} }, statusCode }
+interface PublicListResponse<T> {
+  success: boolean;
+  message: string;
+  data: {
+    members: T[];
+    pagination: ApiPagination;
+  };
   statusCode: number;
 }
 
@@ -80,12 +93,22 @@ export const getAdminExecutive = async (id: string): Promise<Executive> => {
 export const getExecutiveById = getAdminExecutive;
 
 // ─── Public endpoint (no auth) ─────────────────────────────────────────────
+// Confirmed exact shape from GET /api/executive:
+// {
+//   success: true,
+//   message: "Executives retrieved",
+//   data: {
+//     members: [ {...}, {...} ],
+//     pagination: { page, limit, total, totalPages, hasNextPage, hasPrevPage }
+//   },
+//   statusCode: 200
+// }
 
 export const getPublicExecutives = async (): Promise<Executive[]> => {
-  const res = await api.get<ApiListResponse<Executive>>("/executive", {
+  const res = await api.get<PublicListResponse<Executive>>("/executive", {
     public: true,
   });
-  return Array.isArray(res.data.data) ? res.data.data : [];
+  return Array.isArray(res.data.data?.members) ? res.data.data.members : [];
 };
 
 export const getPublicExecutive = async (id: string): Promise<Executive> => {
