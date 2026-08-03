@@ -21,7 +21,7 @@ export const TopBar: React.FC = () => {
             className="flex items-center gap-1.5 text-white hover:text-gray-200 transition-colors"
           >
             <Mail className="w-3.5 h-3.5 text-white" />
-            <span className="text-white font-medium">info@sevenstar.com.np</span>
+            <span className="text-white font-normal tracking-wide">info@sevenstar.com.np</span>
           </a>
         </div>
 

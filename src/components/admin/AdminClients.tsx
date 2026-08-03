@@ -321,17 +321,17 @@ export const AdminClients: React.FC = () => {
       <AdminSidebar currentPath="/admin/clients" />
 
       <div className="flex-1 flex flex-col min-w-0 bg-[#f4f6f3]">
-        <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-xs sticky top-0 z-10">
-          <div className="flex items-center gap-3">
-            <h2 className="text-sm font-bold text-gray-900">Security Firm CMS</h2>
+        <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-2.5 sm:py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shadow-xs relative lg:sticky lg:top-0 z-10">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <h2 className="text-xs sm:text-sm font-bold text-gray-900 truncate">Security Firm CMS</h2>
             <span className="text-gray-300">|</span>
-            <nav className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              <span>MAIN CONSOLE</span> &gt;{" "}
+            <nav className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider truncate">
+              <span className="hidden xs:inline">MAIN CONSOLE &gt; </span>
               <span className="text-gray-800">CLIENTS</span>
             </nav>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <button
               aria-label="Notifications"
               className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
@@ -408,15 +408,15 @@ export const AdminClients: React.FC = () => {
                     onDragStart={() => handleDragStart(client.id)}
                     onDragOver={(e) => handleDragOver(e, client.id)}
                     onDragEnd={handleDragEnd}
-                    className={`bg-white border border-gray-200 rounded-xl shadow-xs flex items-stretch min-w-[140px] w-[140px] cursor-grab active:cursor-grabbing transition-shadow ${
+                    className={`bg-white border border-gray-200 rounded-xl shadow-xs flex items-stretch min-w-[140px] w-[140px] cursor-grab active:cursor-grabbing transition-shadow overflow-hidden ${
                       dragId === client.id ? "opacity-70 shadow-md ring-1 ring-[#0b4226]/30" : ""
                     }`}
                   >
-                    <div className="flex items-center px-1.5 text-gray-300 hover:text-gray-500">
+                    <div className="flex items-center px-1.5 text-gray-300 hover:text-gray-500 shrink-0">
                       <GripVertical className="w-4 h-4" />
                     </div>
-                    <div className="flex-1 flex flex-col items-center px-3 pt-4 pb-3 gap-2.5">
-                      <div className="w-[72px] h-[72px] rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden p-1.5">
+                    <div className="flex-1 flex flex-col items-center px-2 pt-4 pb-3 gap-2 min-w-0">
+                      <div className="w-16 h-16 rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden p-1.5 shrink-0">
                         <ImageFallback
                           src={client.logoUrl}
                           alt={client.name}

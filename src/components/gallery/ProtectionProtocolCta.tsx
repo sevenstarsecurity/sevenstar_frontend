@@ -27,7 +27,7 @@ export const ProtectionProtocolCta: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
           {/* Red Solid Button */}
           <Link
-            href="#contact"
+            href="/contact"
             className="w-full sm:w-auto bg-[#c8102e] hover:bg-[#a60d25] text-white font-semibold text-[16px] uppercase px-8 py-4 rounded-xs shadow-md transition-all duration-200 tracking-wider text-center"
             style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
           >
@@ -36,8 +36,10 @@ export const ProtectionProtocolCta: React.FC = () => {
 
           {/* Outlined Green/Dark Button */}
           <a
-            href="#download"
-            className="w-full sm:w-auto  hover:bg-[#002e15] border border-[#FFDF96] text-[#FFDF96] font-semibold text-[16px] uppercase px-8 py-4 rounded-xs shadow-md transition-all duration-200 tracking-wider text-center"
+            href="/pdf/sevenstar%20.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto hover:bg-[#002e15] border border-[#FFDF96] text-[#FFDF96] font-semibold text-[16px] uppercase px-8 py-4 rounded-xs shadow-md transition-all duration-200 tracking-wider text-center"
             style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
           >
             DOWNLOAD PORTFOLIO

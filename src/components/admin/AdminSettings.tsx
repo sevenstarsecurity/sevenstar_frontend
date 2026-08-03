@@ -475,20 +475,19 @@ export const AdminSettings: React.FC = () => {
       {/* CENTER & MAIN WORKSPACE */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#f4f6f3]">
         {/* TOP WHITE HEADER BAR */}
-        <header className="bg-white border-b border-gray-200 px-6 py-3.5 flex items-center justify-between shadow-xs sticky top-0 z-10">
-          <div className="flex items-center gap-2 text-xs font-semibold text-gray-600">
-            <span className="font-bold text-gray-900">Security Firm CMS</span>
+        <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-2.5 sm:py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shadow-xs relative lg:sticky lg:top-0 z-10">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 text-xs uppercase tracking-wider">
+            <span className="font-bold text-gray-900 truncate">Security Firm CMS</span>
             <span className="text-gray-300">/</span>
-            <span className="text-gray-600">Admin Site Settings</span>
+            <span className="text-gray-600 truncate">Admin Site Settings</span>
           </div>
 
-          {/* Right Section: Search & Profile */}
-          <div className="flex items-center gap-4">
-            <div className="relative w-64">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            <div className="relative w-36 sm:w-64">
               <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search system settings..."
+                placeholder="Search settings..."
                 className="w-full bg-[#f4f6f8] border border-gray-200 rounded-md pl-9 pr-3 py-1.5 text-xs text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
               />
             </div>

@@ -246,44 +246,39 @@ export const AdminSubmissions: React.FC = () => {
 
       {/* Main Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Header Bar */}
-        <header className="bg-white border-b border-gray-200 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xs sticky top-0 z-10">
-          <div className="flex items-center gap-3">
-            <h2 className="text-xs sm:text-sm font-bold text-gray-900 uppercase tracking-wider">
-              Seven Star CMS
-            </h2>
+        {/* TOP WHITE HEADER BAR */}
+        <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-2.5 sm:py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shadow-xs relative lg:sticky lg:top-0 z-10">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <h2 className="text-xs sm:text-sm font-bold text-gray-900 truncate">Security Firm CMS</h2>
             <span className="text-gray-300">|</span>
-            <nav className="text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:block">
-              <span>MAIN CONSOLE</span> &gt;{" "}
-              <span className="text-[#0b4226] font-extrabold">SUBMISSIONS</span>
+            <nav className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider truncate">
+              <span className="hidden xs:inline">MAIN CONSOLE &gt; </span>
+              <span className="text-[#0b4226] font-bold">SUBMISSIONS</span>
             </nav>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <button
               aria-label="Notifications"
-              className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
             >
               <Bell className="w-4 h-4" />
             </button>
-            <div className="flex items-center gap-2 border-l border-gray-200 pl-3">
-              <div className="w-8 h-8 rounded-full bg-[#0b4226] text-white flex items-center justify-center font-bold text-xs">
-                A
-              </div>
-              <span className="text-xs font-bold text-gray-800 hidden md:inline">Administrator</span>
+            <div className="w-7 h-7 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-700 cursor-pointer">
+              <User className="w-4 h-4" />
             </div>
           </div>
         </header>
 
         {/* Content Body */}
-        <main className="p-4 sm:p-6 lg:p-8 space-y-6 flex-1 max-w-[1600px] w-full mx-auto">
+        <main className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 flex-1 max-w-[1600px] w-full mx-auto">
           {/* Header & Controls */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">
                 Contact & Quote Submissions
               </h1>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-500 mt-0.5">
                 Manage inquiries and security requests submitted by clients.
               </p>
             </div>
@@ -296,7 +291,7 @@ export const AdminSubmissions: React.FC = () => {
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search name, email, or sector"
+                  placeholder="Search name, email, or sector..."
                   className="w-full bg-white border border-gray-200 rounded-lg pl-10 pr-4 py-2 text-xs font-medium text-gray-800 placeholder:text-gray-400 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#0b4226]"
                 />
               </div>
@@ -331,7 +326,7 @@ export const AdminSubmissions: React.FC = () => {
 
           {/* Bulk Selection Action Bar */}
           {selectedIds.size > 0 && (
-            <div className="bg-[#0b4226] text-white rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-md">
+            <div className="bg-[#0b4226] text-white rounded-lg px-4 py-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-md">
               <span className="text-xs font-bold tracking-wide">
                 {selectedIds.size} submission{selectedIds.size > 1 ? "s" : ""} selected
               </span>
@@ -361,7 +356,7 @@ export const AdminSubmissions: React.FC = () => {
             </div>
           )}
 
-          {/* Table Container */}
+          {/* Table & Cards Container */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
             {loading ? (
               <div className="p-12 flex flex-col items-center justify-center text-gray-500 space-y-3">
@@ -375,48 +370,26 @@ export const AdminSubmissions: React.FC = () => {
                 <p className="text-xs text-gray-500">Try adjusting your search query or status filter.</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[700px]">
-                  <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-extrabold text-gray-600 uppercase tracking-wider">
-                      <th className="py-3.5 px-4 w-10 text-center">
-                        <button
-                          type="button"
-                          onClick={toggleSelectAll}
-                          className="text-gray-400 hover:text-[#0b4226] cursor-pointer"
-                        >
-                          {allVisibleSelected ? (
-                            <CheckSquare className="w-4 h-4 text-[#0b4226]" />
-                          ) : (
-                            <Square className="w-4 h-4" />
-                          )}
-                        </button>
-                      </th>
-                      <th className="py-3.5 px-4">Contact Person</th>
-                      <th className="py-3.5 px-4">Sector</th>
-                      <th className="py-3.5 px-4">Details</th>
-                      <th className="py-3.5 px-4">Status</th>
-                      <th className="py-3.5 px-4">Date</th>
-                      <th className="py-3.5 px-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 text-xs text-gray-700 font-medium">
-                    {filteredSubmissions.map((submission) => {
-                      const isSelected = selectedIds.has(submission.id);
-                      const isSaving = statusSavingId === submission.id;
+              <>
+                {/* MOBILE CARDS VIEW (< md) */}
+                <div className="block md:hidden divide-y divide-gray-200">
+                  {filteredSubmissions.map((submission) => {
+                    const isSelected = selectedIds.has(submission.id);
+                    const isSaving = statusSavingId === submission.id;
 
-                      return (
-                        <tr
-                          key={submission.id}
-                          className={`hover:bg-emerald-50/40 transition-colors ${
-                            isSelected ? "bg-emerald-50/60" : ""
-                          }`}
-                        >
-                          <td className="py-3.5 px-4 text-center">
+                    return (
+                      <div
+                        key={submission.id}
+                        className={`p-4 space-y-3 transition-colors ${
+                          isSelected ? "bg-emerald-50/50" : "hover:bg-gray-50/70"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-2.5">
                             <button
                               type="button"
                               onClick={() => toggleSelect(submission.id)}
-                              className="text-gray-400 hover:text-[#0b4226] cursor-pointer"
+                              className="text-gray-400 hover:text-[#0b4226] cursor-pointer shrink-0"
                             >
                               {isSelected ? (
                                 <CheckSquare className="w-4 h-4 text-[#0b4226]" />
@@ -424,95 +397,240 @@ export const AdminSubmissions: React.FC = () => {
                                 <Square className="w-4 h-4" />
                               )}
                             </button>
-                          </td>
-
-                          <td className="py-3.5 px-4">
-                            <div className="font-bold text-gray-900 text-sm">{submission.name}</div>
-                            <div className="text-[11px] text-gray-500 flex items-center gap-2 mt-0.5">
-                              <span className="flex items-center gap-1">
-                                <Mail className="w-3 h-3 text-gray-400" />
-                                {submission.email}
+                            <div>
+                              <p className="font-bold text-gray-900 text-sm leading-snug">
+                                {submission.name}
+                              </p>
+                              <span className="inline-flex items-center gap-1 mt-1 bg-gray-100 text-gray-700 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border border-gray-200">
+                                <Building2 className="w-3 h-3 text-gray-500" />
+                                {submission.sector}
                               </span>
-                              {submission.phone && (
-                                <span className="flex items-center gap-1">
-                                  <Phone className="w-3 h-3 text-gray-400" />
-                                  {submission.phone}
-                                </span>
-                              )}
                             </div>
-                          </td>
+                          </div>
 
-                          <td className="py-3.5 px-4">
-                            <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md border border-gray-200">
-                              <Building2 className="w-3 h-3 text-gray-500" />
-                              {submission.sector}
-                            </span>
-                          </td>
+                          <select
+                            value={submission.status}
+                            disabled={isSaving}
+                            onChange={(e) =>
+                              handleStatusChange(
+                                submission,
+                                e.target.value as ContactStatus
+                              )
+                            }
+                            className={`text-[10px] font-extrabold tracking-wider uppercase px-2 py-1 rounded-md border shadow-2xs focus:outline-none cursor-pointer shrink-0 ${
+                              STATUS_STYLES[submission.status]
+                            }`}
+                          >
+                            {(["NEW", "IN_PROGRESS", "RESOLVED", "ARCHIVED"] as ContactStatus[]).map(
+                              (st) => (
+                                <option key={st} value={st}>
+                                  {STATUS_LABELS[st]}
+                                </option>
+                              )
+                            )}
+                          </select>
+                        </div>
 
-                          <td className="py-3.5 px-4 max-w-xs">
-                            <p className="line-clamp-2 text-gray-600 leading-relaxed text-xs">
-                              {submission.details}
-                            </p>
-                          </td>
-
-                          <td className="py-3.5 px-4">
-                            <select
-                              value={submission.status}
-                              disabled={isSaving}
-                              onChange={(e) =>
-                                handleStatusChange(
-                                  submission,
-                                  e.target.value as ContactStatus
-                                )
-                              }
-                              className={`text-[11px] font-extrabold tracking-wider uppercase px-2.5 py-1 rounded-md border shadow-2xs focus:outline-none cursor-pointer ${
-                                STATUS_STYLES[submission.status]
-                              }`}
+                        {/* Contact details */}
+                        <div className="text-xs text-gray-600 space-y-1">
+                          <a
+                            href={`mailto:${submission.email}`}
+                            className="flex items-center gap-1.5 text-emerald-800 hover:underline font-semibold"
+                          >
+                            <Mail className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                            <span className="truncate">{submission.email}</span>
+                          </a>
+                          {submission.phone && (
+                            <a
+                              href={`tel:${submission.phone}`}
+                              className="flex items-center gap-1.5 text-gray-600 hover:underline"
                             >
-                              {(["NEW", "IN_PROGRESS", "RESOLVED", "ARCHIVED"] as ContactStatus[]).map(
-                                (st) => (
-                                  <option key={st} value={st}>
-                                    {STATUS_LABELS[st]}
-                                  </option>
-                                )
-                              )}
-                            </select>
-                          </td>
+                              <Phone className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                              <span>{submission.phone}</span>
+                            </a>
+                          )}
+                        </div>
 
-                          <td className="py-3.5 px-4 text-gray-500 text-[11px]">
+                        {/* Details quote box */}
+                        {submission.details && (
+                          <p className="text-xs text-gray-600 bg-gray-50 p-2.5 rounded border border-gray-100 line-clamp-2">
+                            {submission.details}
+                          </p>
+                        )}
+
+                        <div className="flex items-center justify-between pt-1 border-t border-gray-100 text-[10px]">
+                          <span className="text-gray-400 font-semibold">
                             {new Date(submission.createdAt).toLocaleDateString("en-US", {
                               month: "short",
                               day: "numeric",
                               year: "numeric",
                             })}
-                          </td>
+                          </span>
 
-                          <td className="py-3.5 px-4 text-right">
-                            <div className="flex items-center justify-end gap-1.5">
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setViewing(submission)}
+                              className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-[#0b4226] font-bold uppercase tracking-wider rounded transition-colors flex items-center gap-1"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                              View
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(submission)}
+                              className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold uppercase tracking-wider rounded transition-colors flex items-center gap-1"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* DESKTOP TABLE VIEW (>= md) */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[700px]">
+                    <thead>
+                      <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-extrabold text-gray-600 uppercase tracking-wider">
+                        <th className="py-3.5 px-4 w-10 text-center">
+                          <button
+                            type="button"
+                            onClick={toggleSelectAll}
+                            className="text-gray-400 hover:text-[#0b4226] cursor-pointer"
+                          >
+                            {allVisibleSelected ? (
+                              <CheckSquare className="w-4 h-4 text-[#0b4226]" />
+                            ) : (
+                              <Square className="w-4 h-4" />
+                            )}
+                          </button>
+                        </th>
+                        <th className="py-3.5 px-4">Contact Person</th>
+                        <th className="py-3.5 px-4">Sector</th>
+                        <th className="py-3.5 px-4">Details</th>
+                        <th className="py-3.5 px-4">Status</th>
+                        <th className="py-3.5 px-4">Date</th>
+                        <th className="py-3.5 px-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 text-xs text-gray-700 font-medium">
+                      {filteredSubmissions.map((submission) => {
+                        const isSelected = selectedIds.has(submission.id);
+                        const isSaving = statusSavingId === submission.id;
+
+                        return (
+                          <tr
+                            key={submission.id}
+                            className={`hover:bg-emerald-50/40 transition-colors ${
+                              isSelected ? "bg-emerald-50/60" : ""
+                            }`}
+                          >
+                            <td className="py-3.5 px-4 text-center">
                               <button
                                 type="button"
-                                onClick={() => setViewing(submission)}
-                                className="p-1.5 text-gray-500 hover:text-[#0b4226] hover:bg-emerald-50 rounded-md transition-colors cursor-pointer"
-                                title="View Details"
+                                onClick={() => toggleSelect(submission.id)}
+                                className="text-gray-400 hover:text-[#0b4226] cursor-pointer"
                               >
-                                <Eye className="w-4 h-4" />
+                                {isSelected ? (
+                                  <CheckSquare className="w-4 h-4 text-[#0b4226]" />
+                                ) : (
+                                  <Square className="w-4 h-4" />
+                                )}
                               </button>
-                              <button
-                                type="button"
-                                onClick={() => handleDelete(submission)}
-                                className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
-                                title="Delete Submission"
+                            </td>
+
+                            <td className="py-3.5 px-4">
+                              <div className="font-bold text-gray-900 text-sm">{submission.name}</div>
+                              <div className="text-[11px] text-gray-500 flex items-center gap-2 mt-0.5">
+                                <span className="flex items-center gap-1">
+                                  <Mail className="w-3 h-3 text-gray-400" />
+                                  {submission.email}
+                                </span>
+                                {submission.phone && (
+                                  <span className="flex items-center gap-1">
+                                    <Phone className="w-3 h-3 text-gray-400" />
+                                    {submission.phone}
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+
+                            <td className="py-3.5 px-4">
+                              <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md border border-gray-200">
+                                <Building2 className="w-3 h-3 text-gray-500" />
+                                {submission.sector}
+                              </span>
+                            </td>
+
+                            <td className="py-3.5 px-4 max-w-xs">
+                              <p className="line-clamp-2 text-gray-600 leading-relaxed text-xs">
+                                {submission.details}
+                              </p>
+                            </td>
+
+                            <td className="py-3.5 px-4">
+                              <select
+                                value={submission.status}
+                                disabled={isSaving}
+                                onChange={(e) =>
+                                  handleStatusChange(
+                                    submission,
+                                    e.target.value as ContactStatus
+                                  )
+                                }
+                                className={`text-[11px] font-extrabold tracking-wider uppercase px-2.5 py-1 rounded-md border shadow-2xs focus:outline-none cursor-pointer ${
+                                  STATUS_STYLES[submission.status]
+                                }`}
                               >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                                {(["NEW", "IN_PROGRESS", "RESOLVED", "ARCHIVED"] as ContactStatus[]).map(
+                                  (st) => (
+                                    <option key={st} value={st}>
+                                      {STATUS_LABELS[st]}
+                                    </option>
+                                  )
+                                )}
+                              </select>
+                            </td>
+
+                            <td className="py-3.5 px-4 text-gray-500 text-[11px]">
+                              {new Date(submission.createdAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })}
+                            </td>
+
+                            <td className="py-3.5 px-4 text-right">
+                              <div className="flex items-center justify-end gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => setViewing(submission)}
+                                  className="p-1.5 text-gray-500 hover:text-[#0b4226] hover:bg-emerald-50 rounded-md transition-colors cursor-pointer"
+                                  title="View Details"
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDelete(submission)}
+                                  className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
+                                  title="Delete Submission"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
           </div>
         </main>
@@ -521,14 +639,14 @@ export const AdminSubmissions: React.FC = () => {
       {/* Submission Detail Modal */}
       {viewing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full overflow-hidden border border-gray-200 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full overflow-hidden border border-gray-200 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="bg-[#0b4226] text-white p-5 flex items-center justify-between">
+            <div className="bg-[#0b4226] text-white p-4 sm:p-5 flex items-center justify-between sticky top-0 z-10">
               <div>
                 <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-200">
                   Submission Details
                 </span>
-                <h3 className="text-lg font-bold mt-0.5">{viewing.name}</h3>
+                <h3 className="text-base sm:text-lg font-bold mt-0.5">{viewing.name}</h3>
               </div>
               <button
                 type="button"
@@ -540,18 +658,18 @@ export const AdminSubmissions: React.FC = () => {
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 space-y-5">
-              <div className="grid grid-cols-2 gap-4 text-xs border-b border-gray-100 pb-4">
+            <div className="p-4 sm:p-6 space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs border-b border-gray-100 pb-4">
                 <div>
                   <span className="text-gray-400 uppercase font-bold text-[10px] block mb-1">
                     Email Address
                   </span>
                   <a
                     href={`mailto:${viewing.email}`}
-                    className="font-semibold text-emerald-800 hover:underline flex items-center gap-1.5"
+                    className="font-semibold text-emerald-800 hover:underline flex items-center gap-1.5 truncate"
                   >
-                    <Mail className="w-3.5 h-3.5" />
-                    {viewing.email}
+                    <Mail className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">{viewing.email}</span>
                   </a>
                 </div>
 
@@ -560,7 +678,7 @@ export const AdminSubmissions: React.FC = () => {
                     Phone Number
                   </span>
                   <span className="font-semibold text-gray-800 flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-gray-400" />
+                    <Phone className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                     {viewing.phone || "Not provided"}
                   </span>
                 </div>
@@ -579,7 +697,7 @@ export const AdminSubmissions: React.FC = () => {
                     Submitted Date
                   </span>
                   <span className="font-semibold text-gray-800 flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                    <Calendar className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                     {new Date(viewing.createdAt).toLocaleString()}
                   </span>
                 </div>
@@ -590,7 +708,7 @@ export const AdminSubmissions: React.FC = () => {
                 <span className="text-gray-400 uppercase font-bold text-[10px] block mb-1">
                   Message & Request Details
                 </span>
-                <p className="text-xs text-gray-800 bg-gray-50 border border-gray-200 rounded-lg p-4 leading-relaxed whitespace-pre-wrap">
+                <p className="text-xs text-gray-800 bg-gray-50 border border-gray-200 rounded-lg p-3.5 sm:p-4 leading-relaxed whitespace-pre-wrap">
                   {viewing.details}
                 </p>
               </div>
@@ -619,11 +737,11 @@ export const AdminSubmissions: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <div className="bg-gray-50 px-4 sm:px-6 py-3.5 border-t border-gray-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={() => handleDelete(viewing)}
-                className="text-xs font-bold text-red-600 hover:text-red-800 flex items-center gap-1 px-3 py-1.5 hover:bg-red-50 rounded-md transition-colors"
+                className="text-xs font-bold text-red-600 hover:text-red-800 flex items-center justify-center gap-1 px-3 py-2 hover:bg-red-50 rounded-md transition-colors w-full sm:w-auto"
               >
                 <Trash2 className="w-4 h-4" />
                 Delete Record
@@ -631,7 +749,7 @@ export const AdminSubmissions: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setViewing(null)}
-                className="bg-gray-800 hover:bg-gray-900 text-white text-xs font-bold uppercase tracking-wider px-5 py-2 rounded-md transition-colors"
+                className="bg-gray-800 hover:bg-gray-900 text-white text-xs font-bold uppercase tracking-wider px-5 py-2 rounded-md transition-colors w-full sm:w-auto"
               >
                 Close
               </button>

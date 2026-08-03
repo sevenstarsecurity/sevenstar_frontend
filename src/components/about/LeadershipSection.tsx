@@ -1,9 +1,9 @@
 "use client";
 
+import { getPublicLeaders, Leader } from "@/services/leadership"; // adjust path to match your project
+import { ArrowRight } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { ImageFallback } from "../ui/ImageFallback";
-import { ArrowRight } from "lucide-react";
-import { getPublicLeaders, Leader } from "@/services/leadership"; // adjust path to match your project
 
 export const LeadershipSection: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -128,7 +128,7 @@ export const LeadershipSection: React.FC = () => {
 
                 {/* Read Full Message Link */}
                 
-                  <a href="#contact"
+                  <a href="/blog"
                   className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#c8102e] uppercase tracking-wider hover:text-[#9e0a22] transition-colors group/link"
                 >
                   <span>READ FULL MESSAGE</span>

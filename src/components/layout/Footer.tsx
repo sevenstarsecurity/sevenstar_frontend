@@ -166,25 +166,35 @@ export const Footer: React.FC = () => {
             </div>
 
             <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-center sm:items-start">
-              <li className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
-                <Shield className="w-4 h-4 text-[#008e43] flex-shrink-0" />
-                <span>Security Guard Services</span>
+              <li>
+                <Link href="/services" className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
+                  <Shield className="w-4 h-4 text-[#008e43] flex-shrink-0" />
+                  <span>Security Guard Services</span>
+                </Link>
               </li>
-              <li className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
-                <UserCheck className="w-4 h-4 text-[#008e43] flex-shrink-0" />
-                <span>VIP Protection</span>
+              <li>
+                <Link href="/services" className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
+                  <UserCheck className="w-4 h-4 text-[#008e43] flex-shrink-0" />
+                  <span>VIP Protection</span>
+                </Link>
               </li>
-              <li className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
-                <Video className="w-4 h-4 text-[#008e43] flex-shrink-0" />
-                <span>CCTV &amp; Surveillance</span>
+              <li>
+                <Link href="/services" className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
+                  <Video className="w-4 h-4 text-[#008e43] flex-shrink-0" />
+                  <span>CCTV &amp; Surveillance</span>
+                </Link>
               </li>
-              <li className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
-                <Calendar className="w-4 h-4 text-[#008e43] flex-shrink-0" />
-                <span>Event Security</span>
+              <li>
+                <Link href="/services" className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
+                  <Calendar className="w-4 h-4 text-[#008e43] flex-shrink-0" />
+                  <span>Event Security</span>
+                </Link>
               </li>
-              <li className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
-                <Truck className="w-4 h-4 text-[#008e43] flex-shrink-0" />
-                <span>Vehicle Fleet Management</span>
+              <li>
+                <Link href="/services" className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
+                  <Truck className="w-4 h-4 text-[#008e43] flex-shrink-0" />
+                  <span>Vehicle Fleet Management</span>
+                </Link>
               </li>
             </ul>
           </div>

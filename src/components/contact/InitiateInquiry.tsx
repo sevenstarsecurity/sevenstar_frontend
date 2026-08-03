@@ -179,9 +179,9 @@ export const InitiateInquiry: React.FC = () => {
               />
             </div>
 
-            {/* ISO Certificates */}
+            {/* ISO Certificates — commented out
             <div className="space-y-5 pt-3">
-              {/* ISO 9001 Card */}
+              ISO 9001 Card
               <div className="flex items-center gap-5">
                 <div className="w-[84px] h-[84px] rounded-[22px] border-[1.5px] border-[#6b6228] bg-[#fbfdf8] p-2 flex items-center justify-center flex-shrink-0 shadow-xs">
                   <img
@@ -200,7 +200,7 @@ export const InitiateInquiry: React.FC = () => {
                 </div>
               </div>
 
-              {/* ISO 14001 Card */}
+              ISO 14001 Card
               <div className="flex items-center gap-5">
                 <div className="w-[84px] h-[84px] rounded-[22px] border-[1.5px] border-[#6b6228] bg-[#fbfdf8] p-2 flex items-center justify-center flex-shrink-0 shadow-xs">
                   <img
@@ -219,6 +219,7 @@ export const InitiateInquiry: React.FC = () => {
                 </div>
               </div>
             </div>
+            */}
           </div>
         </div>
       </div>

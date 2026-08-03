@@ -293,7 +293,7 @@ export const ServicesGrid: React.FC = () => {
 
                 {/* Learn More Link */}
 <a
-  href="#contact"
+  href="/contact"
   className="inline-flex items-center gap-1.5 text-[#c8102e] hover:text-[#a60d25] uppecase transition-colors group/link pt-2"
   style={{
     fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
