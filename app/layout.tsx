@@ -106,15 +106,17 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${publicSans.variable} h-full antialiased`}
     >
-      {/* Strip browser-extension injected attributes (e.g. bis_skin_checked from Bitdefender)
-          BEFORE React hydrates so server/client HTML matches */}
-      <head>
+      <body suppressHydrationWarning className="min-h-full flex flex-col">
+        {/* Strip browser-extension injected attributes (e.g. bis_skin_checked from Bitdefender)
+            BEFORE React hydrates so server/client HTML matches.
+            strategy="beforeInteractive" still injects this into <head> automatically —
+            it does not need to be placed inside a manual <head> tag. */}
         <Script id="strip-extension-attrs" strategy="beforeInteractive">
           {`(function(){try{var o=new MutationObserver(function(m){m.forEach(function(r){r.addedNodes.forEach(function(n){if(n.nodeType===1){n.querySelectorAll("[bis_skin_checked]").forEach(function(e){e.removeAttribute("bis_skin_checked")});if(n.hasAttribute&&n.hasAttribute("bis_skin_checked"))n.removeAttribute("bis_skin_checked")}})})});o.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["bis_skin_checked"]});document.querySelectorAll("[bis_skin_checked]").forEach(function(e){e.removeAttribute("bis_skin_checked")})}catch(e){}})();`}
         </Script>
-      </head>
-      <body suppressHydrationWarning className="min-h-full flex flex-col">
+
         {children}
+
         <Script id="sevenstar-structured-data" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",

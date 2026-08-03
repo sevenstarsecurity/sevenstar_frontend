@@ -59,7 +59,7 @@ export const AdminLoginForm: React.FC = () => {
   return (
     <div className="h-screen w-full flex flex-col lg:flex-row bg-[#081f14] overflow-y-auto lg:overflow-hidden select-none">
       {/* LEFT PANEL - GREEN OVERLAY WITH BUILDING BACKGROUND */}
-      <div className="lg:w-1/2 relative min-h-[260px] sm:min-h-[320px] lg:min-h-0 lg:h-screen flex flex-col justify-between p-5 sm:p-8 lg:p-12 overflow-hidden flex-shrink-0">
+      <div className="lg:w-1/2 relative min-h-65 sm:min-h-80 lg:min-h-0 lg:h-screen flex flex-col justify-between p-5 sm:p-8 lg:p-12 overflow-hidden shrink-0">
         {/* Background Building Image */}
         <div className="absolute inset-0 z-0">
           <ImageFallback
@@ -69,13 +69,13 @@ export const AdminLoginForm: React.FC = () => {
             fallbackText="our story.jpg"
           />
           {/* Green Color Tint & Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0e4828]/95 via-[#0b3820]/90 to-[#041a0e]/95 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-linear-to-b from-[#0e4828]/95 via-[#0b3820]/90 to-[#041a0e]/95 mix-blend-multiply" />
           <div className="absolute inset-0 bg-[#06331b]/80" />
         </div>
 
         {/* Top Left Header Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#14532d] border border-[#22c55e]/30 flex items-center justify-center shadow-lg flex-shrink-0">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#14532d] border border-[#22c55e]/30 flex items-center justify-center shadow-lg shrink-0">
             <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-[#4ade80] fill-[#4ade80]/20" />
           </div>
           <div>
@@ -113,7 +113,7 @@ export const AdminLoginForm: React.FC = () => {
               SYSTEM STATUS
             </span>
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse flex-shrink-0" />
+              <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse shrink-0" />
               <span className="text-[11px] sm:text-xs font-semibold text-[#d1fae5]">
                 All Nodes Operational
               </span>
@@ -168,7 +168,7 @@ export const AdminLoginForm: React.FC = () => {
               /* Form */
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" noValidate>
                 {errorMsg && (
-                  <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded break-words">
+                  <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded wrap-break-word">
                     {errorMsg}
                   </div>
                 )}
@@ -181,7 +181,17 @@ export const AdminLoginForm: React.FC = () => {
                   >
                     ADMINISTRATOR ID <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative flex items-center">
+                  {/*
+                    suppressHydrationWarning: some browser extensions (password
+                    managers, form-fill tools) inject their own attributes
+                    (e.g. data-v-xxxxx) into this wrapper before React hydrates,
+                    which causes a false-positive hydration mismatch. This tells
+                    React to ignore attribute differences on this node only.
+                  */}
+                  <div
+                    className="relative flex items-center"
+                    suppressHydrationWarning
+                  >
                     <User className="w-4 h-4 text-gray-400 absolute left-3.5 pointer-events-none" />
                     <input
                       id="email"
@@ -204,7 +214,10 @@ export const AdminLoginForm: React.FC = () => {
                   >
                     SECURITY CLEARANCE KEY <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative flex items-center">
+                  <div
+                    className="relative flex items-center"
+                    suppressHydrationWarning
+                  >
                     <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 pointer-events-none" />
                     <input
                       id="password"
@@ -244,8 +257,8 @@ export const AdminLoginForm: React.FC = () => {
                     <span className="text-xs text-gray-600">Stay logged in</span>
                   </label>
 
-                  
-                    <a href="#reset"
+                  <a
+                    href="#reset"
                     className="text-xs font-semibold text-[#0b4226] hover:underline transition-colors"
                   >
                     Reset Key

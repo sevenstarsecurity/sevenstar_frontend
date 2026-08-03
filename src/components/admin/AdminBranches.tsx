@@ -46,6 +46,10 @@ export const AdminBranches: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
 
+  // Read-only profile view — separate from the edit modal, no form/inputs
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [viewBranch, setViewBranch] = useState<Branch | null>(null);
+
   // Form State
   const [branchName, setBranchName] = useState("");
   const [address, setAddress] = useState("");
@@ -118,6 +122,11 @@ export const AdminBranches: React.FC = () => {
     setSelectedBranch(null);
     resetForm();
     setShowAddModal(true);
+  };
+
+  const handleView = (branch: Branch) => {
+    setViewBranch(branch);
+    setShowViewModal(true);
   };
 
   const handleDelete = async (branch: Branch) => {
@@ -253,15 +262,6 @@ export const AdminBranches: React.FC = () => {
                     key={branch.id}
                     className="bg-white border border-gray-200/90 rounded-md p-5 shadow-xs flex flex-col md:flex-row items-stretch justify-between gap-5 hover:border-gray-300 transition-all"
                   >
-                    <div className="w-full md:w-56 h-36 rounded-md overflow-hidden bg-gray-100 flex-shrink-0 relative border border-gray-200">
-                      <ImageFallback
-                        src="/images/our story.jpg"
-                        alt={branch.name}
-                        className="w-full h-full object-cover object-center"
-                        fallbackText={branch.name}
-                      />
-                    </div>
-
                     <div className="flex-1 flex flex-col justify-between space-y-3">
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
@@ -325,7 +325,7 @@ export const AdminBranches: React.FC = () => {
                       </div>
 
                       <button
-                        onClick={() => handleEdit(branch)}
+                        onClick={() => handleView(branch)}
                         className="text-[10px] font-bold text-[#0b4226] hover:underline uppercase tracking-wider cursor-pointer"
                       >
                         VIEW FULL PROFILE
@@ -592,6 +592,136 @@ export const AdminBranches: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* READ-ONLY VIEW MODAL — display only, no editable fields */}
+      {showViewModal && viewBranch && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-gray-200 rounded-md shadow-2xl max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="bg-[#0b4226] text-white p-4 px-6 flex items-center justify-between sticky top-0 z-10">
+              <h3 className="text-base font-bold uppercase tracking-wider flex items-center gap-2">
+                <Building className="w-5 h-5 text-[#4ade80]" />
+                <span>Branch Profile</span>
+              </h3>
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="text-white/80 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
+                  {viewBranch.name}
+                </h2>
+                <span
+                  className={`px-2 py-0.5 rounded-xs text-[9px] font-extrabold uppercase tracking-wider ${
+                    viewBranch.isActive
+                      ? "bg-[#d4af37] text-white"
+                      : "bg-gray-300 text-gray-700"
+                  }`}
+                >
+                  {viewBranch.isActive ? "ACTIVE" : "INACTIVE"}
+                </span>
+              </div>
+
+              <div className="space-y-1">
+                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+                  Physical Address
+                </span>
+                <p className="text-sm font-semibold text-gray-900 flex items-start gap-1.5">
+                  <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                  <span>{viewBranch.address || "—"}</span>
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+                <div>
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+                    Phone
+                  </span>
+                  <p className="text-sm font-semibold text-gray-900 mt-0.5">
+                    {viewBranch.phone || "—"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+                    Mobile
+                  </span>
+                  <p className="text-sm font-semibold text-gray-900 mt-0.5">
+                    {viewBranch.mobile || "—"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+                    Email
+                  </span>
+                  <p className="text-sm font-semibold text-gray-900 mt-0.5">
+                    {viewBranch.email || "—"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+                    Staff Members
+                  </span>
+                  <p className="text-sm font-semibold text-gray-900 mt-0.5">
+                    {viewBranch.staffMembers?.length ?? 0} Personnel
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+                <div>
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+                    Latitude
+                  </span>
+                  <p className="text-sm font-semibold text-gray-900 mt-0.5">
+                    {viewBranch.latitude ?? "—"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+                    Longitude
+                  </span>
+                  <p className="text-sm font-semibold text-gray-900 mt-0.5">
+                    {viewBranch.longitude ?? "—"}
+                  </p>
+                </div>
+              </div>
+
+              {viewBranch.googleMapsUrl && (
+                <div className="space-y-1">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+                    Google Maps
+                  </span>
+                  <a
+                    href={viewBranch.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-semibold text-[#0b4226] hover:underline break-all"
+                  >
+                    {viewBranch.googleMapsUrl}
+                  </a>
+                </div>
+              )}
+
+              <div className="pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowViewModal(false)}
+                  className="w-full py-2.5 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer"
+                >
+                  CLOSE
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
