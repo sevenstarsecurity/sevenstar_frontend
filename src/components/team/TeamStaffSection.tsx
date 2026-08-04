@@ -1,17 +1,19 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import axios, { AxiosError } from "axios";
 import { ImageFallback } from "../ui/ImageFallback";
-import { getPublicStaff, Staff } from "@/services/staff";
-import { AxiosError } from "axios";
+import { getAdminStaff, Staff } from "@/services/staff";
+import api from "@/services/api";
 
 // ─── Sample fallback data shown when API returns no staff ──────────────────
+// NOTE: `Staff` (from services/staff.ts) has no `message` field, so sample
+// entries only carry what the real type supports.
 const SAMPLE_STAFF: Staff[] = [
   {
     id: "sample-1",
     name: "Rajesh Kumar Shrestha",
     role: "Senior Security Officer",
-    message: "Dedicated to maintaining safety and order at every post.",
     imageUrl: "https://picsum.photos/seed/rajesh/400/400",
     displayOrder: 1,
     isActive: true,
@@ -20,7 +22,6 @@ const SAMPLE_STAFF: Staff[] = [
     id: "sample-2",
     name: "Sunita Tamang",
     role: "Operations Coordinator",
-    message: "Ensuring seamless coordination across all security divisions.",
     imageUrl: "https://picsum.photos/seed/sunita/400/400",
     displayOrder: 2,
     isActive: true,
@@ -29,7 +30,6 @@ const SAMPLE_STAFF: Staff[] = [
     id: "sample-3",
     name: "Bikas Rai",
     role: "Field Supervisor",
-    message: "Leading field teams with discipline and precision.",
     imageUrl: "https://picsum.photos/seed/bikas/400/400",
     displayOrder: 3,
     isActive: true,
@@ -38,19 +38,54 @@ const SAMPLE_STAFF: Staff[] = [
     id: "sample-4",
     name: "Priya Gurung",
     role: "Security Analyst",
-    message: "Analyzing risks and ensuring proactive security measures daily.",
     imageUrl: "https://picsum.photos/seed/priya/400/400",
     displayOrder: 4,
     isActive: true,
   },
 ];
 
+// ─── Public fetch, done locally so services/staff.ts stays untouched ──────
+// staff.ts only exports getAdminStaff (which hits the authenticated
+// /admin/staff route). On a public marketing page we don't want the shared
+// `api` instance's 401 interceptor redirecting visitors to /login, so we
+// use a plain axios instance here, same pattern already used in
+// leadership.ts for its public fetch.
+
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+  statusCode: number;
+}
+
+const publicApi = axios.create({
+  baseURL: api.defaults.baseURL,
+});
+
+const fetchPublicStaff = async (): Promise<Staff[]> => {
+  try {
+    const res = await publicApi.get<ApiResponse<Staff[]>>("/staff");
+    return Array.isArray(res.data.data) ? res.data.data : [];
+  } catch (err: any) {
+    if (err?.response?.status === 404) {
+      // No dedicated public route yet — fall back to admin data, but via
+      // getAdminStaff() so a 401 here is handled the same way the rest of
+      // the app already handles it, rather than inventing a new path.
+      try {
+        return await getAdminStaff();
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
+};
+
 export const TeamStaffSection: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -69,22 +104,20 @@ export const TeamStaffSection: React.FC = () => {
     const fetchStaff = async () => {
       try {
         setLoading(true);
-        const data = await getPublicStaff();
+        const data = await fetchPublicStaff();
         if (mounted) {
           const activeSorted = data
             .filter((s) => s.isActive)
             .sort((a, b) => a.displayOrder - b.displayOrder);
           // Fall back to sample data if API returns empty
           setStaffList(activeSorted.length > 0 ? activeSorted : SAMPLE_STAFF);
-          setError(null);
         }
       } catch (err) {
         const axiosErr = err as AxiosError;
         console.error("Failed to fetch staff members:", axiosErr);
         if (mounted) {
-          // On error, show sample data instead of error state
+          // On error, show sample data instead of an error state
           setStaffList(SAMPLE_STAFF);
-          setError(null);
         }
       } finally {
         if (mounted) setLoading(false);
@@ -133,7 +166,7 @@ export const TeamStaffSection: React.FC = () => {
                 <div className="p-1 rounded-full border-2 border-[#f3d37a] shadow-sm mb-6 group-hover:scale-105 transition-transform duration-300">
                   <div className="w-40 h-40 md:w-44 md:h-44 rounded-full overflow-hidden bg-gray-100 shadow-inner">
                     <ImageFallback
-                      src={member.imageUrl}
+                      src={member.imageUrl || ""}
                       alt={member.name}
                       className="w-full h-full object-cover object-center"
                       fallbackText={member.name}
@@ -156,16 +189,6 @@ export const TeamStaffSection: React.FC = () => {
                 >
                   {member.role}
                 </p>
-
-                {/* Bio / Message */}
-                {member.message && (
-                  <p
-                    className="text-gray-600 text-xs md:text-sm leading-relaxed max-w-xs font-normal italic"
-                    style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
-                  >
-                    &quot;{member.message}&quot;
-                  </p>
-                )}
               </div>
             ))}
           </div>

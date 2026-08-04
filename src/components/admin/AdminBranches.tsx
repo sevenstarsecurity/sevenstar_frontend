@@ -38,6 +38,7 @@ import {
   updateBranch,
   deleteBranch,
   getBranchStaff,
+  getBranchStaffCounts,
   addBranchStaff,
   updateBranchStaff,
   toggleBranchStaffStatus,
@@ -53,6 +54,11 @@ export const AdminBranches: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+
+  // branch.staffMembers from GET /admin/branches is unreliable (staff now
+  // live in a separate flat resource, not embedded per branch), so real
+  // per-branch counts are fetched separately and kept here: { branchId: count }
+  const [staffCounts, setStaffCounts] = useState<Record<string, number>>({});
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
@@ -125,8 +131,19 @@ export const AdminBranches: React.FC = () => {
     }
   };
 
+  const loadStaffCounts = async () => {
+    try {
+      const counts = await getBranchStaffCounts();
+      setStaffCounts(counts);
+    } catch {
+      // Non-critical — cards just fall back to 0/embedded count if this fails.
+      setStaffCounts({});
+    }
+  };
+
   useEffect(() => {
     loadBranches();
+    loadStaffCounts();
   }, []);
 
   const resetForm = () => {
@@ -189,12 +206,17 @@ export const AdminBranches: React.FC = () => {
     loadStaff(branch.id);
   };
 
+  // FIX: getBranchStaff() resolves to a PaginatedResponse<BranchStaff>
+  // (i.e. { items, total, page, limit, totalPages }), NOT a bare array.
+  // The previous code did `Array.isArray(staff)` on that object, which is
+  // always false, so staffList silently got reset to [] on every load even
+  // though the request succeeded. Read `staff.items` instead.
   const loadStaff = async (branchId: string) => {
     setIsLoadingStaff(true);
     setStaffError("");
     try {
       const staff = await getBranchStaff(branchId);
-      setStaffList(Array.isArray(staff) ? staff : []);
+      setStaffList(Array.isArray(staff?.items) ? staff.items : []);
     } catch (err: any) {
       setStaffError(
         err?.response?.data?.message || err?.message || "Failed to load staff."
@@ -278,6 +300,7 @@ export const AdminBranches: React.FC = () => {
       }
       setShowStaffForm(false);
       resetStaffForm();
+      loadStaffCounts();
     } catch (err: any) {
       setStaffError(
         err?.response?.data?.message || err?.message || "Failed to save staff member."
@@ -311,6 +334,7 @@ export const AdminBranches: React.FC = () => {
     try {
       await deleteBranchStaff(activeStaffBranch.id, staff.id);
       setStaffList((prev) => (prev ?? []).filter((s) => s.id !== staff.id));
+      loadStaffCounts();
     } catch (err: any) {
       alert(
         err?.response?.data?.message || err?.message || "Failed to remove staff member."
@@ -399,6 +423,7 @@ export const AdminBranches: React.FC = () => {
         // it so the person can immediately add more staff without reopening.
         setSelectedBranch(finalBranch);
         setStaffList(savedStaff);
+        loadStaffCounts();
       }
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || "Failed to save branch.");
@@ -410,10 +435,7 @@ export const AdminBranches: React.FC = () => {
   // Guarded everywhere `branches` is read, in case state is ever undefined/null
   const safeBranches = branches ?? [];
   const activeCount = safeBranches.filter((b) => b.isActive).length;
-  const totalStaff = safeBranches.reduce(
-    (sum, b) => sum + (b.staffMembers?.length || 0),
-    0
-  );
+  const totalStaff = Object.values(staffCounts).reduce((sum, c) => sum + c, 0);
 
   // Reusable staff section — rendered inside BOTH the Edit modal and the
   // View Profile modal, driven by the same state/handlers above.
@@ -750,7 +772,7 @@ export const AdminBranches: React.FC = () => {
                             STAFF MEMBERS
                           </span>
                           <span className="text-xs font-bold text-gray-800 mt-0.5 block">
-                            {branch.staffMembers?.length ?? 0} Personnel
+                            {staffCounts[branch.id] ?? branch.staffMembers?.length ?? 0} Personnel
                           </span>
                         </div>
                       </div>
