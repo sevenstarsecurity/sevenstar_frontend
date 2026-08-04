@@ -64,7 +64,12 @@ import {
 // ─── Shared types ───────────────────────────────────────────────────────────
 
 type SectionKey = "Team" | "Leadership" | "Staff";
-type Person = Executive | Leader | Staff;
+
+// Union of the three profile types. Staff has no `message` field in the
+// API, so it's added here as optional to allow shared rendering code.
+type Person = (Executive | Leader | Staff) & {
+  message?: string | null;
+};
 
 const navItems = [
   { name: "Overview", icon: LayoutGrid, href: "/admin/dashboard" },
@@ -79,7 +84,7 @@ const navItems = [
 ];
 
 export const AdminTeam: React.FC = () => {
-  // ─── Section switch: Team (Executives) vs Leadership ──────────────────────
+  // ─── Section switch: Team (Executives) vs Leadership vs Staff ─────────────
   const [activeSection, setActiveSection] = useState<SectionKey>("Team");
 
   const [showConfigPanel, setShowConfigPanel] = useState(false);
@@ -142,8 +147,9 @@ export const AdminTeam: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await getAdminStaff();
-      setStaffMembers(res.items);
+      // getAdminStaff() resolves to Staff[] directly (no { items } wrapper)
+      const items = await getAdminStaff();
+      setStaffMembers(items);
     } catch (err: any) {
       setError(err?.message || "Failed to load staff members");
     } finally {
@@ -184,6 +190,7 @@ export const AdminTeam: React.FC = () => {
     setEditingId(person.id);
     setFullName(person.name);
     setOfficialRole(person.role);
+    setMessage(person.message ?? "");
     setDisplayPriority(String(person.displayOrder));
     setOperationalStatus(person.isActive);
     setImageFile(null);
@@ -250,6 +257,8 @@ export const AdminTeam: React.FC = () => {
       isActive: operationalStatus,
       image: imageFile || undefined,
     };
+    // Staff's create/update payload type has no `message` field — that's
+    // fine, createStaff/updateStaff simply won't read it off this object.
 
     try {
       if (activeSection === "Team") {
@@ -459,7 +468,7 @@ export const AdminTeam: React.FC = () => {
             </div>
           </div>
 
-          {/* TEAM / LEADERSHIP CONTAINER */}
+          {/* TEAM / LEADERSHIP / STAFF CONTAINER */}
           <div className="bg-white border border-gray-200/90 rounded-md shadow-xs overflow-hidden">
             {/* MOBILE CARD VIEW (VISIBLE ON SMALL SCREENS < md) */}
             <div className="block md:hidden divide-y divide-gray-200">
@@ -494,7 +503,7 @@ export const AdminTeam: React.FC = () => {
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-md overflow-hidden bg-gray-200 border border-gray-300 flex-shrink-0">
                           <ImageFallback
-                            src={person.imageUrl}
+                            src={person.imageUrl || ""}
                             alt={person.name}
                             className="w-full h-full object-cover"
                             fallbackText={person.name[0]}
@@ -619,7 +628,7 @@ export const AdminTeam: React.FC = () => {
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-md overflow-hidden bg-gray-200 border border-gray-300 flex-shrink-0">
                               <ImageFallback
-                                src={person.imageUrl}
+                                src={person.imageUrl || ""}
                                 alt={person.name}
                                 className="w-full h-full object-cover"
                                 fallbackText={person.name[0]}
@@ -835,18 +844,20 @@ export const AdminTeam: React.FC = () => {
                   />
                 </div>
 
-                {/* Message / Bio */}
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wider block">
-                    MESSAGE
-                  </label>
-                  <textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Short statement or bio shown on the public site..."
-                    className="w-full bg-[#f4f6f8] border border-gray-300 rounded p-2.5 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] h-20 resize-none"
-                  />
-                </div>
+                {/* Message / Bio — Staff has no message field in the API, so hide it for that section */}
+                {activeSection !== "Staff" && (
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wider block">
+                      MESSAGE
+                    </label>
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Short statement or bio shown on the public site..."
+                      className="w-full bg-[#f4f6f8] border border-gray-300 rounded p-2.5 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] h-20 resize-none"
+                    />
+                  </div>
+                )}
 
                 {/* Display Priority */}
                 <div className="flex items-center justify-between gap-4 pt-1">

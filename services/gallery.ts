@@ -153,10 +153,12 @@ export const uploadGalleryImage = async (
   if (caption) formData.append("caption", caption);
   if (displayOrder !== undefined) formData.append("displayOrder", String(displayOrder));
 
+  // Don't set Content-Type manually — let axios/browser generate the
+  // multipart boundary. Forcing "multipart/form-data" with no boundary
+  // produces a body the backend can't parse.
   const res = await api.post<ApiResponse<GalleryImage>>(
     "/admin/gallery/images",
-    formData,
-    { headers: { "Content-Type": "multipart/form-data" } }
+    formData
   );
   return res.data.data;
 };
@@ -173,8 +175,7 @@ export const bulkUploadGalleryImages = async (
 
   const res = await api.post<RawListResponse<GalleryImage>>(
     "/admin/gallery/images/bulk",
-    formData,
-    { headers: { "Content-Type": "multipart/form-data" } }
+    formData
   );
   return extractArray<GalleryImage>(res.data.data);
 };
@@ -189,10 +190,14 @@ export const updateGalleryImage = async (
   if (updates.displayOrder !== undefined)
     formData.append("displayOrder", String(updates.displayOrder));
 
+  // IMPORTANT: don't manually set Content-Type for FormData bodies.
+  // The browser/axios needs to generate the multipart boundary itself
+  // (e.g. "multipart/form-data; boundary=----WebKitFormBoundary...").
+  // Hardcoding "multipart/form-data" with no boundary produces a body
+  // the server can't parse — this was the source of the save failing.
   const res = await api.put<ApiResponse<GalleryImage>>(
     `/admin/gallery/images/${id}`,
-    formData,
-    { headers: { "Content-Type": "multipart/form-data" } }
+    formData
   );
   return res.data.data;
 };

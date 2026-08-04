@@ -1,19 +1,24 @@
 import api from "./api";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
-// Confirmed from real API response (GET /api/admin/branches or /api/branches).
+// Confirmed from real API response (GET /api/admin/branch-staff).
 
 export interface BranchStaff {
   id: string;
   branchId: string;
   name: string;
-  designation?: string | null; // confirmed — was wrongly guessed as "position"
+  designation?: string | null;
   displayOrder: number;
   isActive: boolean;
   createdAt: string;
-  // Note: no "phone" or "updatedAt" field appeared in the real response.
-  // If your backend does have them, they were just omitted from this
-  // response — otherwise remove from any UI assuming they exist.
+  updatedAt: string;
+  // Present on the staff-list endpoint response — a lightweight reference
+  // back to the parent branch. May not be present on every endpoint that
+  // returns BranchStaff, hence optional.
+  branch?: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface Branch {
@@ -41,16 +46,28 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
+interface ApiMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
+}
+
 interface ApiResponse<T> {
   success: boolean;
   message: string;
   data: T;
+  meta?: ApiMeta;
   statusCode: number;
 }
 
 // ─── Normalizer ─────────────────────────────────────────────────────────────
-// Backend list-response shape is still unconfirmed. This defensively handles
-// several common shapes so the UI never crashes on an unexpected wrapper.
+// Backend list-response shape is still unconfirmed for /admin/branches
+// itself (as opposed to the nested staff endpoint, which is now confirmed
+// below). This defensively handles several common shapes so the UI never
+// crashes on an unexpected wrapper.
 // TODO: replace this with a direct mapping once a real Postman response for
 // GET /api/admin/branches (list) is available.
 
@@ -94,6 +111,25 @@ export const getPublicBranches = async (): Promise<Branch[]> => {
 export const getPublicBranch = async (id: string): Promise<Branch> => {
   const res = await api.get<ApiResponse<Branch>>(`/branches/${id}`);
   return res.data.data;
+};
+
+// Confirmed: GET /api/branch-staff (public, no auth)
+export const getPublicBranchStaff = async (): Promise<BranchStaff[]> => {
+  const res = await api.get<ApiResponse<BranchStaff[]>>("/branch-staff");
+  return Array.isArray(res.data.data) ? res.data.data : [];
+};
+
+// The admin branches list endpoint (GET /admin/branches) does not return
+// populated `staffMembers` per branch — staff now live in a separate flat
+// resource (/admin/branch-staff), so branch.staffMembers is unreliable for
+// counts. This computes a { branchId: count } map from the confirmed-working
+// public staff endpoint instead, so the branch cards can show real numbers.
+export const getBranchStaffCounts = async (): Promise<Record<string, number>> => {
+  const staff = await getPublicBranchStaff();
+  return staff.reduce((counts: Record<string, number>, s) => {
+    counts[s.branchId] = (counts[s.branchId] ?? 0) + 1;
+    return counts;
+  }, {});
 };
 
 // ─── Admin: Branches ────────────────────────────────────────────────────────
@@ -162,22 +198,66 @@ export const deleteBranch = async (id: string): Promise<void> => {
   await api.delete(`/admin/branches/${id}`);
 };
 
-// ─── Admin: Nested Staff ────────────────────────────────────────────────────
+// ─── Admin: Branch Staff ────────────────────────────────────────────────────
+// IMPORTANT: this is a FLAT resource, not nested under /admin/branches/:id.
+// Confirmed shape (GET /api/admin/branch-staff):
+// { success, message, data: BranchStaff[], meta: {page, limit, total,
+//   totalPages, hasNextPage, hasPrevPage}, statusCode }
+// Each item includes branchId, and an embedded `branch: { id, name }`.
+//
+// The create/update/status/delete/reorder paths below follow the same flat
+// pattern and are inferred from the confirmed GET route + your app's other
+// flat-resource conventions (e.g. /admin/branches/:id, /admin/branches/reorder).
+// They have NOT been individually confirmed against Postman yet — verify
+// each against your backend's actual route list before relying on them.
 
-export const getBranchStaff = async (branchId: string): Promise<BranchStaff[]> => {
-  const res = await api.get<ApiResponse<BranchStaff[]>>(
-    `/admin/branches/${branchId}/staff`
-  );
-  return Array.isArray(res.data.data) ? res.data.data : [];
+export interface ListBranchStaffParams {
+  branchId?: string;
+  page?: number;
+  limit?: number;
+}
+
+export const getBranchStaff = async (
+  branchId: string,
+  params: Omit<ListBranchStaffParams, "branchId"> = {}
+): Promise<PaginatedResponse<BranchStaff>> => {
+  const res = await api.get<ApiResponse<BranchStaff[]>>("/admin/branch-staff", {
+    params: { branchId, ...params },
+  });
+  const rawItems = Array.isArray(res.data.data) ? res.data.data : [];
+
+  // FALLBACK: it's unconfirmed whether the backend actually filters by the
+  // `branchId` query param — if it ignores it (returns everyone) or matches
+  // on a different key (silently returns nothing), the UI would show either
+  // every branch's staff or zero staff. Guard both cases by filtering
+  // client-side on branchId whenever the response contains items that
+  // don't all belong to the requested branch, or contains none at all.
+  const allMatchRequestedBranch =
+    rawItems.length > 0 && rawItems.every((s) => s.branchId === branchId);
+
+  const items = allMatchRequestedBranch
+    ? rawItems
+    : rawItems.filter((s) => s.branchId === branchId);
+
+  // meta (total/page/etc.) only makes sense when the server actually did
+  // the filtering; if we had to filter client-side, recompute from what we
+  // kept instead of trusting server-reported pagination counts.
+  const meta = allMatchRequestedBranch ? res.data.meta : undefined;
+
+  return {
+    items,
+    total: meta?.total ?? items.length,
+    page: meta?.page ?? 1,
+    limit: meta?.limit ?? items.length,
+    totalPages: meta?.totalPages ?? 1,
+  };
 };
 
 export const getBranchStaffMember = async (
   branchId: string,
   staffId: string
 ): Promise<BranchStaff> => {
-  const res = await api.get<ApiResponse<BranchStaff>>(
-    `/admin/branches/${branchId}/staff/${staffId}`
-  );
+  const res = await api.get<ApiResponse<BranchStaff>>(`/admin/branch-staff/${staffId}`);
   return res.data.data;
 };
 
@@ -191,10 +271,10 @@ export const addBranchStaff = async (
   branchId: string,
   payload: CreateStaffPayload
 ): Promise<BranchStaff> => {
-  const res = await api.post<ApiResponse<BranchStaff>>(
-    `/admin/branches/${branchId}/staff`,
-    payload
-  );
+  const res = await api.post<ApiResponse<BranchStaff>>("/admin/branch-staff", {
+    branchId,
+    ...payload,
+  });
   return res.data.data;
 };
 
@@ -204,7 +284,7 @@ export const updateBranchStaff = async (
   updates: Partial<CreateStaffPayload>
 ): Promise<BranchStaff> => {
   const res = await api.put<ApiResponse<BranchStaff>>(
-    `/admin/branches/${branchId}/staff/${staffId}`,
+    `/admin/branch-staff/${staffId}`,
     updates
   );
   return res.data.data;
@@ -216,7 +296,7 @@ export const toggleBranchStaffStatus = async (
   isActive: boolean
 ): Promise<BranchStaff> => {
   const res = await api.patch<ApiResponse<BranchStaff>>(
-    `/admin/branches/${branchId}/staff/${staffId}/status`,
+    `/admin/branch-staff/${staffId}/status`,
     { isActive }
   );
   return res.data.data;
@@ -226,12 +306,12 @@ export const reorderBranchStaff = async (
   branchId: string,
   order: { id: string; displayOrder: number }[]
 ): Promise<void> => {
-  await api.patch(`/admin/branches/${branchId}/staff/reorder`, { order });
+  await api.patch("/admin/branch-staff/reorder", { branchId, order });
 };
 
 export const deleteBranchStaff = async (
   branchId: string,
   staffId: string
 ): Promise<void> => {
-  await api.delete(`/admin/branches/${branchId}/staff/${staffId}`);
+  await api.delete(`/admin/branch-staff/${staffId}`);
 };

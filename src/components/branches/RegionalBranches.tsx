@@ -72,7 +72,10 @@ export const RegionalBranches: React.FC = () => {
   };
 
   const renderLeadershipList = (branch: Branch) => {
-    const leadership = branch.staffMembers
+    // branch.staffMembers can come back undefined/omitted from the public
+    // /branches endpoint (unlike the admin nested-staff endpoint, which
+    // always includes it) — default to [] so .filter never throws.
+    const leadership = (branch.staffMembers ?? [])
       .filter((member) => member.isActive)
       .sort((a, b) => a.displayOrder - b.displayOrder);
 
