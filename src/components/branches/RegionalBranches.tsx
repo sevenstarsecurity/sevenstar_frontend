@@ -3,7 +3,7 @@
 import { ArrowRight, MapPin } from "lucide-react";
 import { Barlow_Condensed } from "next/font/google";
 import React, { useEffect, useRef, useState } from "react";
-import { getPublicBranches, Branch } from "@/services/branches";
+import { getPublicBranches, getPublicBranchStaff, Branch } from "@/services/branches";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -36,9 +36,20 @@ export const RegionalBranches: React.FC = () => {
     const loadBranches = async () => {
       try {
         setLoading(true);
-        const data = await getPublicBranches();
+        // Fetch branches and staff in parallel; staff lives in a separate endpoint
+        const [branchData, staffData] = await Promise.all([
+          getPublicBranches(),
+          getPublicBranchStaff().catch(() => []), // gracefully degrade if staff fails
+        ]);
+
+        // Merge staff into each branch by branchId
+        const branchesWithStaff = branchData.map((branch) => ({
+          ...branch,
+          staffMembers: staffData.filter((s) => s.branchId === branch.id),
+        }));
+
         if (isMounted) {
-          setBranches(data);
+          setBranches(branchesWithStaff);
           setError(null);
         }
       } catch (err) {

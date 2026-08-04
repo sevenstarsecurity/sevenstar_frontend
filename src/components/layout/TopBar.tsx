@@ -10,11 +10,11 @@ export const TopBar: React.FC = () => {
         {/* Left Side: Contact Details */}
         <div className="flex items-center space-x-6">
           <a
-            href="tel:+97714531000"
+            href="tel:+977 9801251501"
             className="flex items-center gap-1.5 text-white hover:text-gray-200 transition-colors"
           >
             <Phone className="w-3.5 h-3.5 text-white" />
-            <span className="text-white font-medium">+977 1 4531000</span>
+            <span className="text-white font-medium">+977 9801251501</span>
           </a>
           <a
             href="mailto:info@sevenstar.com.np"

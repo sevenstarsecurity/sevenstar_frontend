@@ -75,17 +75,14 @@ export const AdminLoginForm: React.FC = () => {
 
         {/* Top Left Header Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#14532d] border border-[#22c55e]/30 flex items-center justify-center shadow-lg shrink-0">
-            <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-[#4ade80] fill-[#4ade80]/20" />
-          </div>
-          <div>
-            <h1 className="text-white font-bold tracking-wider text-sm sm:text-base leading-tight uppercase font-['Public_Sans']">
-              SHIELD<span className="text-[#4ade80]">CMS</span>
-            </h1>
-            <p className="text-[9px] sm:text-[10px] font-semibold text-[#86efac] tracking-widest uppercase">
-              Admin Terminal
-            </p>
-          </div>
+          <Link href="/" title="Go to Website Homepage" className="group cursor-pointer">
+            <ImageFallback
+              src="/images/sevenstarlogo.png"
+              alt="Seven Star Security Logo"
+              className="h-10 sm:h-12 w-auto object-contain bg-white/95 px-2.5 py-1 rounded-md shadow-md transition-transform duration-300 group-hover:scale-105"
+              fallbackText="Seven Star Security"
+            />
+          </Link>
         </div>
 
         {/* Middle Hero Content */}

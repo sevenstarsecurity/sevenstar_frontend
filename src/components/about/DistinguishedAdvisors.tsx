@@ -6,18 +6,36 @@ import { ImageFallback } from "../ui/ImageFallback";
 
 const advisors = [
   {
-    name: "Retd. IGP Sarat Kumar Basnet",
-    role: "Senior Advisor (Ex-Police Chief)",
+    name: "Sanat Kumar Basnet",
+    role: "Retired IGP of APF",
     imageUrl: "https://picsum.photos/seed/sarat/400/400",
     message:
-      "Security is not merely a profession — it is a solemn commitment to society. Throughout my decades of service in Nepal Police, I have witnessed the evolving landscape of threats and the courage required to counter them. Seven Star Security Services embodies that spirit of dedication. Their disciplined approach, trained personnel, and unwavering commitment to safety align with the highest standards of professional security. I am honoured to advise this institution and encourage every member to uphold integrity, vigilance, and service above self.",
+      `At Seven Star we are constantly evolving and adapting in accordance with the ever changing demands of the industry, thereby meeting client requirements and assuring their safety. Thus offering our clients a complete "Peace of mind".
+
+Motivation is an integral part of employee development and it also helps them excel. Bearing this in mind, we apply basic family principles to our staff and create a conducive working environment for them. We genuinely care for the well-being of employees hence every staff member is looked after and treated with respect. And we credit our achievements and success to our dedicated employees, as it would not be possible to reach the level we've attained without them.
+
+Every individual at Seven Star is committed to offer their 100% in order to exceed client's expectation. And we've been delivering premium quality service for many years, to numerous establishments all across Nepal. Hence we can confidently say that "You are in safe hands".`,
   },
   {
-    name: "Major General Devendra Bd. Medhasi",
-    role: "Strategic Military Advisor",
+    name: "Devendra Bd. Medhasi",
+    role: "Retired Nepal Army",
     imageUrl: "https://picsum.photos/seed/devendra/400/400",
-    message:
-      "In matters of national and institutional security, strategic thinking is as important as physical presence. My career in the Nepal Army has reinforced the principle that effective security demands planning, precision, and professionalism. Seven Star Security Services demonstrates these qualities consistently. Their leadership understands that protecting people and assets requires both tactical knowledge and ethical responsibility. I am proud to contribute my experience to guide this organisation toward excellence and national service.",
+    message: `I have the honor to congratulate Seven Star Security Service
+Pvt. Ltd. to publish its Company Profile on the occasion of its Anniversary.
+
+Security of personnel and materials is paramount in today's fast-moving situations. Seven Star Security Service Pvt. Ltd. has been successfully accomplishing its goal by providing high-quality private security services.
+
+I would like to reiterate its professionalism in providing security in all spheres of life. I urge all private companies, hotels, corporate offices, including banks, to entrust Seven Star Security Service Pvt. Ltd. for its reliable and unflinching services.
+
+Its growth with your trust is a pride for this company. Cordial relations are strengthened by its credibility and professionalism.
+
+I also take this opportunity to congratulate Chairman Rtn. Ramesh Basnet and all staff members working as a team for their outstanding achievements. I wish them continued trustworthy service to all private sectors.
+
+I also wish the Chairman and staff members of Seven Star Security Service Pvt. Ltd. good health, happiness, and continued outstanding professionalism.
+
+At the end, I take this opportunity to express my sincere gratitude and extend my best wishes for the New Year to all Nepalese living in the country and abroad.
+
+Thank you.`,
   },
 ];
 
@@ -78,11 +96,10 @@ export const DistinguishedAdvisors: React.FC = () => {
               /* Outer wrapper: left padding = image width (100px) + gap (16px) */
               <div
                 key={advisor.name}
-                className={`relative pl-[180px] w-full transition-all duration-500 ${
-                  visible
-                    ? "opacity-100 translate-x-0"
-                    : "opacity-0 -translate-x-8"
-                }`}
+                className={`relative pl-[180px] w-full transition-all duration-500 ${visible
+                  ? "opacity-100 translate-x-0"
+                  : "opacity-0 -translate-x-8"
+                  }`}
                 style={{ transitionDelay: `${i * 150}ms` }}
               >
                 {/* Photo — circular, matching Our Staff style, outside the card box */}

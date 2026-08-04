@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ImageFallback } from "../ui/ImageFallback";
 import {
   Shield,
   LayoutGrid,
@@ -40,20 +41,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
     <div className="flex flex-col justify-between h-full min-h-screen bg-white border-r border-gray-200 w-60">
       <div>
         {/* Sidebar Brand Header */}
-        <div className="p-5 flex items-center justify-between border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-[#0b4226] flex items-center justify-center text-white shadow-sm">
-              <Shield className="w-5 h-5 fill-white/20" />
-            </div>
-            <div>
-              <h1 className="text-gray-900 font-extrabold text-base tracking-wider uppercase leading-none font-['Public_Sans']">
-                SHIELD<span className="text-[#0b4226]">CMS</span>
-              </h1>
-              <p className="text-[10px] font-bold text-[#0b4226] tracking-widest uppercase mt-0.5">
-                Admin Terminal
-              </p>
-            </div>
-          </div>
+        <div className="p-4 flex items-center justify-between border-b border-gray-100">
+          <Link href="/" className="flex items-center gap-3 group" title="Go to Website Homepage">
+            <ImageFallback
+              src="/images/sevenstarlogo.png"
+              alt="Seven Star Security Logo"
+              className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              fallbackText="Seven Star Security"
+            />
+          </Link>
 
           {/* Mobile Close Button */}
           <button
@@ -79,11 +75,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
                 key={item.name}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg font-bold text-xs tracking-wide uppercase transition-all duration-150 cursor-pointer ${
-                  isActive
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg font-bold text-xs tracking-wide uppercase transition-all duration-150 cursor-pointer ${isActive
                     ? "bg-[#0b4226] text-white shadow-sm"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                }`}
+                  }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-500"}`} />
                 <span>{item.name}</span>
@@ -110,12 +105,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
     <>
       {/* Mobile Top Header Strip with Hamburger Button */}
       <div className="lg:hidden sticky top-0 z-30 bg-[#0b4226] text-white px-4 py-3 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-white/10 flex items-center justify-center text-white">
-            <Shield className="w-4 h-4" />
-          </div>
-          <span className="font-extrabold text-sm tracking-wider uppercase">SHIELD CMS</span>
-        </div>
+        <Link href="/" className="flex items-center gap-2.5" title="Go to Website Homepage">
+          <ImageFallback
+            src="/images/sevenstarlogo.png"
+            alt="Seven Star Security Logo"
+            className="h-8 w-auto object-contain bg-white/95 px-2 py-0.5 rounded shadow-sm"
+            fallbackText="Seven Star Security"
+          />
+        </Link>
 
         <button
           type="button"

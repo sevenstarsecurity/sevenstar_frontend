@@ -96,11 +96,11 @@ export const AdminSettings: React.FC = () => {
   const [openSeo, setOpenSeo] = useState(false);
 
   // Form states
-  const [siteTitle, setSiteTitle] = useState("ShieldCMS Protective Services");
+  const [siteTitle, setSiteTitle] = useState("Seven Star Security Services");
   const [hqAddress, setHqAddress] = useState("");
-  const [supportEmail, setSupportEmail] = useState("admin@shieldcms.example");
-  const [mainOfficeLine, setMainOfficeLine] = useState("+1 (555) 000-1234");
-  const [emergencyPhone, setEmergencyPhone] = useState("1-800-SHIELD-911");
+  const [supportEmail, setSupportEmail] = useState("info@sevenstarsecurity.com.np");
+  const [mainOfficeLine, setMainOfficeLine] = useState("+977-1-4200000");
+  const [emergencyPhone, setEmergencyPhone] = useState("+977-9800000000");
 
   // SEO states
   const [metaTitle, setMetaTitle] = useState("Seven Star Security - Elite Protection Services");
@@ -514,7 +514,7 @@ export const AdminSettings: React.FC = () => {
               Admin Site Settings
             </h1>
             <p className="text-xs sm:text-sm text-gray-500 mt-1">
-              Configure the global identity, contact protocols, and search visibility for the ShieldCMS public interface.
+              Configure the global identity, contact protocols, and search visibility for the Seven Star Security public interface.
             </p>
           </div>
 
@@ -569,10 +569,10 @@ export const AdminSettings: React.FC = () => {
                       <div className="border-2 border-dashed border-gray-300 rounded-md p-8 bg-[#f8fafc] flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-100/60 transition-colors min-h-[160px]">
                         <div className="w-32 h-10 mb-3 flex items-center justify-center">
                           <ImageFallback
-                            src="/images/sevennobg.png"
-                            alt="ShieldCMS Logo"
+                            src="/images/sevenstarlogo.png"
+                            alt="Seven Star Security Logo"
                             className="max-h-full w-auto object-contain"
-                            fallbackText="ShieldCMS"
+                            fallbackText="Seven Star Security"
                           />
                         </div>
                         <span className="text-xs text-gray-500 font-medium">

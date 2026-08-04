@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { AdminBranches } from "@/src/components/admin/AdminBranches";
 
 export const metadata: Metadata = {
-  title: "Administrative Branches | Shield CMS Admin Terminal",
+  title: "Administrative Branches | Seven Star Security Admin Terminal",
   description: "Manage organizational structure and tactical training facility coordinates.",
 };
 
