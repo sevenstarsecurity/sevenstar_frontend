@@ -242,11 +242,10 @@ export const ServicesGrid: React.FC = () => {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 rounded-full text- font-bold tracking-wider transition-all duration-200 ${
-                activeCategory === cat
-                  ? "bg-[#0b4226] text-white shadow-md"
-                  : "bg-white text-gray-700 border border-gray-200 hover:border-emerald-600 hover:text-[#0b4226]"
-              }`}
+              className={`px-5 py-2 rounded-full text- font-bold tracking-wider transition-all duration-200 ${activeCategory === cat
+                ? "bg-[#0b4226] text-white shadow-md"
+                : "bg-white text-gray-700 border border-gray-200 hover:border-emerald-600 hover:text-[#0b4226]"
+                }`}
             >
               {cat}
             </button>
@@ -260,7 +259,14 @@ export const ServicesGrid: React.FC = () => {
             return (
               <div
                 key={service.id}
-                className="bg-white rounded-xl p-7 border border-gray-100 shadow-xs hover:shadow-xl hover:border-emerald-200 transition-all duration-300 flex flex-col justify-between group cursor-pointer"
+                className="bg-white rounded-xl p-7 border border-gray-100 
+shadow-xs 
+hover:shadow-xl 
+hover:border-emerald-800 
+hover:scale-[1.02]
+transition-all duration-300 
+flex flex-col justify-between 
+group cursor-pointer"
               >
                 <div>
                   {/* Icon Circle */}
@@ -269,8 +275,8 @@ export const ServicesGrid: React.FC = () => {
                   </div>
 
                   {/* Title */}
-<h3
-  className="
+                  <h3
+                    className="
     font-['Public_Sans']
     font-medium
     text-[24px]
@@ -281,9 +287,9 @@ export const ServicesGrid: React.FC = () => {
     group-hover:text-[#0b4226]
     transition-colors
   "
->
-  {service.title}
-</h3>
+                  >
+                    {service.title}
+                  </h3>
 
                   {/* Description */}
                   <p className="text-gray-600 text-xs leading-relaxed mb-6">
@@ -292,18 +298,18 @@ export const ServicesGrid: React.FC = () => {
                 </div>
 
                 {/* Learn More Link */}
-<a
-  href="/contact"
-  className="inline-flex items-center gap-1.5 text-[#c8102e] hover:text-[#a60d25] uppecase transition-colors group/link pt-2"
-  style={{
-    fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-    fontStyle: "normal",
-    fontSize: "16px",
-    lineHeight: "24px",
-    letterSpacing: "0px",
-    verticalAlign: "middle",
-  }}
->
+                <a
+                  href="/contact"
+                  className="inline-flex items-center gap-1.5 text-[#c8102e] hover:text-[#a60d25] uppecase transition-colors group/link pt-2"
+                  style={{
+                    fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
+                    fontStyle: "normal",
+                    fontSize: "16px",
+                    lineHeight: "24px",
+                    letterSpacing: "0px",
+                    verticalAlign: "middle",
+                  }}
+                >
                   <span>Learn More</span>
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1" />
                 </a>

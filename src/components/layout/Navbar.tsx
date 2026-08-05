@@ -80,7 +80,7 @@ export const Navbar: React.FC = () => {
             onClick={() => setMobileMenuOpen(false)}
             className="bg-[#c8102e] hover:bg-[#a60d25] text-white font-bold text-xs uppercase px-6 py-3 rounded-xs shadow-sm hover:shadow-md transition-all duration-200 tracking-wider"
           >
-            GET A QUOTE
+            Portfolio Download
           </Link>
         </div>
 

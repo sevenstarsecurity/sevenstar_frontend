@@ -35,8 +35,17 @@ export const MissionVisionValues: React.FC = () => {
 
           {/* Card 1: Our Mission */}
           <div
-            className={`bg-[#f8faf6] rounded-lg border-t-4 border-t-[#004E24] border border-gray-200/50 p-7 md:p-8 shadow-xs hover:shadow-md transition-all duration-500 flex flex-col justify-between ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+            className={`bg-[#f8faf6] rounded-2xl border-t-4 border-t-[#004E24] border border-gray-200/50 
+p-7 md:p-8 
+shadow-xs 
+hover:shadow-xl 
+hover:border-emerald-800 
+hover:bg-[#F5F9F4]
+hover:scale-[1.02]
+transition-all duration-300 
+cursor-pointer 
+flex flex-col justify-between 
+${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
           >
             <div>
               {/* Icon Circle */}
@@ -70,8 +79,17 @@ export const MissionVisionValues: React.FC = () => {
 
           {/* Card 2: Our Vision */}
           <div
-            className={`bg-[#f8faf6] rounded-2xl border-t-4 border-t-[#004E24] border border-gray-200/50 p-7 md:p-8 shadow-xs hover:shadow-md transition-all duration-500 delay-100 flex flex-col justify-between ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+            className={`bg-[#f8faf6] rounded-2xl border-t-4 border-t-[#004E24] border border-gray-200/50 
+p-7 md:p-8 
+shadow-xs 
+hover:shadow-xl 
+hover:border-emerald-800 
+hover:bg-[#F5F9F4]
+hover:scale-[1.02]
+transition-all duration-300 
+cursor-pointer 
+flex flex-col justify-between 
+${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
           >
             <div>
               {/* Icon Circle */}
@@ -104,8 +122,17 @@ export const MissionVisionValues: React.FC = () => {
 
           {/* Card 3: Our Values */}
           <div
-            className={`bg-[#f8faf6] rounded-2xl border-t-4 border-t-[#004E24] border border-gray-200/50 p-7 md:p-8 shadow-xs hover:shadow-md transition-all duration-500 delay-200 flex flex-col justify-between ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+            className={`bg-[#f8faf6] rounded-2xl border-t-4 border-t-[#004E24] border border-gray-200/50 
+p-7 md:p-8 
+shadow-xs 
+hover:shadow-xl 
+hover:border-emerald-800 
+hover:bg-[#F5F9F4]
+hover:scale-[1.02]
+transition-all duration-300 
+cursor-pointer 
+flex flex-col justify-between 
+${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
           >
             <div>
               {/* Icon Circle */}
