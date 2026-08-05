@@ -9,7 +9,7 @@ interface FloatingWhatsAppProps {
 }
 
 export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({
-  phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+9779800000000",
+  phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+9779801251503",
   message = "Hello! I am reaching out from Seven Star Security website.",
 }) => {
   // Format clean digits for URL
