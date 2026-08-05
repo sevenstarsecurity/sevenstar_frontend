@@ -7,7 +7,7 @@ export const ServicesHeroBanner: React.FC = () => {
   return (
     <PageHeroBanner 
       label="SERVICES"
-      title="Comprehensive security solutions, tailored to you"
+      title="Complete Security Solutions"
       breadcrumbTitle="Services"
     />
   );
