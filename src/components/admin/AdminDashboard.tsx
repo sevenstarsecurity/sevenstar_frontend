@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Shield,
@@ -10,15 +10,12 @@ import {
   Image as ImageIcon,
   MapPin,
   Send,
-  Wrench,
   Settings,
   LogOut,
   Search,
   Bell,
   User,
-  Radio,
   ClipboardList,
-  Server,
   MoreVertical,
   RotateCw,
   FileSpreadsheet,
@@ -48,19 +45,7 @@ import {
 } from "recharts";
 import { ImageFallback } from "../ui/ImageFallback";
 import { getDashboard, Dashboard, ActivityLog } from "@/services/dashboard";
-
-const navItems = [
-  { name: "Overview", icon: LayoutGrid, href: "/admin/dashboard" },
-  { name: "Team", icon: Users, href: "/admin/team" },
-  { name: "Blog", icon: FileText, href: "#" },
-  { name: "Gallery", icon: ImageIcon, href: "/admin/gallery" },
-  { name: "Branches", icon: MapPin, href: "/admin/branches" },
-  { name: "Clients", icon: Briefcase, href: "/admin/clients" },
-  { name: "Submissions", icon: Send, href: "/admin/submissions" },
-  { name: "Settings", icon: Settings, href: "/admin/settings" },
-];
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
+import { AdminSidebar } from "./AdminSidebar";
 
 const ACTION_LABELS: Record<string, string> = {
   UPLOAD_IMAGE: "Image Uploaded",
@@ -79,24 +64,16 @@ const ACTION_LABELS: Record<string, string> = {
   GALLERY_VIDEO_CREATE: "Gallery Video Added",
 };
 
-/**
- * Builds a short "Entity · id" description for an activity log row.
- * Guards against logs that don't carry an `entity` or `entityId`
- * (e.g. LOGIN events, or any action not tied to a specific record) —
- * calling .slice() on undefined/null was crashing the dashboard.
- */
+// Builds a short "Entity · id" description for an activity log row.
+// Guards against logs missing `entity`/`entityId` (e.g. LOGIN events).
 const describeLog = (log: ActivityLog): string => {
   const entity = log.entity ?? "";
   const readableEntity = entity ? entity.replace(/([a-z])([A-Z])/g, "$1 $2") : "";
 
   const entityId = log.entityId ?? "";
-  if (!entityId) {
-    return readableEntity || "—";
-  }
+  if (!entityId) return readableEntity || "—";
 
-  const shortId =
-    entityId.length > 24 ? `${entityId.slice(0, 24)}…` : entityId;
-
+  const shortId = entityId.length > 24 ? `${entityId.slice(0, 24)}…` : entityId;
   return readableEntity ? `${readableEntity} · ${shortId}` : shortId;
 };
 
@@ -111,14 +88,18 @@ const timeAgo = (iso: string): string => {
   return `${days} DAY${days === 1 ? "" : "S"} AGO`;
 };
 
-import { AdminSidebar } from "./AdminSidebar";
-
 export const AdminDashboard: React.FC = () => {
-  const [activeTab] = useState("Overview");
   const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notificationsRead, setNotificationsRead] = useState(false);
+
+  const profileRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
 
   const loadDashboard = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -139,17 +120,40 @@ export const AdminDashboard: React.FC = () => {
     loadDashboard();
   }, []);
 
+  // Close dropdowns when clicking outside of them
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    // TODO: wire up to real auth/logout endpoint
+    window.location.href = "/admin/login";
+  };
+
+  const handleReadAllNotifications = () => {
+    setNotificationsRead(true);
+  };
+
   const overview = dashboard?.overview;
   const logs = dashboard?.recentActivity.logs ?? [];
   const health = dashboard?.systemHealth;
   const quickActions = dashboard?.quickActions;
+  const notifications = logs.slice(0, 6);
+  const hasUnread = !notificationsRead && !!quickActions && quickActions.pendingContacts > 0;
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
-      {/* LEFT SIDEBAR NAVIGATION */}
       <AdminSidebar currentPath="/admin/dashboard" />
 
-      {/* MAIN CONTENT AREA */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
         {/* TOP HEADER BAR */}
         <header className="bg-[#0b4226] text-white px-8 py-3.5 flex items-center justify-between shadow-md sticky top-0 z-20">
@@ -170,17 +174,78 @@ export const AdminDashboard: React.FC = () => {
             >
               <RotateCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
             </button>
-            <button
-              aria-label="Notifications"
-              className="relative p-1.5 rounded-full hover:bg-emerald-800/60 transition-colors cursor-pointer text-emerald-100"
-            >
-              <Bell className="w-5 h-5" />
-              {quickActions && quickActions.pendingContacts > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500" />
+
+            {/* NOTIFICATIONS */}
+            <div className="relative" ref={notifRef}>
+              <button
+                onClick={() => setNotifOpen((v) => !v)}
+                aria-label="Notifications"
+                className="relative p-1.5 rounded-full hover:bg-emerald-800/60 transition-colors cursor-pointer text-emerald-100"
+              >
+                <Bell className="w-5 h-5" />
+                {hasUnread && (
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500" />
+                )}
+              </button>
+
+              {notifOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-white text-gray-800 rounded-md shadow-lg border border-gray-200 overflow-hidden z-30">
+                  <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                    <h4 className="text-sm font-bold text-gray-900">Notifications</h4>
+                    <button
+                      onClick={handleReadAllNotifications}
+                      className="text-[11px] font-semibold text-emerald-700 hover:text-emerald-900"
+                    >
+                      Mark all as read
+                    </button>
+                  </div>
+
+                  <div className="max-h-80 overflow-y-auto divide-y divide-gray-100">
+                    {notifications.length === 0 && (
+                      <div className="px-4 py-6 text-center text-xs text-gray-400">
+                        No notifications.
+                      </div>
+                    )}
+                    {notifications.map((log) => (
+                      <div key={log.id} className="px-4 py-3 hover:bg-gray-50 transition-colors">
+                        <p className="text-xs font-bold text-gray-900">
+                          {ACTION_LABELS[log.action] || log.action}
+                        </p>
+                        <p className="text-[11px] text-gray-500 mt-0.5">{describeLog(log)}</p>
+                        <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mt-1">
+                          {timeAgo(log.createdAt)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
-            </button>
-            <div className="w-8 h-8 rounded-full bg-emerald-800 border border-emerald-600 flex items-center justify-center text-white cursor-pointer hover:bg-emerald-700 transition-colors">
-              <User className="w-4 h-4" />
+            </div>
+
+            {/* PROFILE */}
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileOpen((v) => !v)}
+                className="w-8 h-8 rounded-full bg-emerald-800 border border-emerald-600 flex items-center justify-center text-white cursor-pointer hover:bg-emerald-700 transition-colors"
+              >
+                <User className="w-4 h-4" />
+              </button>
+
+              {profileOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white text-gray-800 rounded-md shadow-lg border border-gray-200 overflow-hidden z-30">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-bold text-gray-900">Administrator</p>
+                    <p className="text-[11px] text-gray-500 mt-0.5">Seven Star Security Admin</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-4 py-3 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </header>
@@ -210,7 +275,7 @@ export const AdminDashboard: React.FC = () => {
 
           {!loading && dashboard && overview && (
             <>
-              {/* 1. WELCOME BANNER CARD */}
+              {/* WELCOME BANNER */}
               <div className="bg-white border border-gray-200/90 rounded-md p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-lg bg-[#0b4226]/5 border border-[#0b4226]/20 flex items-center justify-center p-2 flex-shrink-0">
@@ -228,10 +293,11 @@ export const AdminDashboard: React.FC = () => {
                     <p className="text-xs md:text-sm text-gray-500 mt-0.5 font-normal">
                       Database status:{" "}
                       <span
-                        className={`font-bold ${health?.database.status === "operational"
+                        className={`font-bold ${
+                          health?.database.status === "operational"
                             ? "text-emerald-600"
                             : "text-amber-600"
-                          }`}
+                        }`}
                       >
                         {health?.database.status.toUpperCase()}
                       </span>{" "}
@@ -250,7 +316,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* 2. STAT CARDS GRID — ALL OVERVIEW CATEGORIES */}
+              {/* STAT CARDS GRID */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                 <div className="bg-white border border-gray-200/90 rounded-md p-5 shadow-xs flex flex-col justify-between space-y-3">
                   <div className="flex items-center justify-between">
@@ -395,7 +461,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* 2b. CHARTS GRID */}
+              {/* CHARTS GRID */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 <div className="bg-white border border-gray-200/90 rounded-md p-5 shadow-xs">
                   <h3 className="text-sm font-bold text-gray-900 tracking-tight mb-4">
@@ -504,9 +570,8 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* 3. MIDDLE SPLIT SECTION */}
+              {/* MIDDLE SPLIT SECTION */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                {/* LEFT TABLE: RECENT ACTIVITY */}
                 <div className="lg:col-span-8 bg-white border border-gray-200/90 rounded-md shadow-xs overflow-hidden">
                   <div className="p-5 border-b border-gray-100 flex items-center justify-between">
                     <h3 className="text-base font-bold text-gray-900 tracking-tight">
@@ -565,7 +630,6 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                {/* RIGHT PANEL: TERMINAL ACTIVITY TIMELINE */}
                 <div className="lg:col-span-4 bg-white border border-gray-200/90 rounded-md shadow-xs overflow-hidden flex flex-col justify-between">
                   <div className="p-5 border-b border-gray-100">
                     <h3 className="text-base font-bold text-gray-900 tracking-tight">
@@ -578,8 +642,9 @@ export const AdminDashboard: React.FC = () => {
                       <div key={log.id} className="flex items-start gap-3.5 relative">
                         <div className="mt-1 flex-shrink-0">
                           <span
-                            className={`w-2.5 h-2.5 rounded-full block ${idx === 0 ? "bg-[#0b4226]" : "bg-gray-300"
-                              }`}
+                            className={`w-2.5 h-2.5 rounded-full block ${
+                              idx === 0 ? "bg-[#0b4226]" : "bg-gray-300"
+                            }`}
                           />
                         </div>
 
@@ -606,7 +671,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* 4. SYSTEM HEALTH + QUICK ACTIONS */}
+              {/* SYSTEM HEALTH + QUICK ACTIONS */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 <div className="lg:col-span-8 bg-white border border-gray-200/90 rounded-md shadow-xs p-5">
                   <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">
@@ -618,10 +683,11 @@ export const AdminDashboard: React.FC = () => {
                         Database
                       </p>
                       <p
-                        className={`font-bold mt-0.5 ${health?.database.status === "operational"
+                        className={`font-bold mt-0.5 ${
+                          health?.database.status === "operational"
                             ? "text-emerald-600"
                             : "text-amber-600"
-                          }`}
+                        }`}
                       >
                         {health?.database.status}
                       </p>
@@ -674,8 +740,9 @@ export const AdminDashboard: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-gray-500">Backup enabled</span>
                       <span
-                        className={`font-bold ${quickActions?.backupEnabled ? "text-emerald-600" : "text-red-600"
-                          }`}
+                        className={`font-bold ${
+                          quickActions?.backupEnabled ? "text-emerald-600" : "text-red-600"
+                        }`}
                       >
                         {quickActions?.backupEnabled ? "YES" : "NO"}
                       </span>
@@ -684,7 +751,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* 5. BOTTOM ADMINISTRATIVE COMMAND CENTER */}
+              {/* ADMINISTRATIVE COMMAND CENTER */}
               <div className="space-y-3 pt-2">
                 <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
                   ADMINISTRATIVE COMMAND CENTER
