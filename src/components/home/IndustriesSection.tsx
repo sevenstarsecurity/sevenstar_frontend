@@ -38,7 +38,7 @@ export const IndustriesSection: React.FC = () => {
           {industries.map((item) => (
             <div
               key={item.id}
-              className="bg-gray-50/70 rounded-xl p-8 border border-gray-100 hover:border-emerald-400 shadow-xl hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center group"
+              className="bg-gray-50/70 rounded-xl p-8 border border-gray-100 hover:border-emerald-400 shadow-xl hover:shadow-xl hover:scale-[1.07] transition-all duration-300 flex flex-col items-center text-center group cursor-pointer"
             >
               {/* Circular Colored Icon */}
               <div
