@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Public_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import { FloatingWhatsApp } from "@/src/components/ui/FloatingWhatsApp";
+import { FloatingWhatsAppWrapper } from "@/src/components/ui/FloatingWhatsAppWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -117,7 +117,7 @@ export default function RootLayout({
         </Script>
 
         {children}
-        <FloatingWhatsApp />
+        <FloatingWhatsAppWrapper />
 
         <Script id="sevenstar-structured-data" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({

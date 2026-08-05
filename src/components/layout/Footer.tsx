@@ -212,16 +212,16 @@ export const Footer: React.FC = () => {
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#008e43] flex-shrink-0 mt-0.5" />
                 <span>
-                  HQ: Kathmandu, Bagmati Province, Nepal, 44600
+                  HQ: Chandol-4, Kathmandu, Nepal, 44600
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
                 <GraduationCap className="w-4 h-4 text-[#008e43] flex-shrink-0 mt-0.5" />
-                <span>Training Center: Lalitpur, Nepal</span>
+                <span>Training Center: Chandol-4, Kathmandu, Nepal</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#008e43] flex-shrink-0" />
-                <span>+977 1 4XXXXXX</span>
+                <span>01-4542880</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-[#008e43] flex-shrink-0" />
@@ -234,8 +234,16 @@ export const Footer: React.FC = () => {
         {/* Bottom Copyright Bar */}
         <div className="pt-6 border-t border-[#1e231b] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] md:text-xs font-semibold tracking-wider uppercase text-[#8b9186] text-center sm:text-left">
           <p>© 2024 SEVEN STAR SECURITY SERVICE PVT. LTD. ALL RIGHTS RESERVED.</p>
-          <div className="text-[#deb853]">
-            <span>Developed by: KREATIVEMANDU TECHNOLOGIES PVT LTD</span>
+          <div className="text-[#deb853] mr-18">
+            Design & Developed by:{" "}
+            <a
+              href="https://www.kreativemandu.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline hover:text-[#f0c040] transition-colors duration-200"
+            >
+              KREATIVEMANDU TECHNOLOGIES
+            </a>
           </div>
         </div>
       </div>

@@ -6,12 +6,9 @@ import { ImageFallback } from "../ui/ImageFallback";
 import { getPublicGalleryImages, GalleryImage } from "@/services/gallery"; // adjust path to match your project
 
 export const OperationalPortfolio: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("All View");
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const tabs = ["All View", "Field Ops", "Intelligence", "Facilities"];
 
   useEffect(() => {
     let isMounted = true;
@@ -51,36 +48,15 @@ export const OperationalPortfolio: React.FC = () => {
   return (
     <section className="bg-[#f1f1f1] py-12 md:py-16 border-t border-[#e2ebd9]">
       <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
-        {/* Header Bar with Tabs */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-10 pb-4 border-b border-gray-200/60">
-          {/* Section Heading */}
-          <div>
-            <h2
-              className="text-2xl md:text-3xl font-bold text-[#004E24] uppercase tracking-wider relative"
-              style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
-            >
-              OPERATIONAL PORTFOLIO
-            </h2>
-            <div className="w-16 h-[3px] bg-[#c8102e] mt-2" />
-          </div>
-
-          {/* Filter Tabs */}
-          <div className="flex items-center space-x-6 text-xs font-semibold">
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`relative py-1 transition-colors ${
-                  activeTab === tab
-                    ? "text-[#004E24] font-bold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#004E24]"
-                    : "text-gray-500 hover:text-[#004E24]"
-                }`}
-                style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+        {/* Header */}
+        <div className="mb-10 pb-4 border-b border-gray-200/60">
+          <h2
+            className="text-2xl md:text-3xl font-bold text-[#004E24] uppercase tracking-wider relative"
+            style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
+          >
+            OPERATIONAL PORTFOLIO
+          </h2>
+          <div className="w-16 h-[3px] bg-[#c8102e] mt-2" />
         </div>
 
         {/* Loading state */}

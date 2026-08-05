@@ -9,9 +9,7 @@ const advisors = [
     role: "Retired IGP of APF",
     imageUrl: "https://picsum.photos/seed/sarat/400/400",
     message:
-      `At Seven Star we are constantly evolving and adapting in accordance with the ever changing demands of the industry, thereby meeting client requirements and assuring their safety. Thus offering our clients a complete "Peace of mind".
-
-`,
+      `At Seven Star we are constantly evolving and adapting in accordance with the ever changing demands of the industry, thereby meeting client requirements and assuring their safety. Thus offering our clients a complete "Peace of mind".`,
   },
   {
     name: "Devendra Bd. Medhasi",
@@ -20,8 +18,7 @@ const advisors = [
     message: `I have the honor to congratulate Seven Star Security Service
 Pvt. Ltd. to publish its Company Profile on the occasion of its Anniversary.
 
-Security of personnel and materials is paramount in today's fast-moving situations. Seven Star Security Service Pvt. Ltd. has been successfully accomplishing its goal by providing high-quality private security services.
-`,
+Security of personnel and materials is paramount in today's fast-moving situations. Seven Star Security Service Pvt. Ltd. has been successfully accomplishing its goal by providing high-quality private security services.`,
   },
 ];
 
@@ -65,9 +62,8 @@ export const DistinguishedAdvisors: React.FC = () => {
           {advisors.map((advisor, i) => (
             <div
               key={advisor.name}
-              className={`flex-1 flex flex-col sm:flex-row items-center sm:items-start gap-6 lg:gap-8 transition-all duration-600 ${
-                visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
+              className={`flex-1 flex flex-col sm:flex-row items-center sm:items-start gap-6 lg:gap-8 transition-all duration-600 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                }`}
               style={{ transitionDelay: `${i * 150}ms` }}
             >
               {/* Photo — circular, matching Our Staff style */}

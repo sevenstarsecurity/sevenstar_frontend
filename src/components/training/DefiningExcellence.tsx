@@ -8,19 +8,19 @@ const pillars = [
     icon: ShieldCheck,
     title: "GLOBAL CERTIFICATION",
     description:
-      "Graduates receive ISO-aligned <br>certifications recognized by<br> international security firms<br> and corporate giants.",
+      "Graduates receive ISO-aligned certifications recognized by international security firms and corporate giants.",
   },
   {
     icon: Settings,
     title: "PSYCHOLOGICAL READINESS",
     description:
-      "Training includes de-escalation <br> techniques, threat assessment, and <br> operating under extreme high-pressure scenarios.",
+      "Training includes de-escalation techniques, threat assessment, and operating under extreme high-pressure scenarios.",
   },
   {
     icon: TrendingUp,
     title: "ACCELERATED CAREER PATH",
     description:
-      "Our top-tier graduates are fast-<br>tracked into leadership roles within <br> Seven Star's elite deployment units.",
+      "Our top-tier graduates are fast-tracked into leadership roles within Seven Star's elite deployment units.",
   },
 ];
 
@@ -53,37 +53,36 @@ export const DefiningExcellence: React.FC = () => {
         </div>
 
         {/* 3 Pillar Cards */}
-<div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-full w-full mx-auto">
-  {pillars.map((item, i) => {
-    const Icon = item.icon;
-    return (
-<div
-  key={item.title}
-  className={`bg-white rounded-xs border-t-4 border-t-[#c8102e] border border-gray-200/60 p-10 h-[304.5px] shadow-xs hover:shadow-lg transition-all duration-500 flex flex-col items-center justify-center text-center group ${
-    visible
-      ? "opacity-100 translate-y-0"
-      : "opacity-0 translate-y-10"
-  }`}
-  style={{ transitionDelay: `${i * 120}ms` }}
->
-        {/* Red Icon Badge */}
-        <div className="w-14 h-14 rounded-full bg-[#c8102e] text-white flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform duration-300">
-          <Icon className="w-6 h-6 text-white" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-full w-full mx-auto">
+          {pillars.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.title}
+                className={`bg-white rounded-xs border-t-4 border-t-[#c8102e] border border-gray-200/60 p-10 h-[304.5px] shadow-xs hover:shadow-xl hover:border-[#c8102e] hover:scale-[1.02] transition-all duration-300 flex flex-col items-center justify-center text-center group ${visible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-10"
+                  }`}
+                style={{ transitionDelay: `${i * 120}ms` }}
+              >
+                {/* Red Icon Badge */}
+                <div className="w-14 h-14 rounded-full bg-[#c8102e] text-white flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform duration-300">
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+
+                {/* Title */}
+                <h3 className="text-lg font-extrabold text-[#0b4226] mb-4 tracking-wide uppercase">
+                  {item.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-gray-600 text-sm leading-relaxed font-normal">
+                  {item.description}
+                </p>
+              </div>
+            );
+          })}
         </div>
-
-        {/* Title */}
-        <h3 className="text-lg font-extrabold text-[#0b4226] mb-4 tracking-wide uppercase">
-          {item.title}
-        </h3>
-
-        {/* Description */}
-        <p className="text-gray-600 text-sm leading-relaxed font-normal">
-          {item.description}
-        </p>
-      </div>
-    );
-  })}
-</div>
       </div>
     </section>
   );

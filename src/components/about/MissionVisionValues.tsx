@@ -71,8 +71,15 @@ ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
     overflow-hidden
   "
               >
-                To provide comprehensive, reliable, and <br></br>integrated security solutions that
-                exceed client expectations through innovation and tactical excellence.
+                Our mission at Seven Star Security Services
+                Pvt. Ltd is to safeguard our clients’ assets and
+                ensure their safety by providing top-quality
+                security solutions tailored to their unique
+                needs. We are committed to excellence,
+                professionalism, and integrity in everything we
+                do, striving to exceed our clients’ expectations
+                and build long-lasting relationships based on
+                trust and reliability
               </p>
             </div>
           </div>
@@ -114,8 +121,14 @@ ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                   verticalAlign: "middle",
                 }}
               >
-                To be the most trusted and preferred security partner in the nation, setting
-                the benchmark for professional integrity and rapid response.
+                Our vision is to be recognized as the premier
+                security services provider in Nepal, known for
+                our unwavering commitment to excellence,
+                innovation, and customer satisfaction. We aim
+                to continuously evolve and adapt to meet the
+                evolving security challenges of our clients,
+                while maintaining our reputation as a trusted
+                and reliable security partner.
               </p>
             </div>
           </div>
@@ -145,34 +158,38 @@ ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 Our Values
               </h3>
 
-              {/* Outlined Value Badges (Green & Red Outlines) */}
+              {/* Outlined Value Badges */}
               <div className="space-y-3 pt-1">
+
                 {/* Row 1 */}
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="border border-[#004E24] text-[#004E24] font-bold text-xs px-4 py-1.5 rounded-full tracking-wide bg-white/60">
+                  <span className="border border-[#004E24] text-[#004E24] font-bold text-sm px-5 py-2 rounded-full tracking-wide bg-white/60">
                     Integrity
                   </span>
-                  <span className="border border-[#c8102e] text-[#c8102e] font-bold text-xs px-4 py-1.5 rounded-full tracking-wide bg-white/60">
+
+                  <span className="border border-[#c8102e] text-[#c8102e] font-bold text-sm px-5 py-2 rounded-full tracking-wide bg-white/60">
                     Professionalism
                   </span>
                 </div>
 
                 {/* Row 2 */}
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="border border-[#004E24] text-[#004E24] font-bold text-xs px-4 py-1.5 rounded-full tracking-wide bg-white/60">
+                  <span className="border border-[#004E24] text-[#004E24] font-bold text-sm px-5 py-2 rounded-full tracking-wide bg-white/60">
                     Vigilance
                   </span>
-                  <span className="border border-[#c8102e] text-[#c8102e] font-bold text-xs px-4 py-1.5 rounded-full tracking-wide bg-white/60">
+
+                  <span className="border border-[#c8102e] text-[#c8102e] font-bold text-sm px-5 py-2 rounded-full tracking-wide bg-white/60">
                     Accountability
                   </span>
                 </div>
 
                 {/* Row 3 */}
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="border border-[#004E24] text-[#004E24] font-bold text-xs px-4 py-1.5 rounded-full tracking-wide bg-white/60">
+                  <span className="border border-[#004E24] text-[#004E24] font-bold text-sm px-5 py-2 rounded-full tracking-wide bg-white/60">
                     Excellence
                   </span>
                 </div>
+
               </div>
             </div>
           </div>
