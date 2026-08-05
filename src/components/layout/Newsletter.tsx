@@ -45,7 +45,7 @@ export const Newsletter: React.FC = () => {
 
 
           <p
-            className="text-sm md:text-base font-['Public_Sans'] font-normal leading-[24px] tracking-[0px] w-full max-w-[440px] text-[#FFFFFF] flex items-center"
+            className="text-sm md:text-base font-['Public_Sans'] font-normal leading-6 tracking-normal w-full max-w-110 text-[#FFFFFF] flex items-center"
           >
             Subscribe to our security advisories and corporate updates.
           </p>
@@ -87,7 +87,7 @@ export const Newsletter: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-[#c8102e] hover:bg-[#a60d25] disabled:opacity-60 disabled:cursor-not-allowed text-white font-extrabold text-xs uppercase px-6 py-3 rounded-xs transition-colors tracking-wider w-full sm:w-auto flex-shrink-0 flex items-center justify-center gap-2"
+                  className="bg-[#c8102e] hover:bg-[#a60d25] disabled:opacity-60 disabled:cursor-not-allowed text-white font-extrabold text-xs uppercase px-6 py-3 rounded-xs transition-colors tracking-wider w-full sm:w-auto shrink-0 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { X, ArrowRight } from "lucide-react";
 import { ImageFallback } from "../ui/ImageFallback";
 
 const advisors = [
@@ -12,9 +11,7 @@ const advisors = [
     message:
       `At Seven Star we are constantly evolving and adapting in accordance with the ever changing demands of the industry, thereby meeting client requirements and assuring their safety. Thus offering our clients a complete "Peace of mind".
 
-Motivation is an integral part of employee development and it also helps them excel. Bearing this in mind, we apply basic family principles to our staff and create a conducive working environment for them. We genuinely care for the well-being of employees hence every staff member is looked after and treated with respect. And we credit our achievements and success to our dedicated employees, as it would not be possible to reach the level we've attained without them.
-
-Every individual at Seven Star is committed to offer their 100% in order to exceed client's expectation. And we've been delivering premium quality service for many years, to numerous establishments all across Nepal. Hence we can confidently say that "You are in safe hands".`,
+`,
   },
   {
     name: "Devendra Bd. Medhasi",
@@ -24,27 +21,13 @@ Every individual at Seven Star is committed to offer their 100% in order to exce
 Pvt. Ltd. to publish its Company Profile on the occasion of its Anniversary.
 
 Security of personnel and materials is paramount in today's fast-moving situations. Seven Star Security Service Pvt. Ltd. has been successfully accomplishing its goal by providing high-quality private security services.
-
-I would like to reiterate its professionalism in providing security in all spheres of life. I urge all private companies, hotels, corporate offices, including banks, to entrust Seven Star Security Service Pvt. Ltd. for its reliable and unflinching services.
-
-Its growth with your trust is a pride for this company. Cordial relations are strengthened by its credibility and professionalism.
-
-I also take this opportunity to congratulate Chairman Rtn. Ramesh Basnet and all staff members working as a team for their outstanding achievements. I wish them continued trustworthy service to all private sectors.
-
-I also wish the Chairman and staff members of Seven Star Security Service Pvt. Ltd. good health, happiness, and continued outstanding professionalism.
-
-At the end, I take this opportunity to express my sincere gratitude and extend my best wishes for the New Year to all Nepalese living in the country and abroad.
-
-Thank you.`,
+`,
   },
 ];
 
 export const DistinguishedAdvisors: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const [selectedAdvisor, setSelectedAdvisor] = useState<
-    (typeof advisors)[0] | null
-  >(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -57,202 +40,106 @@ export const DistinguishedAdvisors: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (selectedAdvisor) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [selectedAdvisor]);
-
   return (
-    <>
-      <section className="w-full py-16 md:py-20 bg-[#BFC9BD]/30" ref={ref}>
-        <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 text-center">
-          {/* Section Heading */}
-          <h2
-            className="uppercase mb-16 w-full text-center mx-auto"
-            style={{
-              fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-              fontWeight: 400,
-              fontStyle: "normal",
-              fontSize: "16px",
-              lineHeight: "24px",
-              letterSpacing: "1.6px",
-              color: "#3F4940",
-              textTransform: "uppercase",
-            }}
-          >
-            DISTINGUISHED ADVISORS
-          </h2>
-
-          {/* Advisor Cards — image floats outside LEFT of card box */}
-          <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 w-full max-w-7xl mx-auto">
-            {advisors.map((advisor, i) => (
-              /* Outer wrapper: left padding = image width (100px) + gap (16px) */
-              <div
-                key={advisor.name}
-                className={`relative pl-[180px] w-full transition-all duration-500 ${visible
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 -translate-x-8"
-                  }`}
-                style={{ transitionDelay: `${i * 150}ms` }}
-              >
-                {/* Photo — circular, matching Our Staff style, outside the card box */}
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full border-2 border-[#f3d37a] shadow-sm">
-                  <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-100 shadow-inner">
-                    <ImageFallback
-                      src={advisor.imageUrl}
-                      alt={advisor.name}
-                      className="w-full h-full object-cover object-center"
-                      fallbackText={advisor.name}
-                    />
-                  </div>
-                </div>
-
-                {/* Card body — sits to the right of the image */}
-                <div
-                  className="bg-white border border-gray-200/60 shadow-sm hover:shadow-md transition-shadow duration-300 px-6 py-5 text-left flex flex-col justify-center"
-                  style={{ borderLeft: "4px solid #deb853" }}
-                >
-                  {/* Name */}
-                  <p
-                    style={{
-                      fontFamily:
-                        "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
-                      fontWeight: 500,
-                      fontSize: "19px",
-                      lineHeight: "26px",
-                      letterSpacing: "0px",
-                      color: "#004E24",
-                    }}
-                  >
-                    {advisor.name}
-                  </p>
-
-                  {/* Role */}
-                  <p
-                    className="mt-1"
-                    style={{
-                      fontFamily:
-                        "var(--font-public-sans), 'Public Sans', sans-serif",
-                      fontWeight: 600,
-                      fontSize: "12px",
-                      lineHeight: "19.6px",
-                      letterSpacing: "0.8px",
-                      color: "#c8102e",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {advisor.role}
-                  </p>
-
-                  {/* Divider */}
-                  <div className="w-10 h-px bg-[#deb853] my-3" />
-
-                  {/* Read Full Message Button */}
-                  <button
-                    onClick={() => setSelectedAdvisor(advisor)}
-                    className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#c8102e] uppercase tracking-wider hover:text-[#9e0a22] transition-colors group/link w-fit"
-                  >
-                    <span>Read Full Message</span>
-                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Modal Popup ── */}
-      {selectedAdvisor && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ backgroundColor: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}
-          onClick={() => setSelectedAdvisor(null)}
+    <section className="w-full py-16 md:py-20 bg-[#BFC9BD]/30" ref={ref}>
+      <div className="max-w-[1200px] mx-auto px-4 md:px-10 lg:px-12">
+        {/* Section Heading */}
+        <h2
+          className="uppercase mb-16 w-full text-center mx-auto"
+          style={{
+            fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
+            fontWeight: 400,
+            fontStyle: "normal",
+            fontSize: "24px",
+            lineHeight: "24px",
+            letterSpacing: "1.6px",
+            color: "#3F4940",
+            textTransform: "uppercase",
+          }}
         >
-          <div
-            className="relative bg-white max-w-xl w-full shadow-2xl"
-            style={{ borderTop: "4px solid #deb853" }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedAdvisor(null)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-[#c8102e] transition-colors"
-              aria-label="Close"
-            >
-              <X className="w-5 h-5" />
-            </button>
+          CHIEF ADVISOR
+        </h2>
 
-            {/* Modal Content */}
-            <div className="p-8">
-              {/* Advisor Identity Row */}
-              <div className="flex items-center gap-5 mb-6">
-                <div className="flex-shrink-0 w-[70px] h-[78px] border-2 border-[#deb853] bg-[#FFDF96] overflow-hidden">
+        {/* Advisors — photo beside intro, side by side */}
+        <div className="flex flex-col lg:flex-row gap-16">
+          {advisors.map((advisor, i) => (
+            <div
+              key={advisor.name}
+              className={`flex-1 flex flex-col sm:flex-row items-center sm:items-start gap-6 lg:gap-8 transition-all duration-600 ${
+                visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+              }`}
+              style={{ transitionDelay: `${i * 150}ms` }}
+            >
+              {/* Photo — circular, matching Our Staff style */}
+              <div className="flex-shrink-0 p-1 rounded-full border-2 border-[#f3d37a] shadow-sm mx-auto sm:mx-0">
+                <div className="w-32 h-32 lg:w-36 lg:h-36 rounded-full overflow-hidden bg-gray-100 shadow-inner">
                   <ImageFallback
-                    src={selectedAdvisor.imageUrl}
-                    alt={selectedAdvisor.name}
+                    src={advisor.imageUrl}
+                    alt={advisor.name}
                     className="w-full h-full object-cover object-center"
-                    fallbackText={selectedAdvisor.name}
+                    fallbackText={advisor.name}
                   />
                 </div>
-                <div>
-                  <h3
-                    style={{
-                      fontFamily:
-                        "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
-                      fontWeight: 600,
-                      fontSize: "22px",
-                      lineHeight: "28px",
-                      color: "#004E24",
-                    }}
-                  >
-                    {selectedAdvisor.name}
-                  </h3>
-                  <p
-                    className="mt-1"
-                    style={{
-                      fontFamily:
-                        "var(--font-public-sans), 'Public Sans', sans-serif",
-                      fontWeight: 600,
-                      fontSize: "12px",
-                      letterSpacing: "0.8px",
-                      color: "#c8102e",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {selectedAdvisor.role}
-                  </p>
-                </div>
               </div>
 
-              {/* Divider */}
-              <div className="w-full h-px bg-[#deb853]/40 mb-6" />
+              {/* Intro Text */}
+              <div className="flex-1 text-center sm:text-left min-w-0">
+                {/* Name */}
+                <p
+                  style={{
+                    fontFamily:
+                      "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+                    fontWeight: 500,
+                    fontSize: "22px",
+                    lineHeight: "28px",
+                    letterSpacing: "0px",
+                    color: "#004E24",
+                  }}
+                >
+                  {advisor.name}
+                </p>
 
-              {/* Message */}
-              <p
-                style={{
-                  fontFamily:
-                    "var(--font-public-sans), 'Public Sans', sans-serif",
-                  fontStyle: "italic",
-                  fontWeight: 300,
-                  fontSize: "15px",
-                  lineHeight: "26px",
-                  color: "#3F4940",
-                }}
-              >
-                &ldquo;{selectedAdvisor.message}&rdquo;
-              </p>
+                {/* Role */}
+                <p
+                  className="mt-1 mb-4"
+                  style={{
+                    fontFamily:
+                      "var(--font-public-sans), 'Public Sans', sans-serif",
+                    fontWeight: 600,
+                    fontSize: "13px",
+                    lineHeight: "20px",
+                    letterSpacing: "0.8px",
+                    color: "#c8102e",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {advisor.role}
+                </p>
+
+                {/* Divider */}
+                <div className="w-10 h-px bg-[#deb853] mb-4 mx-auto sm:mx-0" />
+
+                {/* Message */}
+                <p
+                  style={{
+                    fontFamily:
+                      "var(--font-public-sans), 'Public Sans', sans-serif",
+                    fontStyle: "italic",
+                    fontWeight: 300,
+                    fontSize: "15px",
+                    lineHeight: "25px",
+                    color: "#3F4940",
+                    whiteSpace: "pre-line",
+                  }}
+                  className="mx-auto sm:mx-0"
+                >
+                  &ldquo;{advisor.message}&rdquo;
+                </p>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
-      )}
-    </>
+      </div>
+    </section>
   );
 };

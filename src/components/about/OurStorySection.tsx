@@ -40,7 +40,7 @@ export const OurStorySection: React.FC = () => {
             <div className="p-3 sm:p-4 rounded-2xl border-2 border-[#f3d37a]/80 bg-white/40 shadow-sm">
               <div className="relative rounded-xl overflow-hidden shadow-lg aspect-[4/3] md:aspect-[5/4] lg:aspect-[4/3]">
                 <ImageFallback
-                  src="/images/our story.jpg"
+                  src="/images/aboutus.png"
                   alt="Seven Star Security Building and Guards"
                   className="w-full h-full object-cover object-center"
                   fallbackText="our story.jpg"

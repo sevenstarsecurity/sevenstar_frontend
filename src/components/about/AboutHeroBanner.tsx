@@ -7,7 +7,7 @@ export const AboutHeroBanner: React.FC = () => {
   return (
     <PageHeroBanner 
       label="COMPANY"
-      title="About Seven Star Security"
+      title="About Seven Star Security Pvt.Ltd"
       breadcrumbTitle="About Us"
     />
   );
