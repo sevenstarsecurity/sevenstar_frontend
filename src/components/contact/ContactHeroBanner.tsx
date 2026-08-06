@@ -21,10 +21,10 @@ export const ContactHeroBanner: React.FC = () => {
 
         {/* Description Subtitle */}
         <p
-          className="text-emerald-100/90 text-xs sm:text-sm md:text-base max-w-2xl leading-relaxed mb-10"
+          className="text-emerald-100/90 text-xs sm:text-sm md:text-base max-w-2xl leading-relaxed mb-10 text-center md:text-left mx-auto md:mx-0"
           style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
         >
-          Our specialized task force is available 24/7 for strategic planning, risk<br></br> consultation, and immediate field response. Connect with our command<br></br> center today.
+          Our specialized task force is available 24/7 for strategic planning, risk consultation, and immediate field response. Connect with our command center today.
         </p>
 
         {/* 3 Contact Rectangular Cards Row */}

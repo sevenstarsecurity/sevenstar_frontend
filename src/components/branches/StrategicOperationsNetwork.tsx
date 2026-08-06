@@ -58,10 +58,7 @@ export const StrategicOperationsNetwork: React.FC = () => {
                 fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
               }}
             >
-              Our footprint is designed for maximum operational efficiency. Each<br />
-              branch operates as a self-contained unit with dedicated response teams,<br />
-              local intelligence networks, and direct communication lines to our central<br />
-              command center in Kathmandu.
+              Our footprint is designed for maximum operational efficiency. Each branch operates as a self-contained unit with dedicated response teams, local intelligence networks, and direct communication lines to our central command center in Kathmandu.
             </p>
 
             {/* Feature Cards */}

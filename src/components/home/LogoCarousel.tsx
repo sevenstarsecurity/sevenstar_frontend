@@ -83,7 +83,12 @@ export const LogoCarousel: React.FC = () => {
         </div>
 
         <div className="flex overflow-hidden select-none w-full">
-          <div className="flex items-center space-x-12 md:space-x-16 animate-slow-marquee hover:[animation-play-state:paused] py-2">
+<div
+  className="flex items-center space-x-6 md:space-x-8 animate-slow-marquee hover:[animation-play-state:paused] py-2"
+  style={{ animationDuration: "110s" }}
+>
+
+
             {marqueeLogos.map((logo, index) => (
               <div
                 key={`${logo.id}-${index}`}

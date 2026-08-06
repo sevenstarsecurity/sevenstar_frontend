@@ -30,12 +30,12 @@ export const InstitutionalLegacy: React.FC = () => {
 
           {/* Description */}
           <p
-            className="text-[#3F4940] text-sm md:text-base leading-relaxed"
+            className="text-[#3F4940] text-sm md:text-base leading-relaxed whitespace-normal"
             style={{
               fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
             }}
           >
-            A visual testament to our commitment to global security <br></br>standards, institutional excellence, and the quiet precision of <br></br>elite protection.
+            A visual testament to our commitment to global security standards, institutional excellence, and the quiet precision of elite protection.
           </p>
         </div>
 

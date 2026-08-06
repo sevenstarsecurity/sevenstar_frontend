@@ -54,9 +54,9 @@ export const PageHeroBanner: React.FC<PageHeroBannerProps> = ({ title, label, br
 
         {/* Main Title */}
         <h1
-          className="font-semibold text-4xl md:text-5xl lg:text-6xl text-white mb-5 leading-snug"
+          className="font-semibold text-4xl md:text-5xl lg:text-6xl text-white mb-5 leading-snug animate-title-reveal"
         >
-          {title}
+          <span className="inline-block animate-title-glow">{title}</span>
         </h1>
 
 

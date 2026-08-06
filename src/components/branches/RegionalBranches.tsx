@@ -71,6 +71,64 @@ export const RegionalBranches: React.FC = () => {
     };
   }, []);
 
+  // Helper to map branch name to clean anchor ID (e.g. "BIRTAMODE BRANCH" -> "birtamode")
+  const getBranchId = (name: string): string => {
+    const clean = name.toLowerCase().trim();
+    if (clean.includes("birtamode")) return "birtamode";
+    if (clean.includes("birgunj")) return "birgunj";
+    if (clean.includes("pokhara")) return "pokhara";
+    if (clean.includes("bhairahawa")) return "bhairahawa";
+    if (clean.includes("nepalgunj")) return "nepalgunj";
+    return clean.replace(/\s+/g, "-");
+  };
+
+  // Scroll to target branch when navigating with anchor hash (e.g., /branches#7f8e9d1c-c347-4a25-a894-153a33f08e84 or /branches#birtamode)
+  useEffect(() => {
+    if (loading || branches.length === 0) return;
+
+    const performScroll = () => {
+      const hash = typeof window !== "undefined" ? window.location.hash : "";
+      if (!hash) return;
+      const targetId = hash.replace("#", "").toLowerCase().trim();
+      if (!targetId) return;
+
+      // Force section visibility so card layout is fully calculated
+      setVisible(true);
+
+      const el =
+        document.getElementById(targetId) ||
+        document.querySelector<HTMLElement>(`[data-branch-id="${targetId}"]`) ||
+        document.querySelector<HTMLElement>(`[data-branch-slug="${targetId}"]`) ||
+        document.querySelector<HTMLElement>(`[id*="${targetId}"]`);
+
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        // 110px offset accounts for fixed TopBar + Navbar header height
+        const targetY = Math.max(0, rect.top + scrollTop - 110);
+
+        window.scrollTo({
+          top: targetY,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    // Staggered execution handles React DOM paint, Next.js route transitions, and image loading
+    const t1 = setTimeout(performScroll, 100);
+    const t2 = setTimeout(performScroll, 400);
+    const t3 = setTimeout(performScroll, 800);
+
+    window.addEventListener("hashchange", performScroll);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      window.removeEventListener("hashchange", performScroll);
+    };
+  }, [loading, branches]);
+
   const getMapsUrl = (branch: Branch): string => {
     if (branch.googleMapsUrl) {
       return branch.googleMapsUrl;
@@ -166,9 +224,11 @@ export const RegionalBranches: React.FC = () => {
                 return (
                   <div
                     key={branch.id}
-                    className={`md:col-span-2 bg-white rounded-[2px] border-t-[3.5px] border-b-[3.5px] border-[#c8102e] border-x border-x-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out group p-6 md:p-8 ${
-                      visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                    }`}
+                    id={branch.id}
+                    data-branch-id={branch.id.toLowerCase()}
+                    data-branch-slug={getBranchId(branch.name)}
+                    className={`md:col-span-2 scroll-mt-28 bg-white rounded-[2px] border-t-[3.5px] border-b-[3.5px] border-[#c8102e] border-x border-x-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out group p-6 md:p-8 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                      }`}
                     style={{ transitionDelay: `${i * 120}ms` }}
                   >
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 relative">
@@ -199,7 +259,7 @@ export const RegionalBranches: React.FC = () => {
                           >
                             {branch.phone}
                           </a>
-                          
+
                           <a
                             href={getMapsUrl(branch)}
                             target="_blank"
@@ -218,9 +278,11 @@ export const RegionalBranches: React.FC = () => {
               return (
                 <div
                   key={branch.id}
-                  className={`bg-white rounded-[2px] border-t-[3.5px] border-[#c8102e] border-x border-x-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out group p-6 md:p-7 flex flex-col justify-between ${
-                    visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                  }`}
+                  id={branch.id}
+                  data-branch-id={branch.id.toLowerCase()}
+                  data-branch-slug={getBranchId(branch.name)}
+                  className={`scroll-mt-28 bg-white rounded-[2px] border-t-[3.5px] border-[#c8102e] border-x border-x-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out group p-6 md:p-7 flex flex-col justify-between ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                    }`}
                   style={{ transitionDelay: `${i * 120}ms` }}
                 >
                   <div>
@@ -230,7 +292,7 @@ export const RegionalBranches: React.FC = () => {
                       >
                         {branch.name}
                       </h3>
-                      
+
                       <a
                         href={getMapsUrl(branch)}
                         target="_blank"
@@ -254,7 +316,7 @@ export const RegionalBranches: React.FC = () => {
                       >
                         {branch.phone}
                       </a>
-                      
+
                       <a
                         href={getMapsUrl(branch)}
                         target="_blank"
