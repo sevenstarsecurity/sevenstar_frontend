@@ -26,9 +26,8 @@ export const FeaturedBranches: React.FC = () => {
 
         {/* ── Card 1: Kathmandu Head Office ── */}
         <div
-          className={`border-[2.2px] border-[#543F00] bg-white overflow-hidden flex flex-col md:flex-row transition-all duration-700 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          }`}
+          className={`border-[2.2px] border-[#543F00] bg-white overflow-hidden flex flex-col md:flex-row transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+            }`}
         >
           {/* Building photo */}
           <div className="w-full md:w-[42%] h-64 sm:h-72 md:h-auto flex-shrink-0 overflow-hidden">
@@ -87,9 +86,8 @@ export const FeaturedBranches: React.FC = () => {
 
         {/* ── Card 2: S3 Training Academy ── */}
         <div
-          className={`border-[2.2px] border-[#543F00] bg-white overflow-hidden flex flex-col-reverse md:flex-row transition-all duration-700 delay-150 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          }`}
+          className={`border-[2.2px] border-[#543F00] bg-white overflow-hidden flex flex-col-reverse md:flex-row transition-all duration-700 delay-150 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+            }`}
         >
           {/* Content */}
           <div className="flex-1 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 flex flex-col justify-center">
@@ -119,7 +117,7 @@ export const FeaturedBranches: React.FC = () => {
             {/* CTA Button */}
             <div>
               <a
-                href="#training"
+                href="/training"
                 className="inline-block bg-[#004E24] hover:bg-[#00391a] text-white font-['Public_Sans'] font-regular text-[14px] tracking-wider uppercase px-5 py-3  transition-colors"
               >
                 TRAINING PROGRAMS

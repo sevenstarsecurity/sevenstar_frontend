@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import { AdminSidebar } from "./AdminSidebar";
 import {
@@ -60,6 +60,8 @@ export const AdminClients: React.FC = () => {
   const [search, setSearch] = useState("");
 
   const [dragId, setDragId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const draggedIdRef = useRef<string | null>(null);
 
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Client | null>(null);
@@ -269,51 +271,92 @@ export const AdminClients: React.FC = () => {
     }
   };
 
-  const handleDragStart = (id: string) => setDragId(id);
+  const handleDragStart = (e: React.DragEvent, id: string) => {
+    draggedIdRef.current = id;
+    setDragId(id);
+    e.dataTransfer.effectAllowed = "move";
+    try {
+      e.dataTransfer.setData("text/plain", id);
+    } catch {
+      // ignore
+    }
+  };
 
   const handleDragOver = (e: React.DragEvent, overId: string) => {
     e.preventDefault();
-    if (!dragId || dragId === overId) return;
-
-    setClients((prev) => {
-      const ordered = [...prev]
-        .filter((c) => c.isActive)
-        .sort((a, b) => a.displayOrder - b.displayOrder);
-      const from = ordered.findIndex((c) => c.id === dragId);
-      const to = ordered.findIndex((c) => c.id === overId);
-      if (from < 0 || to < 0) return prev;
-
-      const reordered = [...ordered];
-      const [moved] = reordered.splice(from, 1);
-      reordered.splice(to, 0, moved);
-
-      const orderMap = new Map(reordered.map((c, i) => [c.id, i + 1] as const));
-
-      return prev.map((c) =>
-        orderMap.has(c.id) ? { ...c, displayOrder: orderMap.get(c.id)! } : c
-      );
-    });
+    e.dataTransfer.dropEffect = "move";
+    if (draggedIdRef.current && draggedIdRef.current !== overId) {
+      setDragOverId(overId);
+    }
   };
 
-  const handleDragEnd = async () => {
-    if (!dragId) return;
+  const handleDragLeave = (overId: string) => {
+    if (dragOverId === overId) {
+      setDragOverId(null);
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent, dropTargetId: string) => {
+    e.preventDefault();
+    setDragOverId(null);
+
+    const sourceId =
+      draggedIdRef.current || e.dataTransfer.getData("text/plain") || dragId;
+
+    if (!sourceId || sourceId === dropTargetId) {
+      draggedIdRef.current = null;
+      setDragId(null);
+      return;
+    }
+
+    draggedIdRef.current = null;
     setDragId(null);
 
-    const order = [...clients]
+    const ordered = [...clients]
       .filter((c) => c.isActive)
-      .sort((a, b) => a.displayOrder - b.displayOrder)
-      .map((c, i) => ({ id: c.id, displayOrder: i + 1 }));
+      .sort((a, b) => a.displayOrder - b.displayOrder);
 
-    if (usingSeed) return;
+    const fromIndex = ordered.findIndex((c) => c.id === sourceId);
+    const toIndex = ordered.findIndex((c) => c.id === dropTargetId);
 
-    try {
-      await reorderClients(order);
-    } catch (err: unknown) {
-      setError(
-        (err as { message?: string })?.message || "Failed to save display order."
-      );
-      loadClients();
+    if (fromIndex < 0 || toIndex < 0) return;
+
+    const reordered = [...ordered];
+    const [movedItem] = reordered.splice(fromIndex, 1);
+    reordered.splice(toIndex, 0, movedItem);
+
+    const orderMap = new Map(reordered.map((c, index) => [c.id, index + 1]));
+
+    const updatedClients = clients.map((c) =>
+      orderMap.has(c.id) ? { ...c, displayOrder: orderMap.get(c.id)! } : c
+    );
+
+    setClients(updatedClients);
+
+    if (!usingSeed) {
+      const apiOrderPayload = reordered.map((c, index) => ({
+        id: c.id,
+        displayOrder: index + 1,
+      }));
+
+      try {
+        await reorderClients(apiOrderPayload);
+      } catch (err: unknown) {
+        console.error("Failed to reorder clients:", err);
+        setError(
+          (err as { message?: string })?.message || "Failed to save display order."
+        );
+        loadClients();
+      }
     }
+  };
+
+  const handleDragEnd = () => {
+    setTimeout(() => {
+      draggedIdRef.current = null;
+      setDragId(null);
+      setDragOverId(null);
+    }, 100);
   };
 
   return (
@@ -405,29 +448,35 @@ export const AdminClients: React.FC = () => {
                   <div
                     key={client.id}
                     draggable
-                    onDragStart={() => handleDragStart(client.id)}
+                    onDragStart={(e) => handleDragStart(e, client.id)}
                     onDragOver={(e) => handleDragOver(e, client.id)}
+                    onDragLeave={() => handleDragLeave(client.id)}
+                    onDrop={(e) => handleDrop(e, client.id)}
                     onDragEnd={handleDragEnd}
-                    className={`bg-white border border-gray-200 rounded-xl shadow-xs flex items-stretch min-w-[140px] w-[140px] cursor-grab active:cursor-grabbing transition-shadow overflow-hidden ${
-                      dragId === client.id ? "opacity-70 shadow-md ring-1 ring-[#0b4226]/30" : ""
+                    className={`bg-white border rounded-xl shadow-xs flex items-stretch min-w-[140px] w-[140px] cursor-grab active:cursor-grabbing transition-all overflow-hidden select-none ${
+                      dragId === client.id
+                        ? "opacity-40 border-dashed border-gray-400 bg-gray-50 scale-95"
+                        : dragOverId === client.id
+                        ? "ring-2 ring-[#0b4226] border-[#0b4226] bg-[#0b4226]/5 scale-[1.03]"
+                        : "border-gray-200"
                     }`}
                   >
-                    <div className="flex items-center px-1.5 text-gray-300 hover:text-gray-500 shrink-0">
+                    <div className="flex items-center px-1.5 text-gray-300 hover:text-gray-500 shrink-0 pointer-events-none">
                       <GripVertical className="w-4 h-4" />
                     </div>
-                    <div className="flex-1 flex flex-col items-center px-2 pt-4 pb-3 gap-2 min-w-0">
-                      <div className="w-16 h-16 rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden p-1.5 shrink-0">
+                    <div className="flex-1 flex flex-col items-center px-2 pt-4 pb-3 gap-2 min-w-0 pointer-events-none">
+                      <div className="w-16 h-16 rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden p-1.5 shrink-0 pointer-events-none">
                         <ImageFallback
                           src={client.logoUrl}
                           alt={client.name}
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-contain pointer-events-none"
                           fallbackText={client.name[0]}
                         />
                       </div>
-                      <p className="text-xs font-medium text-gray-800 text-center leading-tight truncate w-full">
+                      <p className="text-xs font-medium text-gray-800 text-center leading-tight truncate w-full pointer-events-none">
                         {client.name}
                       </p>
-                      <span className="text-[10px] font-bold text-gray-400">
+                      <span className="text-[10px] font-bold text-gray-400 pointer-events-none">
                         #{client.displayOrder}
                       </span>
                     </div>

@@ -2,13 +2,10 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { ImageFallback } from "../ui/ImageFallback";
-import { getPublicVigilanceImages, VigilanceImage } from "@/services/vigilance";
 
 export const TrainingArena: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const [images, setImages] = useState<VigilanceImage[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -20,35 +17,6 @@ export const TrainingArena: React.FC = () => {
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const fetchImages = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getPublicVigilanceImages();
-        if (mounted) {
-          const sorted = [...data].sort((a, b) => a.displayOrder - b.displayOrder);
-          setImages(sorted.slice(0, 2));
-        }
-      } catch (err) {
-        console.error("Failed to fetch training arena images:", err);
-      } finally {
-        if (mounted) setIsLoading(false);
-      }
-    };
-
-    fetchImages();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  // Fallback to static images if the API returns nothing (e.g. no active
-  // vigilance images yet), so the section never renders empty.
-  const photo1 = images[0];
-  const photo2 = images[1];
 
   return (
     <section className="py-20 md:py-24 bg-[#0b4226] text-white overflow-hidden" ref={ref}>
@@ -100,28 +68,24 @@ export const TrainingArena: React.FC = () => {
             {/* Photo 1 */}
             <div className="border-4 border-[#deb853] shadow-2xl rounded-xs overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
               <div className="h-[387px] w-full overflow-hidden relative bg-black/20">
-                {!isLoading && (
-                  <ImageFallback
-                    src={photo1?.imageUrl || "/images/salam.png"}
-                    alt={photo1?.caption || "Seven Star Guards Formation"}
-                    className="w-full h-full object-cover object-center"
-                    fallbackText={photo1?.caption || "Training Arena"}
-                  />
-                )}
+                <ImageFallback
+                  src="/images/training1.jpeg"
+                  alt="Seven Star Security Training Arena"
+                  className="w-full h-full object-cover object-center"
+                  fallbackText="Training Arena 1"
+                />
               </div>
             </div>
 
             {/* Photo 2 */}
             <div className="border-4 border-[#deb853] shadow-2xl rounded-xs overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
               <div className="h-[387px] w-full overflow-hidden relative bg-black/20">
-                {!isLoading && (
-                  <ImageFallback
-                    src={photo2?.imageUrl || "/images/mic123.png"}
-                    alt={photo2?.caption || "Seven Star Radio Officer"}
-                    className="w-full h-full object-cover object-center"
-                    fallbackText={photo2?.caption || "Training Arena"}
-                  />
-                )}
+                <ImageFallback
+                  src="/images/training2.jpeg"
+                  alt="Seven Star Security Officer Training"
+                  className="w-full h-full object-cover object-center"
+                  fallbackText="Training Arena 2"
+                />
               </div>
             </div>
           </div>
