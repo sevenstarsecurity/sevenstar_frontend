@@ -1,13 +1,23 @@
+import dynamic from "next/dynamic";
+import { ContactHeroBanner } from "@/src/components/contact/ContactHeroBanner";
 import { Footer } from "@/src/components/layout/Footer";
 import { Navbar } from "@/src/components/layout/Navbar";
 import { TopBar } from "@/src/components/layout/TopBar";
-
-import { CommonInquiries } from "@/src/components/contact/CommonInquiries";
-import { ContactHeroBanner } from "@/src/components/contact/ContactHeroBanner";
-import { InitiateInquiry } from "@/src/components/contact/InitiateInquiry";
-import { RegionalOperations } from "@/src/components/contact/RegionalOperations";
-
 import type { Metadata } from "next";
+
+// Dynamic imports for below-the-fold sections
+const InitiateInquiry = dynamic(
+  () => import("@/src/components/contact/InitiateInquiry").then((m) => ({ default: m.InitiateInquiry })),
+  { loading: () => <div className="h-96 bg-white animate-shimmer" /> }
+);
+const RegionalOperations = dynamic(
+  () => import("@/src/components/contact/RegionalOperations").then((m) => ({ default: m.RegionalOperations })),
+  { loading: () => <div className="h-48 bg-[#f0f5ea] animate-shimmer" /> }
+);
+const CommonInquiries = dynamic(
+  () => import("@/src/components/contact/CommonInquiries").then((m) => ({ default: m.CommonInquiries })),
+  { loading: () => <div className="h-64 bg-white animate-shimmer" /> }
+);
 
 export const metadata: Metadata = {
   title: "Contact Us | Seven Star Security Services",
@@ -26,7 +36,7 @@ export default function ContactPage() {
 
       {/* Main Content */}
       <main className="flex-grow">
-        {/* 1. Hero Banner + 3 Floating Contact Cards */}
+        {/* 1. Hero Banner + 3 Floating Contact Cards — loaded eagerly */}
         <ContactHeroBanner />
 
         {/* 2. Initiate Inquiry Form + Map & ISO Badges */}
@@ -39,10 +49,9 @@ export default function ContactPage() {
         <CommonInquiries />
       </main>
 
-      {/* Newsletter Bar */}
-
       {/* Footer */}
       <Footer />
     </div>
   );
 }
+

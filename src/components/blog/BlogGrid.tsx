@@ -44,11 +44,10 @@ export const BlogGrid: React.FC = () => {
                 setActiveTab(cat);
                 setVisibleCount(initialSliceCount);
               }}
-              className={`px-4 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-200 ${
-                activeTab === cat
+              className={`px-4 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-200 ${activeTab === cat
                   ? "bg-[#004E24] text-white shadow-xs"
                   : "bg-white text-gray-700 hover:bg-emerald-50 hover:text-[#004E24] border border-gray-200/80"
-              }`}
+                }`}
               style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
             >
               {cat}

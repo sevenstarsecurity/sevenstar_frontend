@@ -280,7 +280,7 @@ export const AdminDashboard: React.FC = () => {
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-lg bg-[#0b4226]/5 border border-[#0b4226]/20 flex items-center justify-center p-2 flex-shrink-0">
                     <ImageFallback
-                      src="/images/Trusted By Badge.png"
+                      src="/images/Trusted By Badge.webp"
                       alt="Seven Star Security Emblem"
                       className="w-full h-full object-contain"
                       fallbackText="Emblem"
@@ -293,11 +293,10 @@ export const AdminDashboard: React.FC = () => {
                     <p className="text-xs md:text-sm text-gray-500 mt-0.5 font-normal">
                       Database status:{" "}
                       <span
-                        className={`font-bold ${
-                          health?.database.status === "operational"
+                        className={`font-bold ${health?.database.status === "operational"
                             ? "text-emerald-600"
                             : "text-amber-600"
-                        }`}
+                          }`}
                       >
                         {health?.database.status.toUpperCase()}
                       </span>{" "}
@@ -642,9 +641,8 @@ export const AdminDashboard: React.FC = () => {
                       <div key={log.id} className="flex items-start gap-3.5 relative">
                         <div className="mt-1 flex-shrink-0">
                           <span
-                            className={`w-2.5 h-2.5 rounded-full block ${
-                              idx === 0 ? "bg-[#0b4226]" : "bg-gray-300"
-                            }`}
+                            className={`w-2.5 h-2.5 rounded-full block ${idx === 0 ? "bg-[#0b4226]" : "bg-gray-300"
+                              }`}
                           />
                         </div>
 
@@ -683,11 +681,10 @@ export const AdminDashboard: React.FC = () => {
                         Database
                       </p>
                       <p
-                        className={`font-bold mt-0.5 ${
-                          health?.database.status === "operational"
+                        className={`font-bold mt-0.5 ${health?.database.status === "operational"
                             ? "text-emerald-600"
                             : "text-amber-600"
-                        }`}
+                          }`}
                       >
                         {health?.database.status}
                       </p>
@@ -740,9 +737,8 @@ export const AdminDashboard: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-gray-500">Backup enabled</span>
                       <span
-                        className={`font-bold ${
-                          quickActions?.backupEnabled ? "text-emerald-600" : "text-red-600"
-                        }`}
+                        className={`font-bold ${quickActions?.backupEnabled ? "text-emerald-600" : "text-red-600"
+                          }`}
                       >
                         {quickActions?.backupEnabled ? "YES" : "NO"}
                       </span>

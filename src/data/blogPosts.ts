@@ -43,10 +43,10 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Rajan Thapa",
       role: "Chief of Operations",
-      avatar: "/images/purna.png",
+      avatar: "/images/purna.webp",
     },
-    image: "/images/bankseurity.jpg",
-    fallback: "bankseurity.jpg",
+    image: "/images/bankseurity.webp",
+    fallback: "bankseurity.webp",
     content: {
       intro:
         "Financial institutions, banks, and currency vaults demand an uncompromising security posture. In response to evolving security threats and increased cash transaction volumes across urban centers, Seven Star Security Services is proud to announce an enhanced Banking Security Protocol across Nepal.",
@@ -92,10 +92,10 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Ramesh Shrestha",
       role: "Senior Risk Auditor",
-      avatar: "/images/ramesh.png",
+      avatar: "/images/ramesh.webp",
     },
-    image: "/images/needguard.jpeg",
-    fallback: "needguard.jpeg",
+    image: "/images/needguard.webp",
+    fallback: "needguard.webp",
     content: {
       intro:
         "Commercial properties, office towers, and retail hubs face continuous security challenges. From unmonitored entry points to rising theft risks, assessing your security weaknesses is critical for business continuity.",
@@ -140,7 +140,7 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Major Ganesh Karki",
       role: "Director of Security Systems",
-      avatar: "/images/majorganesh.png",
+      avatar: "/images/majorganesh.webp",
     },
     image: "/images/aiinbank.webp",
     fallback: "aiinbank.webp",
@@ -184,10 +184,10 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Arjun Gurung",
       role: "Head of Tactical Training",
-      avatar: "/images/arjun.jpg",
+      avatar: "/images/arjun.webp",
     },
-    image: "/images/emergency.jpeg",
-    fallback: "emergency.jpeg",
+    image: "/images/emergency.webp",
+    fallback: "emergency.webp",
     content: {
       intro:
         "Every quarter, Seven Star Security conducts intensive tactical refreshers for our field personnel, supervisors, and rapid response officers. Our 2024 Q3 workshop brought together over 150 guards for advanced scenario drills.",
@@ -224,10 +224,10 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Rajan Thapa",
       role: "Chief of Operations",
-      avatar: "/images/purna.png",
+      avatar: "/images/purna.webp",
     },
     image: "/images/warehouse.webp",
-    fallback: "patrolguardnight.jpg",
+    fallback: "warehouse.webp",
     content: {
       intro:
         "Industrial plants and distribution centers contain millions of rupees in raw materials, heavy machinery, and finished goods. Protecting these sprawling zones requires structured perimeter defense and mobile patrols.",
@@ -264,10 +264,10 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Anjali Rai",
       role: "Event Protocol Officer",
-      avatar: "/images/anjali.jpg",
+      avatar: "/images/anjali.webp",
     },
-    image: "/images/vip.jpg",
-    fallback: "eventsecurityguard.jpg",
+    image: "/images/vip.webp",
+    fallback: "eventsecurityguard.webp",
     content: {
       intro:
         "From corporate galas to international diplomatic conventions, event security requires seamless coordination, guest registration, and close protection.",
@@ -304,10 +304,10 @@ export const blogPosts: BlogPost[] = [
     author: {
       name: "Rajan Thapa",
       role: "Chief of Operations",
-      avatar: "/images/purna.png",
+      avatar: "/images/purna.webp",
     },
-    image: "/images/rapisresponse.png",
-    fallback: "commandcenterguard.jpg",
+    image: "/images/rapisresponse.webp",
+    fallback: "commandcenterguard.webp",
     content: {
       intro:
         "Speed is critical during security emergencies. Seven Star Security has upgraded its central dispatch network to link all client posts directly to localized Mobile Response Units.",

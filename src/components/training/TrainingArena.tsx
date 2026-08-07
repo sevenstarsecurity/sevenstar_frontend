@@ -69,7 +69,7 @@ export const TrainingArena: React.FC = () => {
             <div className="border-4 border-[#deb853] shadow-2xl rounded-xs overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
               <div className="h-[387px] w-full overflow-hidden relative bg-black/20">
                 <ImageFallback
-                  src="/images/training1.jpeg"
+                  src="/images/training1.webp"
                   alt="Seven Star Security Training Arena"
                   className="w-full h-full object-cover object-center"
                   fallbackText="Training Arena 1"
@@ -81,7 +81,7 @@ export const TrainingArena: React.FC = () => {
             <div className="border-4 border-[#deb853] shadow-2xl rounded-xs overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
               <div className="h-[387px] w-full overflow-hidden relative bg-black/20">
                 <ImageFallback
-                  src="/images/training2.jpeg"
+                  src="/images/training2.webp"
                   alt="Seven Star Security Officer Training"
                   className="w-full h-full object-cover object-center"
                   fallbackText="Training Arena 2"

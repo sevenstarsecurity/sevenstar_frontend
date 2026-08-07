@@ -157,9 +157,8 @@ export const TeamStaffSection: React.FC = () => {
             {staffList.map((member, i) => (
               <div
                 key={member.id}
-                className={`flex flex-col items-center text-center group transition-all duration-600 ${
-                  visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                }`}
+                className={`flex flex-col items-center text-center group transition-all duration-600 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                  }`}
                 style={{ transitionDelay: `${i * 120}ms` }}
               >
                 {/* Circular Photo with Outer Golden Border Ring */}

@@ -1,34 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ImageFallback } from "../ui/ImageFallback";
 
 export const HeroSection: React.FC = () => {
-  // Images to rotate
-  const images = ["/images/nobgguard.png", "/images/nobg2.png"];
-
-  const [currentImage, setCurrentImage] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % images.length);
-    }, 8000); // Change image every 3 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <section className="relative bg-[#f7faf6] min-h-[340px] xs:min-h-[400px] sm:min-h-[460px] lg:min-h-[580px] overflow-hidden flex items-center border-b border-gray-100">
       {/* Green Diagonal Background */}
       <div className="absolute right-0 top-0 bottom-0 w-[52%] lg:w-[48%] bg-[#0F6835] z-0 [clip-path:polygon(16%_0,100%_0,100%_100%,0_100%)]" />
 
       {/* Guard Image */}
-      <motion.div
-        key={currentImage}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+      <div
         className="absolute bottom-0 z-[1]"
         style={{
           right: "10%",
@@ -37,16 +20,16 @@ export const HeroSection: React.FC = () => {
         }}
       >
         <ImageFallback
-          src={images[currentImage]}
+          src="/images/nobgguard.webp"
           alt="Seven Star Security Guard Lineup"
           className="w-full h-full object-contain object-center"
           style={{
-            transform: "scale(1.5)",
+            transform: "scale(1.5)", // Increase from 1.3 to 1.5
             transformOrigin: "center center",
           }}
-          fallbackText="police.jpg"
+          fallbackText="nobgguard.webp"
         />
-      </motion.div>
+      </div>
 
       {/* Main Content */}
       <div className="max-w-[1600px] mx-auto px-3 xs:px-4 md:px-10 lg:px-12 w-full py-6 xs:py-8 sm:py-12 lg:py-20 relative z-10">
@@ -62,8 +45,7 @@ export const HeroSection: React.FC = () => {
           <motion.h1
             className="font-black text-[#0F6835] tracking-normal leading-[1.02] lg:leading-none"
             style={{
-              fontFamily:
-                "var(--font-public-sans), 'Public Sans', sans-serif",
+              fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
               fontWeight: 800,
               fontSize: "clamp(1.15rem, 5.5vw, 4.5rem)",
               letterSpacing: "0px",
@@ -96,6 +78,7 @@ export const HeroSection: React.FC = () => {
               PROTECTION
             </motion.span>
           </motion.h1>
+
 
           {/* Description */}
           <p className="text-gray-600 text-[8px] xs:text-[10px] sm:text-sm md:text-base leading-relaxed max-w-md">
@@ -131,19 +114,19 @@ export const HeroSection: React.FC = () => {
       <div className="absolute bottom-2 xs:bottom-4 sm:bottom-10 lg:bottom-14 left-[52%] lg:left-[48%] z-20 flex items-center gap-1 xs:gap-1.5 sm:gap-2">
         <div className="h-6 xs:h-9 sm:h-16 md:h-24 flex items-center drop-shadow-2xl flex-shrink-0">
           <ImageFallback
-            src="/images/Trusted By Badge.png"
+            src="/images/Trusted By Badge.webp"
             alt="Trusted By 435+ Clients Badge"
             className="h-full w-auto object-contain"
-            fallbackText="Trusted By Badge.png"
+            fallbackText="Trusted By Badge.webp"
           />
         </div>
 
         <div className="w-8 h-8 xs:w-11 xs:h-11 sm:w-20 sm:h-20 md:w-28 md:h-28 flex items-center justify-center flex-shrink-0 drop-shadow-2xl">
           <ImageFallback
-            src="/images/ISO Seal Badge.png"
+            src="/images/ISO Seal Badge.webp"
             alt="ISO Seal Badge"
             className="w-full h-full object-contain"
-            fallbackText="ISO Seal Badge.png"
+            fallbackText="ISO Seal Badge.webp"
           />
         </div>
       </div>

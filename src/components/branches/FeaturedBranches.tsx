@@ -32,10 +32,10 @@ export const FeaturedBranches: React.FC = () => {
           {/* Building photo */}
           <div className="w-full md:w-[42%] h-64 sm:h-72 md:h-auto flex-shrink-0 overflow-hidden">
             <ImageFallback
-              src="/images/our story.jpg"
+              src="/images/our story.webp"
               alt="Kathmandu Head Office"
               className="w-full h-full object-cover object-center"
-              fallbackText="our story.jpg"
+              fallbackText="our story.webp"
             />
           </div>
 

@@ -35,10 +35,10 @@ export const Navbar: React.FC = () => {
         <Link href="/" className="flex items-center group">
           <div className="relative h-14 w-auto flex items-center justify-start">
             <ImageFallback
-              src="/images/sevenstarlogo.png"
+              src="/images/sevenstarlogo.webp"
               alt="Seven Star Security Logo"
               className="h-12 md:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-              fallbackText="sevenstarlogo.png"
+              fallbackText="sevenstarlogo.webp"
             />
           </div>
         </Link>

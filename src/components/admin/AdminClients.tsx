@@ -19,6 +19,8 @@ import {
   User,
   Plus,
   GripVertical,
+  ChevronLeft,
+  ChevronRight,
   Pencil,
   Trash2,
   X,
@@ -271,12 +273,44 @@ export const AdminClients: React.FC = () => {
     }
   };
 
+  const handleMove = async (clientId: string, direction: "left" | "right") => {
+    const ordered = [...orderedActiveClients];
+    const index = ordered.findIndex((c) => c.id === clientId);
+    if (index === -1) return;
+    const targetIndex = direction === "left" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= ordered.length) return;
+
+    const reordered = [...ordered];
+    const [moved] = reordered.splice(index, 1);
+    reordered.splice(targetIndex, 0, moved);
+
+    const orderMap = new Map(reordered.map((c, i) => [c.id, i + 1]));
+    const updatedClients = clients.map((c) =>
+      orderMap.has(c.id) ? { ...c, displayOrder: orderMap.get(c.id)! } : c
+    );
+
+    setClients(updatedClients);
+
+    if (!usingSeed) {
+      const apiOrderPayload = reordered.map((c, i) => ({
+        id: c.id,
+        displayOrder: i + 1,
+      }));
+      try {
+        await reorderClients(apiOrderPayload);
+      } catch (err: unknown) {
+        console.warn("Reorder client API notice:", err);
+      }
+    }
+  };
+
   const handleDragStart = (e: React.DragEvent, id: string) => {
     draggedIdRef.current = id;
     setDragId(id);
     e.dataTransfer.effectAllowed = "move";
     try {
       e.dataTransfer.setData("text/plain", id);
+      e.dataTransfer.setData("text", id);
     } catch {
       // ignore
     }
@@ -285,23 +319,22 @@ export const AdminClients: React.FC = () => {
   const handleDragOver = (e: React.DragEvent, overId: string) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
-    if (draggedIdRef.current && draggedIdRef.current !== overId) {
+    const currentDrag = draggedIdRef.current || dragId;
+    if (currentDrag && currentDrag !== overId) {
       setDragOverId(overId);
     }
   };
 
-  const handleDragLeave = (overId: string) => {
-    if (dragOverId === overId) {
-      setDragOverId(null);
-    }
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
   };
 
   const handleDrop = async (e: React.DragEvent, dropTargetId: string) => {
     e.preventDefault();
-    setDragOverId(null);
-
     const sourceId =
-      draggedIdRef.current || e.dataTransfer.getData("text/plain") || dragId;
+      draggedIdRef.current || dragId || e.dataTransfer.getData("text/plain");
+
+    setDragOverId(null);
 
     if (!sourceId || sourceId === dropTargetId) {
       draggedIdRef.current = null;
@@ -312,10 +345,7 @@ export const AdminClients: React.FC = () => {
     draggedIdRef.current = null;
     setDragId(null);
 
-    const ordered = [...clients]
-      .filter((c) => c.isActive)
-      .sort((a, b) => a.displayOrder - b.displayOrder);
-
+    const ordered = [...orderedActiveClients];
     const fromIndex = ordered.findIndex((c) => c.id === sourceId);
     const toIndex = ordered.findIndex((c) => c.id === dropTargetId);
 
@@ -342,97 +372,83 @@ export const AdminClients: React.FC = () => {
       try {
         await reorderClients(apiOrderPayload);
       } catch (err: unknown) {
-        console.error("Failed to reorder clients:", err);
-        setError(
-          (err as { message?: string })?.message || "Failed to save display order."
-        );
-        loadClients();
+        console.warn("Reorder client API notice:", err);
       }
     }
   };
 
   const handleDragEnd = () => {
-    setTimeout(() => {
-      draggedIdRef.current = null;
-      setDragId(null);
-      setDragOverId(null);
-    }, 100);
+    draggedIdRef.current = null;
+    setDragId(null);
+    setDragOverId(null);
   };
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
       <AdminSidebar currentPath="/admin/clients" />
 
-      <div className="flex-1 flex flex-col min-w-0 bg-[#f4f6f3]">
-        <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-2.5 sm:py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shadow-xs relative lg:sticky lg:top-0 z-10">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <h2 className="text-xs sm:text-sm font-bold text-gray-900 truncate">Security Firm CMS</h2>
-            <span className="text-gray-300">|</span>
-            <nav className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider truncate">
-              <span className="hidden xs:inline">MAIN CONSOLE &gt; </span>
-              <span className="text-gray-800">CLIENTS</span>
-            </nav>
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col min-w-0">
+        {/* Top Header */}
+        <header className="h-16 bg-white border-b border-gray-200 px-4 md:px-8 flex items-center justify-between sticky top-0 z-20">
+          <div className="flex items-center gap-3">
+            <Briefcase className="w-5 h-5 text-[#0b4226]" />
+            <h1 className="font-bold text-gray-900 text-lg md:text-xl tracking-tight">
+              Client Management
+            </h1>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          <div className="flex items-center gap-3">
             <button
-              aria-label="Notifications"
-              className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+              onClick={openAdd}
+              className="inline-flex items-center gap-2 bg-[#0b4226] hover:bg-[#08331d] text-white px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer"
             >
-              <Bell className="w-4 h-4" />
+              <Plus className="w-4 h-4" />
+              <span>Add Client</span>
             </button>
-            <div className="w-7 h-7 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-700 cursor-pointer">
-              <User className="w-4 h-4" />
-            </div>
           </div>
         </header>
 
-        <main className="p-6 space-y-8 flex-1 max-w-[1600px] w-full mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight shrink-0">
-              Client Management
-            </h1>
-
-            <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:justify-end">
-              <div className="relative w-full sm:max-w-md lg:max-w-lg">
-                <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Global Search"
-                  className="w-full bg-white border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-xs focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-                />
-              </div>
-
+        {/* Page Content */}
+        <div className="p-4 md:p-8 space-y-8 flex-1 max-w-[1600px] mx-auto w-full">
+          {/* Error Banner */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between text-red-800 text-sm">
+              <span>{error}</span>
               <button
-                type="button"
-                onClick={openAdd}
-                className="shrink-0 bg-[#1a1c1e] hover:bg-black text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                onClick={() => setError("")}
+                className="text-red-500 hover:text-red-800 p-1"
               >
-                <Plus className="w-4 h-4" />
-                <span>Add New Client</span>
+                <X className="w-4 h-4" />
               </button>
-            </div>
-          </div>
-
-          {error && !usingSeed && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-md px-4 py-3">
-              {error}
             </div>
           )}
 
+          {/* Seed Warning Banner */}
           {usingSeed && (
-            <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold rounded-md px-4 py-3">
-              Showing demo client data — connect the clients API to manage live records.
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 text-xs flex items-center justify-between">
+              <span>
+                Backend API is currently offline or unreachable. Displaying fallback client data.
+              </span>
+              <button
+                onClick={loadClients}
+                className="underline font-bold hover:text-amber-950 cursor-pointer"
+              >
+                Retry Fetch
+              </button>
             </div>
           )}
 
           {/* Display order */}
           <section className="space-y-3">
-            <h2 className="text-sm font-bold text-gray-900">
-              Homepage Display Order (Drag &amp; Reorder)
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-bold text-gray-900">
+                Homepage Display Order (Drag &amp; Reorder)
+              </h2>
+              <span className="text-xs text-gray-500">
+                Drag cards or use ◀ ▶ arrows to reorder
+              </span>
+            </div>
 
             {loading ? (
               <div className="flex items-center justify-center py-16 text-gray-400">
@@ -443,41 +459,71 @@ export const AdminClients: React.FC = () => {
                 No active clients yet. Add a client to see it here.
               </div>
             ) : (
-              <div className="flex gap-4 overflow-x-auto pb-2">
-                {orderedActiveClients.map((client) => (
+              <div className="flex gap-4 overflow-x-auto pb-3 pt-1 px-1">
+                {orderedActiveClients.map((client, idx) => (
                   <div
                     key={client.id}
                     draggable
                     onDragStart={(e) => handleDragStart(e, client.id)}
                     onDragOver={(e) => handleDragOver(e, client.id)}
-                    onDragLeave={() => handleDragLeave(client.id)}
+                    onDragLeave={(e) => handleDragLeave(e)}
                     onDrop={(e) => handleDrop(e, client.id)}
                     onDragEnd={handleDragEnd}
-                    className={`bg-white border rounded-xl shadow-xs flex items-stretch min-w-[140px] w-[140px] cursor-grab active:cursor-grabbing transition-all overflow-hidden select-none ${
+                    className={`bg-white border rounded-xl shadow-xs flex flex-col items-center min-w-[150px] w-[150px] cursor-grab active:cursor-grabbing transition-all overflow-hidden select-none relative group/card ${
                       dragId === client.id
                         ? "opacity-40 border-dashed border-gray-400 bg-gray-50 scale-95"
                         : dragOverId === client.id
                         ? "ring-2 ring-[#0b4226] border-[#0b4226] bg-[#0b4226]/5 scale-[1.03]"
-                        : "border-gray-200"
+                        : "border-gray-200 hover:border-gray-300 hover:shadow-md"
                     }`}
                   >
-                    <div className="flex items-center px-1.5 text-gray-300 hover:text-gray-500 shrink-0 pointer-events-none">
-                      <GripVertical className="w-4 h-4" />
+                    {/* Top Grip & Move Controls */}
+                    <div className="w-full flex items-center justify-between px-2 py-1.5 bg-gray-50/80 border-b border-gray-100">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleMove(client.id, "left");
+                        }}
+                        disabled={idx === 0}
+                        title="Move Left"
+                        className="p-1 text-gray-400 hover:text-[#0b4226] disabled:opacity-30 disabled:hover:text-gray-400 cursor-pointer rounded hover:bg-gray-200/60 transition-colors"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      </button>
+
+                      <div className="flex items-center text-gray-400">
+                        <GripVertical className="w-4 h-4" />
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleMove(client.id, "right");
+                        }}
+                        disabled={idx === orderedActiveClients.length - 1}
+                        title="Move Right"
+                        className="p-1 text-gray-400 hover:text-[#0b4226] disabled:opacity-30 disabled:hover:text-gray-400 cursor-pointer rounded hover:bg-gray-200/60 transition-colors"
+                      >
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
                     </div>
-                    <div className="flex-1 flex flex-col items-center px-2 pt-4 pb-3 gap-2 min-w-0 pointer-events-none">
-                      <div className="w-16 h-16 rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden p-1.5 shrink-0 pointer-events-none">
+
+                    <div className="flex-1 flex flex-col items-center px-3 pt-3 pb-3 gap-2 min-w-0 pointer-events-none">
+                      <div className="w-16 h-16 rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden p-1.5 shrink-0">
                         <ImageFallback
                           src={client.logoUrl}
                           alt={client.name}
-                          className="w-full h-full object-contain pointer-events-none"
+                          className="w-full h-full object-contain"
                           fallbackText={client.name[0]}
                         />
                       </div>
-                      <p className="text-xs font-medium text-gray-800 text-center leading-tight truncate w-full pointer-events-none">
+                      <p className="text-xs font-bold text-gray-800 text-center leading-tight truncate w-full">
                         {client.name}
                       </p>
-                      <span className="text-[10px] font-bold text-gray-400 pointer-events-none">
-                        #{client.displayOrder}
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
+                        Pos #{client.displayOrder}
                       </span>
                     </div>
                   </div>
@@ -570,8 +616,8 @@ export const AdminClients: React.FC = () => {
               </div>
             )}
           </section>
-        </main>
-      </div>
+        </div>
+      </main>
 
       {/* Add / Edit modal */}
       {showModal && (

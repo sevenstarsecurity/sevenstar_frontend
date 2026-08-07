@@ -76,10 +76,10 @@ export const Footer: React.FC = () => {
           <div className="flex flex-col items-center sm:items-start text-center sm:text-left space-y-4">
             <Link href="/" className="flex items-center mb-1 group">
               <ImageFallback
-                src="/images/sevennobg.png"
+                src="/images/sevennobg.webp"
                 alt="Seven Star Security Logo"
                 className="h-12 md:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                fallbackText="sevenstarlogo.png"
+                fallbackText="sevenstarlogo.webp"
               />
             </Link>
 

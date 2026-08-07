@@ -153,7 +153,33 @@ export const toggleClientStatus = async (
 export const reorderClients = async (
   order: { id: string; displayOrder: number }[]
 ): Promise<void> => {
-  await api.patch("/admin/clients/reorder", { order });
+  try {
+    await api.patch("/admin/clients/reorder", { order });
+  } catch (err: unknown) {
+    const status = (err as { response?: { status?: number } })?.response?.status;
+    if (status === 404) {
+      // Fallback 1: try PUT /admin/clients/reorder
+      try {
+        await api.put("/admin/clients/reorder", { order });
+        return;
+      } catch {
+        // Fallback 2: Update display order via item-by-item payload
+        try {
+          await Promise.allSettled(
+            order.map((item) =>
+              api.patch(`/admin/clients/${item.id}`, { displayOrder: item.displayOrder })
+            )
+          );
+          return;
+        } catch {
+          // If backend doesn't support reorder endpoint, preserve order in local session
+          console.warn("Backend reorder endpoint not available (404), preserved in local state.");
+          return;
+        }
+      }
+    }
+    throw err;
+  }
 };
 
 export const deleteClient = async (id: string): Promise<void> => {

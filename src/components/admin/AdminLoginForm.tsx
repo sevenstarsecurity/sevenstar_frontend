@@ -63,10 +63,10 @@ export const AdminLoginForm: React.FC = () => {
         {/* Background Building Image */}
         <div className="absolute inset-0 z-0">
           <ImageFallback
-            src="/images/our story.jpg"
+            src="/images/our story.webp"
             alt="Seven Star Security Headquarters"
             className="w-full h-full object-cover object-center filter brightness-[0.4] contrast-[1.1] scale-105"
-            fallbackText="our story.jpg"
+            fallbackText="our story.webp"
           />
           {/* Green Color Tint & Gradient Overlay */}
           <div className="absolute inset-0 bg-linear-to-b from-[#0e4828]/95 via-[#0b3820]/90 to-[#041a0e]/95 mix-blend-multiply" />
@@ -77,7 +77,7 @@ export const AdminLoginForm: React.FC = () => {
         <div className="relative z-10 flex items-center gap-3">
           <Link href="/" title="Go to Website Homepage" className="group cursor-pointer">
             <ImageFallback
-              src="/images/sevenstarlogo.png"
+              src="/images/sevenstarlogo.webp"
               alt="Seven Star Security Logo"
               className="h-10 sm:h-12 w-auto object-contain bg-white/95 px-2.5 py-1 rounded-md shadow-md transition-transform duration-300 group-hover:scale-105"
               fallbackText="Seven Star Security"

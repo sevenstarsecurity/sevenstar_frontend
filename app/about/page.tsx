@@ -1,15 +1,39 @@
-import { AboutCtaBanner } from "@/src/components/about/AboutCtaBanner";
+import dynamic from "next/dynamic";
 import { AboutHeroBanner } from "@/src/components/about/AboutHeroBanner";
-import { CertificationsSection } from "@/src/components/about/CertificationsSection";
-import { DistinguishedAdvisors } from "@/src/components/about/DistinguishedAdvisors";
-import { LeadershipSection } from "@/src/components/about/LeadershipSection";
-import { MissionVisionValues } from "@/src/components/about/MissionVisionValues";
-import { OurStorySection } from "@/src/components/about/OurStorySection";
-import { WhyChooseSection } from "@/src/components/about/WhyChooseSection";
 import { Footer } from "@/src/components/layout/Footer";
 import { Navbar } from "@/src/components/layout/Navbar";
 import { TopBar } from "@/src/components/layout/TopBar";
 import type { Metadata } from "next";
+
+// Dynamic imports for below-the-fold sections
+const OurStorySection = dynamic(
+  () => import("@/src/components/about/OurStorySection").then((m) => ({ default: m.OurStorySection })),
+  { loading: () => <div className="h-80 bg-white animate-shimmer" /> }
+);
+const MissionVisionValues = dynamic(
+  () => import("@/src/components/about/MissionVisionValues").then((m) => ({ default: m.MissionVisionValues })),
+  { loading: () => <div className="h-64 bg-[#f0f5ea] animate-shimmer" /> }
+);
+const WhyChooseSection = dynamic(
+  () => import("@/src/components/about/WhyChooseSection").then((m) => ({ default: m.WhyChooseSection })),
+  { loading: () => <div className="h-72 bg-white animate-shimmer" /> }
+);
+const LeadershipSection = dynamic(
+  () => import("@/src/components/about/LeadershipSection").then((m) => ({ default: m.LeadershipSection })),
+  { loading: () => <div className="h-96 bg-white animate-shimmer" /> }
+);
+const DistinguishedAdvisors = dynamic(
+  () => import("@/src/components/about/DistinguishedAdvisors").then((m) => ({ default: m.DistinguishedAdvisors })),
+  { loading: () => <div className="h-64 bg-white animate-shimmer" /> }
+);
+const CertificationsSection = dynamic(
+  () => import("@/src/components/about/CertificationsSection").then((m) => ({ default: m.CertificationsSection })),
+  { loading: () => <div className="h-48 bg-[#f0f5ea] animate-shimmer" /> }
+);
+const AboutCtaBanner = dynamic(
+  () => import("@/src/components/about/AboutCtaBanner").then((m) => ({ default: m.AboutCtaBanner })),
+  { loading: () => <div className="h-40 bg-[#004E24] animate-shimmer" /> }
+);
 
 export const metadata: Metadata = {
   title: "About Us | Seven Star Security Services",
@@ -27,7 +51,7 @@ export default function AboutPage() {
       <Navbar />
 
       <main className="flex-grow">
-        {/* 1. Page Hero Banner */}
+        {/* 1. Page Hero Banner — above the fold, loaded eagerly */}
         <AboutHeroBanner />
 
         {/* 2. Our Story */}
@@ -48,14 +72,13 @@ export default function AboutPage() {
         {/* 7. Certifications */}
         <CertificationsSection />
 
-        {/* 7. CTA Banner */}
+        {/* 8. CTA Banner */}
         <AboutCtaBanner />
       </main>
-
-      {/* Newsletter */}
 
       {/* Footer */}
       <Footer />
     </div>
   );
 }
+

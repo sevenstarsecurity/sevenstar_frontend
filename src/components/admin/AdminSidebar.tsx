@@ -44,7 +44,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
         <div className="p-4 flex items-center justify-between border-b border-gray-100">
           <Link href="/" className="flex items-center gap-3 group" title="Go to Website Homepage">
             <ImageFallback
-              src="/images/sevenstarlogo.png"
+              src="/images/sevenstarlogo.webp"
               alt="Seven Star Security Logo"
               className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               fallbackText="Seven Star Security"
@@ -76,8 +76,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg font-bold text-xs tracking-wide uppercase transition-all duration-150 cursor-pointer ${isActive
-                    ? "bg-[#0b4226] text-white shadow-sm"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                  ? "bg-[#0b4226] text-white shadow-sm"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                   }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-500"}`} />

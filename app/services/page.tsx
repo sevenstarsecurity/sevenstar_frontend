@@ -1,13 +1,31 @@
+import dynamic from "next/dynamic";
+import { ServicesHeroBanner } from "@/src/components/services/ServicesHeroBanner";
 import { Footer } from "@/src/components/layout/Footer";
 import { Navbar } from "@/src/components/layout/Navbar";
 import { TopBar } from "@/src/components/layout/TopBar";
-import { OurProvenProcess } from "@/src/components/services/OurProvenProcess";
-import { ServicesCtaBanner } from "@/src/components/services/ServicesCtaBanner";
-import { ServicesGrid } from "@/src/components/services/ServicesGrid";
-import { ServicesHeaderCallout } from "@/src/components/services/ServicesHeaderCallout";
-import { ServicesHeroBanner } from "@/src/components/services/ServicesHeroBanner";
-import { WhyServicesStandOut } from "@/src/components/services/WhyServicesStandOut";
 import type { Metadata } from "next";
+
+// Dynamic imports for below-the-fold sections
+const ServicesHeaderCallout = dynamic(
+  () => import("@/src/components/services/ServicesHeaderCallout").then((m) => ({ default: m.ServicesHeaderCallout })),
+  { loading: () => <div className="h-40 bg-white animate-shimmer" /> }
+);
+const ServicesGrid = dynamic(
+  () => import("@/src/components/services/ServicesGrid").then((m) => ({ default: m.ServicesGrid })),
+  { loading: () => <div className="h-96 bg-[#f0f5ea] animate-shimmer" /> }
+);
+const WhyServicesStandOut = dynamic(
+  () => import("@/src/components/services/WhyServicesStandOut").then((m) => ({ default: m.WhyServicesStandOut })),
+  { loading: () => <div className="h-64 bg-white animate-shimmer" /> }
+);
+const OurProvenProcess = dynamic(
+  () => import("@/src/components/services/OurProvenProcess").then((m) => ({ default: m.OurProvenProcess })),
+  { loading: () => <div className="h-72 bg-[#f0f5ea] animate-shimmer" /> }
+);
+const ServicesCtaBanner = dynamic(
+  () => import("@/src/components/services/ServicesCtaBanner").then((m) => ({ default: m.ServicesCtaBanner })),
+  { loading: () => <div className="h-40 bg-[#004E24] animate-shimmer" /> }
+);
 
 export const metadata: Metadata = {
   title: "Services | Seven Star Security Services",
@@ -26,7 +44,7 @@ export default function ServicesPage() {
 
       {/* Main Services Page Content */}
       <main className="flex-grow">
-        {/* 1. Hero Banner */}
+        {/* 1. Hero Banner — loaded eagerly */}
         <ServicesHeroBanner />
 
         {/* 2. Intro Description & Quote CTA */}
@@ -45,10 +63,9 @@ export default function ServicesPage() {
         <ServicesCtaBanner />
       </main>
 
-      {/* Newsletter Subscription Bar */}
-
       {/* Footer */}
       <Footer />
     </div>
   );
 }
+

@@ -409,8 +409,8 @@ export const AdminBranches: React.FC = () => {
             } catch (staffErr: any) {
               setStaffError(
                 staffErr?.response?.data?.message ||
-                  staffErr?.message ||
-                  `Failed to add staff member "${p.name}".`
+                staffErr?.message ||
+                `Failed to add staff member "${p.name}".`
               );
             }
           }
@@ -444,52 +444,110 @@ export const AdminBranches: React.FC = () => {
     const count = usingPending ? pendingStaff.length : staffList.length;
 
     return (
-    <div className="space-y-2.5">
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
-          Staff Members ({count})
-        </span>
-        <button
-          type="button"
-          onClick={handleOpenAddStaff}
-          className="flex items-center gap-1 text-[11px] font-bold text-[#0b4226] hover:underline uppercase tracking-wider cursor-pointer"
-        >
-          <UserPlus className="w-3.5 h-3.5" />
-          Add Staff
-        </button>
-      </div>
-
-      {usingPending && (
-        <p className="text-[10px] text-amber-600 font-semibold -mt-1">
-          Not saved yet — these will be added once you save the branch.
-        </p>
-      )}
-
-      {staffError && (
-        <div className="p-2 text-[11px] bg-red-50 border border-red-200 text-red-700 rounded">
-          {staffError}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+            Staff Members ({count})
+          </span>
+          <button
+            type="button"
+            onClick={handleOpenAddStaff}
+            className="flex items-center gap-1 text-[11px] font-bold text-[#0b4226] hover:underline uppercase tracking-wider cursor-pointer"
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+            Add Staff
+          </button>
         </div>
-      )}
 
-      {usingPending ? (
-        pendingStaff.length === 0 ? (
+        {usingPending && (
+          <p className="text-[10px] text-amber-600 font-semibold -mt-1">
+            Not saved yet — these will be added once you save the branch.
+          </p>
+        )}
+
+        {staffError && (
+          <div className="p-2 text-[11px] bg-red-50 border border-red-200 text-red-700 rounded">
+            {staffError}
+          </div>
+        )}
+
+        {usingPending ? (
+          pendingStaff.length === 0 ? (
+            <p className="text-xs text-gray-400 py-2">
+              No staff members yet. Add the first one.
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {pendingStaff.map((staff) => (
+                <div
+                  key={staff._tempId}
+                  className="flex items-center justify-between gap-2 bg-[#fffbeb] border border-amber-200 rounded p-2.5"
+                >
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <p className="text-xs font-bold text-gray-900 truncate">
+                        {staff.name}
+                      </p>
+                      <span className="px-1.5 py-0.5 rounded-xs text-[8px] font-extrabold uppercase tracking-wider bg-amber-300 text-amber-900">
+                        PENDING
+                      </span>
+                    </div>
+                    {staff.designation && (
+                      <p className="text-[11px] text-gray-500 truncate">
+                        {staff.designation}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenEditPendingStaff(staff)}
+                      className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                      title="Edit staff member"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePendingStaff(staff._tempId)}
+                      className="p-1.5 text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
+                      title="Remove staff member"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        ) : isLoadingStaff ? (
+          <div className="flex items-center gap-2 text-gray-400 py-3">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span className="text-xs font-semibold">Loading staff...</span>
+          </div>
+        ) : staffList.length === 0 ? (
           <p className="text-xs text-gray-400 py-2">
             No staff members yet. Add the first one.
           </p>
         ) : (
           <div className="space-y-2">
-            {pendingStaff.map((staff) => (
+            {staffList.map((staff) => (
               <div
-                key={staff._tempId}
-                className="flex items-center justify-between gap-2 bg-[#fffbeb] border border-amber-200 rounded p-2.5"
+                key={staff.id}
+                className="flex items-center justify-between gap-2 bg-[#f8fafc] border border-gray-200 rounded p-2.5"
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <p className="text-xs font-bold text-gray-900 truncate">
                       {staff.name}
                     </p>
-                    <span className="px-1.5 py-0.5 rounded-xs text-[8px] font-extrabold uppercase tracking-wider bg-amber-300 text-amber-900">
-                      PENDING
+                    <span
+                      className={`px-1.5 py-0.5 rounded-xs text-[8px] font-extrabold uppercase tracking-wider ${staff.isActive
+                          ? "bg-[#22c55e] text-white"
+                          : "bg-gray-300 text-gray-700"
+                        }`}
+                    >
+                      {staff.isActive ? "ACTIVE" : "INACTIVE"}
                     </span>
                   </div>
                   {staff.designation && (
@@ -501,7 +559,7 @@ export const AdminBranches: React.FC = () => {
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button
                     type="button"
-                    onClick={() => handleOpenEditPendingStaff(staff)}
+                    onClick={() => handleOpenEditStaff(staff)}
                     className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
                     title="Edit staff member"
                   >
@@ -509,7 +567,19 @@ export const AdminBranches: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleRemovePendingStaff(staff._tempId)}
+                    onClick={() => handleToggleStaffStatus(staff)}
+                    className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                    title={staff.isActive ? "Disable" : "Enable"}
+                  >
+                    {staff.isActive ? (
+                      <EyeOff className="w-3.5 h-3.5" />
+                    ) : (
+                      <Eye className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteStaff(staff)}
                     className="p-1.5 text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
                     title="Remove staff member"
                   >
@@ -519,138 +589,67 @@ export const AdminBranches: React.FC = () => {
               </div>
             ))}
           </div>
-        )
-      ) : isLoadingStaff ? (
-        <div className="flex items-center gap-2 text-gray-400 py-3">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="text-xs font-semibold">Loading staff...</span>
-        </div>
-      ) : staffList.length === 0 ? (
-        <p className="text-xs text-gray-400 py-2">
-          No staff members yet. Add the first one.
-        </p>
-      ) : (
-        <div className="space-y-2">
-          {staffList.map((staff) => (
-            <div
-              key={staff.id}
-              className="flex items-center justify-between gap-2 bg-[#f8fafc] border border-gray-200 rounded p-2.5"
-            >
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <p className="text-xs font-bold text-gray-900 truncate">
-                    {staff.name}
-                  </p>
-                  <span
-                    className={`px-1.5 py-0.5 rounded-xs text-[8px] font-extrabold uppercase tracking-wider ${
-                      staff.isActive
-                        ? "bg-[#22c55e] text-white"
-                        : "bg-gray-300 text-gray-700"
-                    }`}
-                  >
-                    {staff.isActive ? "ACTIVE" : "INACTIVE"}
-                  </span>
-                </div>
-                {staff.designation && (
-                  <p className="text-[11px] text-gray-500 truncate">
-                    {staff.designation}
-                  </p>
-                )}
-              </div>
-              <div className="flex items-center gap-1 flex-shrink-0">
-                <button
-                  type="button"
-                  onClick={() => handleOpenEditStaff(staff)}
-                  className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
-                  title="Edit staff member"
-                >
-                  <Edit2 className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleToggleStaffStatus(staff)}
-                  className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
-                  title={staff.isActive ? "Disable" : "Enable"}
-                >
-                  {staff.isActive ? (
-                    <EyeOff className="w-3.5 h-3.5" />
-                  ) : (
-                    <Eye className="w-3.5 h-3.5" />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDeleteStaff(staff)}
-                  className="p-1.5 text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
-                  title="Remove staff member"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+        )}
 
-      {showStaffForm && (
-        <form
-          onSubmit={handleStaffSubmit}
-          className="mt-2 p-3 bg-white border border-gray-200 rounded space-y-2.5"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
-              <UserCog className="w-3.5 h-3.5" />
-              {editingStaff ? "Edit Staff Member" : "New Staff Member"}
-            </span>
-            <button
-              type="button"
-              onClick={() => {
-                setShowStaffForm(false);
-                resetStaffForm();
-              }}
-              className="text-gray-400 hover:text-gray-600 cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          <input
-            type="text"
-            required
-            value={staffName}
-            onChange={(e) => setStaffName(e.target.value)}
-            placeholder="Full name"
-            className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-          />
-          <input
-            type="text"
-            value={staffDesignation}
-            onChange={(e) => setStaffDesignation(e.target.value)}
-            placeholder="Designation (e.g. Branch Manager)"
-            className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-          />
-          <input
-            type="number"
-            value={staffDisplayOrder}
-            onChange={(e) => setStaffDisplayOrder(e.target.value)}
-            placeholder="Display order (optional)"
-            className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-          />
-
-          <button
-            type="submit"
-            disabled={isSavingStaff}
-            className="w-full py-2 bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-[11px] uppercase tracking-wider rounded transition-colors cursor-pointer disabled:opacity-60"
+        {showStaffForm && (
+          <form
+            onSubmit={handleStaffSubmit}
+            className="mt-2 p-3 bg-white border border-gray-200 rounded space-y-2.5"
           >
-            {isSavingStaff
-              ? "SAVING..."
-              : editingStaff
-              ? "SAVE CHANGES"
-              : "ADD STAFF MEMBER"}
-          </button>
-        </form>
-      )}
-    </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+                <UserCog className="w-3.5 h-3.5" />
+                {editingStaff ? "Edit Staff Member" : "New Staff Member"}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowStaffForm(false);
+                  resetStaffForm();
+                }}
+                className="text-gray-400 hover:text-gray-600 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <input
+              type="text"
+              required
+              value={staffName}
+              onChange={(e) => setStaffName(e.target.value)}
+              placeholder="Full name"
+              className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+            />
+            <input
+              type="text"
+              value={staffDesignation}
+              onChange={(e) => setStaffDesignation(e.target.value)}
+              placeholder="Designation (e.g. Branch Manager)"
+              className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+            />
+            <input
+              type="number"
+              value={staffDisplayOrder}
+              onChange={(e) => setStaffDisplayOrder(e.target.value)}
+              placeholder="Display order (optional)"
+              className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+            />
+
+            <button
+              type="submit"
+              disabled={isSavingStaff}
+              className="w-full py-2 bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-[11px] uppercase tracking-wider rounded transition-colors cursor-pointer disabled:opacity-60"
+            >
+              {isSavingStaff
+                ? "SAVING..."
+                : editingStaff
+                  ? "SAVE CHANGES"
+                  : "ADD STAFF MEMBER"}
+            </button>
+          </form>
+        )}
+      </div>
     );
   };
 
@@ -741,11 +740,10 @@ export const AdminBranches: React.FC = () => {
                             {branch.name}
                           </h3>
                           <span
-                            className={`px-2 py-0.5 rounded-xs text-[9px] font-extrabold uppercase tracking-wider ${
-                              branch.isActive
+                            className={`px-2 py-0.5 rounded-xs text-[9px] font-extrabold uppercase tracking-wider ${branch.isActive
                                 ? "bg-[#d4af37] text-white"
                                 : "bg-gray-300 text-gray-700"
-                            }`}
+                              }`}
                           >
                             {branch.isActive ? "ACTIVE" : "INACTIVE"}
                           </span>
@@ -866,7 +864,7 @@ export const AdminBranches: React.FC = () => {
 
                 <div className="relative aspect-[16/10] bg-gray-900 overflow-hidden">
                   <ImageFallback
-                    src="/images/nepalmap.jpg"
+                    src="/images/nepalmap.webp"
                     alt="Global Deployment Map"
                     className="w-full h-full object-cover opacity-60 filter contrast-125 brightness-90"
                     fallbackText="Map"
@@ -1105,11 +1103,10 @@ export const AdminBranches: React.FC = () => {
                   {viewBranch.name}
                 </h2>
                 <span
-                  className={`px-2 py-0.5 rounded-xs text-[9px] font-extrabold uppercase tracking-wider ${
-                    viewBranch.isActive
+                  className={`px-2 py-0.5 rounded-xs text-[9px] font-extrabold uppercase tracking-wider ${viewBranch.isActive
                       ? "bg-[#d4af37] text-white"
                       : "bg-gray-300 text-gray-700"
-                  }`}
+                    }`}
                 >
                   {viewBranch.isActive ? "ACTIVE" : "INACTIVE"}
                 </span>

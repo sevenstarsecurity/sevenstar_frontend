@@ -1,12 +1,27 @@
+import dynamic from "next/dynamic";
+import { TrainingHeroBanner } from "@/src/components/training/TrainingHeroBanner";
 import { Footer } from "@/src/components/layout/Footer";
 import { Navbar } from "@/src/components/layout/Navbar";
 import { TopBar } from "@/src/components/layout/TopBar";
-import { AcademicDepth } from "@/src/components/training/AcademicDepth";
-import { DefiningExcellence } from "@/src/components/training/DefiningExcellence";
-import { JoinEliteForce } from "@/src/components/training/JoinEliteForce";
-import { TrainingArena } from "@/src/components/training/TrainingArena";
-import { TrainingHeroBanner } from "@/src/components/training/TrainingHeroBanner";
 import type { Metadata } from "next";
+
+// Dynamic imports for below-the-fold sections
+const DefiningExcellence = dynamic(
+  () => import("@/src/components/training/DefiningExcellence").then((m) => ({ default: m.DefiningExcellence })),
+  { loading: () => <div className="h-64 bg-white animate-shimmer" /> }
+);
+const AcademicDepth = dynamic(
+  () => import("@/src/components/training/AcademicDepth").then((m) => ({ default: m.AcademicDepth })),
+  { loading: () => <div className="h-80 bg-[#f0f5ea] animate-shimmer" /> }
+);
+const TrainingArena = dynamic(
+  () => import("@/src/components/training/TrainingArena").then((m) => ({ default: m.TrainingArena })),
+  { loading: () => <div className="h-96 bg-white animate-shimmer" /> }
+);
+const JoinEliteForce = dynamic(
+  () => import("@/src/components/training/JoinEliteForce").then((m) => ({ default: m.JoinEliteForce })),
+  { loading: () => <div className="h-40 bg-[#004E24] animate-shimmer" /> }
+);
 
 export const metadata: Metadata = {
   title: "Training | Seven Star Security Services",
@@ -25,7 +40,7 @@ export default function TrainingPage() {
 
       {/* Main Content */}
       <main className="flex-grow">
-        {/* 1. Hero Banner */}
+        {/* 1. Hero Banner — loaded eagerly */}
         <TrainingHeroBanner />
 
         {/* 2. Defining Excellence Pillars */}
@@ -41,10 +56,9 @@ export default function TrainingPage() {
         <JoinEliteForce />
       </main>
 
-      {/* Newsletter Bar */}
-
       {/* Footer */}
       <Footer />
     </div>
   );
 }
+

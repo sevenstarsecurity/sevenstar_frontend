@@ -24,11 +24,11 @@ export const PresenceSection: React.FC = () => {
           {/* Background Photo */}
           <div className="absolute inset-0">
             <ImageFallback
-              src="/images/Security Operations Background.png"
+              src="/images/Security Operations Background.webp"
               alt="Seven Star Security Personnel Lineup Across Nepal"
               className="w-full h-full object-cover object-center"
               containerClassName="w-full h-full min-h-[320px]"
-              fallbackText="Security Operations Background.png"
+              fallbackText="Security Operations Background.webp"
             />
 
             {/* Green Overlay */}

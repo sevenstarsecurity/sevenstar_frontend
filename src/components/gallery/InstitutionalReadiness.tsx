@@ -62,7 +62,7 @@ export const InstitutionalReadiness: React.FC = () => {
             ) : (
               <>
                 <ImageFallback
-                  src="/images/salam.png"
+                  src="/images/salam.webp"
                   alt={video?.title || "Live Training Simulation"}
                   className="w-full h-full object-cover object-center opacity-85 group-hover:scale-105 transition-transform duration-500"
                   fallbackText="Training Simulation"
