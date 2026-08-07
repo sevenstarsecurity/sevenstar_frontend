@@ -75,9 +75,23 @@ export const HeroSection: React.FC = () => {
             </motion.span>
           </motion.h1>
 
-          {/* Description */}
+          {/* Description — MOBILE only (< sm): 4 explicit lines */}
           <p
-            className="text-gray-600 leading-relaxed max-w-md"
+            className="sm:hidden text-gray-600 leading-relaxed max-w-[44vw]"
+            style={{ fontSize: "clamp(9px, 1.9vw, 16px)" }}
+          >
+            Uncompromising security solutions
+            <br />
+            for corporations, events, and
+            <br />
+            critical infrastructure in Nepal.
+            <br />
+            Your safety, our mission.
+          </p>
+
+          {/* Description — DESKTOP (sm+): original layout, untouched */}
+          <p
+            className="hidden sm:block text-gray-600 leading-relaxed max-w-md"
             style={{ fontSize: "clamp(7px, 1.9vw, 16px)" }}
           >
             Uncompromising security solutions for corporations,
@@ -86,6 +100,7 @@ export const HeroSection: React.FC = () => {
             <br className="hidden lg:block" />
             mission.
           </p>
+
 
           {/* CTA */}
           <div className="pt-1 sm:pt-2 flex items-center gap-1.5 sm:gap-4">
@@ -111,12 +126,32 @@ export const HeroSection: React.FC = () => {
                 fallbackText="arrow.webp"
               />
             </div>
+
+            {/* Badges inline — mobile only; hidden on sm+ where they use absolute positioning */}
+            <div className="sm:hidden flex items-center gap-1 ml-1">
+              <div className="flex items-center drop-shadow-xl flex-shrink-0" style={{ height: "clamp(24px, 7vw, 40px)" }}>
+                <ImageFallback
+                  src="/images/Trusted By Badge.webp"
+                  alt="Trusted By 435+ Clients Badge"
+                  className="h-full w-auto object-contain"
+                  fallbackText="Trusted By Badge.webp"
+                />
+              </div>
+              <div className="flex items-center justify-center flex-shrink-0 drop-shadow-xl" style={{ width: "clamp(24px, 7vw, 40px)", height: "clamp(24px, 7vw, 40px)" }}>
+                <ImageFallback
+                  src="/images/ISO Seal Badge.webp"
+                  alt="ISO Seal Badge"
+                  className="w-full h-full object-contain"
+                  fallbackText="ISO Seal Badge.webp"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Badges - same left/bottom ratio as desktop at every breakpoint */}
-      <div className="absolute bottom-2 sm:bottom-10 lg:bottom-14 left-[52%] lg:left-[48%] z-20 flex items-center gap-1 sm:gap-2">
+      {/* Badges absolute — desktop/tablet only; mobile uses inline badges in the CTA row */}
+      <div className="hidden sm:flex absolute bottom-2 sm:bottom-10 lg:bottom-14 left-[52%] lg:left-[48%] z-20 items-center gap-1 sm:gap-2">
         <div
           className="flex items-center drop-shadow-2xl flex-shrink-0"
           style={{ height: "clamp(24px, 7vw, 96px)" }}

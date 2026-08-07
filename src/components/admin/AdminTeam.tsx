@@ -341,26 +341,8 @@ export const AdminTeam: React.FC = () => {
             </nav>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <div className="relative w-36 sm:w-64">
-              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Global search..."
-                className="w-full bg-[#f4f6f8] border border-gray-200 rounded-md pl-9 pr-3 py-1.5 text-xs text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-              />
-            </div>
-            <button
-              aria-label="Notifications"
-              className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <Bell className="w-4 h-4" />
-            </button>
-            <div className="w-7 h-7 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-700 cursor-pointer">
-              <User className="w-4 h-4" />
-            </div>
-          </div>
         </header>
+
 
         {/* STATUS BANNER STRIP */}
         <div className="bg-[#e6f4ea] border-b border-emerald-200/60 px-4 sm:px-6 py-1.5 flex items-center gap-2 text-[10px] sm:text-[11px] font-bold text-[#0b4226] tracking-wider uppercase overflow-hidden">

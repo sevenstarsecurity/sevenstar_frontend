@@ -18,11 +18,11 @@ export const PageHeroBanner: React.FC<PageHeroBannerProps> = ({ title, label, br
       <div className="absolute inset-0 z-0">
 
         <ImageFallback
-          src="/images/line.png"
+          src="/images/line.webp"
           alt="Seven Star Security Guards"
           className="w-full h-full object-cover object-[center_25%]"
           containerClassName="w-full h-full"
-          fallbackText="line.png"
+          fallbackText="line.webp"
         />
 
 

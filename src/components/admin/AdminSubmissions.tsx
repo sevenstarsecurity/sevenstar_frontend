@@ -257,17 +257,6 @@ export const AdminSubmissions: React.FC = () => {
             </nav>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <button
-              aria-label="Notifications"
-              className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
-            >
-              <Bell className="w-4 h-4" />
-            </button>
-            <div className="w-7 h-7 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-700 cursor-pointer">
-              <User className="w-4 h-4" />
-            </div>
-          </div>
         </header>
 
         {/* Content Body */}

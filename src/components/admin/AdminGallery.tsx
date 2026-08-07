@@ -543,29 +543,8 @@ export const AdminGallery: React.FC = () => {
             </nav>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0 flex-1 sm:flex-none justify-end">
-            <div className="relative w-full sm:w-64 max-w-[240px] sm:max-w-none">
-              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search visual library..."
-                disabled={activeTab !== "gallery"}
-                className="w-full bg-[#f4f6f8] border border-gray-200 rounded-md pl-9 pr-3 py-1.5 text-xs text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] disabled:opacity-50"
-              />
-            </div>
-            <button
-              aria-label="Notifications"
-              className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
-            >
-              <Bell className="w-4 h-4" />
-            </button>
-            <div className="w-7 h-7 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-700 cursor-pointer">
-              <User className="w-4 h-4" />
-            </div>
-          </div>
         </header>
+
 
         <main className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 flex-1 max-w-[1600px] w-full mx-auto">
           {/* TOP HEADLINE & ACTIONS */}

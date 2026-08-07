@@ -19,8 +19,8 @@ export const AdminLoginForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg("");
 
+    // Validate before clearing previous error so user sees inline validation
     if (!email.trim()) {
       setErrorMsg("Please enter your Administrator ID.");
       return;
@@ -30,12 +30,13 @@ export const AdminLoginForm: React.FC = () => {
       return;
     }
 
+    // Clear error and start loading together so they render in one pass
+    setErrorMsg("");
     setIsLoading(true);
 
     try {
       const data = await login(email.trim(), password);
 
-      // Optional: persist stayLoggedIn preference for your refresh-token logic
       if (typeof window !== "undefined") {
         localStorage.setItem("stayLoggedIn", String(stayLoggedIn));
       }
@@ -47,11 +48,16 @@ export const AdminLoginForm: React.FC = () => {
         router.push("/admin/dashboard");
       }, 600);
     } catch (err: any) {
-      setIsLoading(false);
+      // Extract the most meaningful error message from the API response
       const message =
         err?.response?.data?.message ||
+        err?.response?.data?.error ||
         err?.message ||
-        "Invalid credentials. Please try again.";
+        "Invalid email or password. Please try again.";
+
+      // Update both states together so they render in a single pass —
+      // this prevents the message from flashing and then disappearing.
+      setIsLoading(false);
       setErrorMsg(message);
     }
   };
@@ -165,10 +171,12 @@ export const AdminLoginForm: React.FC = () => {
               /* Form */
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" noValidate>
                 {errorMsg && (
-                  <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded wrap-break-word">
-                    {errorMsg}
+                  <div className="p-3 text-xs bg-red-50 border border-red-300 text-red-700 rounded flex items-start gap-2 animate-[fadeIn_0.2s_ease-in]">
+                    <span className="shrink-0 font-bold text-red-500 mt-0.5">⚠</span>
+                    <span className="break-words">{errorMsg}</span>
                   </div>
                 )}
+
 
                 {/* Field 1: Administrator ID (email) */}
                 <div className="space-y-1.5">

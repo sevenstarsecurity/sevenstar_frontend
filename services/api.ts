@@ -30,13 +30,16 @@ api.interceptors.request.use((config) => {
 // a broken admin page. Requests marked `public: true` or `skipAuthRedirect: true`
 // opt out — used for calls that hit a shared /admin/* route but are actually
 // public reads (e.g. public site pages fetching executives, leadership, etc.)
+// Auth endpoints (/auth/login, /auth/refresh, etc.) are also excluded so that
+// wrong credentials show the inline error message instead of redirecting.
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
     const skip = error?.config?.skipAuthRedirect || error?.config?.public;
+    const isAuthEndpoint = error?.config?.url?.includes("/auth/");
 
-    if (status === 401 && typeof window !== "undefined" && !skip) {
+    if (status === 401 && typeof window !== "undefined" && !skip && !isAuthEndpoint) {
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
@@ -46,4 +49,4 @@ api.interceptors.response.use(
   }
 );
 
-export default api;
+export default api;

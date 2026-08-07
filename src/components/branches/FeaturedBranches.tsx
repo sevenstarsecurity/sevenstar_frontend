@@ -128,7 +128,7 @@ export const FeaturedBranches: React.FC = () => {
           {/* Training photo */}
           <div className="w-full md:w-[42%] h-64 sm:h-72 md:h-auto flex-shrink-0 overflow-hidden">
             <ImageFallback
-              src="/images/traning.png"
+              src="/images/traning.webp"
               alt="S3 Training Academy"
               className="w-full h-full object-cover "
               fallbackText="mic123.png"

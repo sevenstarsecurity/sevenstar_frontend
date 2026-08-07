@@ -107,7 +107,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
       <div className="lg:hidden sticky top-0 z-30 bg-[#0b4226] text-white px-4 py-3 flex items-center justify-between shadow-md">
         <Link href="/" className="flex items-center gap-2.5" title="Go to Website Homepage">
           <ImageFallback
-            src="/images/sevenstarlogo.png"
+            src="/images/sevenstarlogo.webp"
             alt="Seven Star Security Logo"
             className="h-8 w-auto object-contain bg-white/95 px-2 py-0.5 rounded shadow-sm"
             fallbackText="Seven Star Security"
