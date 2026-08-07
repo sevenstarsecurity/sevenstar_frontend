@@ -164,20 +164,21 @@ export const InitiateInquiry: React.FC = () => {
 
           {/* Right Column: Google Map & ISO Certificates (Spans 5 cols on lg) */}
           <div className="lg:col-span-5 space-y-6">
-            {/* Live Interactive Google Map Embed */}
-            <div className="bg-white rounded-none border border-gray-300 shadow-sm h-[260px] md:h-[280px] overflow-hidden relative">
-              <iframe
-                title="Seven Star Security Headquarters Location Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.0627072978184!2d85.3345464!3d27.7153403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1965b38a74e5%3A0xb355152919864278!2sChandol%2C%20Kathmandu%2044600!5e0!3m2!1sen!2snp!4v1700000000000!5m2!1sen!2snp"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full"
-              />
-            </div>
+  {/* Live Interactive Google Map Embed */}
+  <div className="bg-white rounded-none border border-gray-300 shadow-sm h-65 md:h-70 overflow-hidden relative">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2947.590785204323!2d85.33656277453667!3d27.729916924497342!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb191052f558d7%3A0x50949256084b5862!2sSeven%20Star%20Security%20Service!5e1!3m2!1sen!2snp!4v1786099338466!5m2!1sen!2snp"
+      width="600"
+      height="450"
+      style={{ border: 0 }}
+      allowFullScreen
+      loading="lazy"
+      referrerPolicy="strict-origin-when-cross-origin"
+      className="w-full h-full"
+      title="Seven Star Security Service Location"
+    ></iframe>
+  </div>
+
 
             {/* ISO Certificates — commented out
             <div className="space-y-5 pt-3">

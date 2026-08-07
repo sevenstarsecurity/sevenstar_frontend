@@ -44,7 +44,7 @@ export const ContactHeroBanner: React.FC = () => {
               <p className="text-xs text-gray-500 mb-4">London Gateway, United Kingdom</p>
             </div>
             <p className="text-xs md:text-sm font-extrabold text-[#004E24] tracking-wider">
-              +977 98456XXXXX
+              01-4542880
             </p>
           </div>
 

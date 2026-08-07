@@ -30,28 +30,28 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs">
-      <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12 h-20 flex items-center justify-between">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 lg:px-8 xl:px-12 h-16 sm:h-20 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center group">
-          <div className="relative h-14 w-auto flex items-center justify-start">
+        <Link href="/" className="flex items-center group flex-shrink-0">
+          <div className="relative h-11 sm:h-14 w-auto flex items-center justify-start">
             <ImageFallback
               src="/images/sevenstarlogo.webp"
               alt="Seven Star Security Logo"
-              className="h-12 md:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-10 sm:h-12 md:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               fallbackText="sevenstarlogo.webp"
             />
           </div>
         </Link>
 
-        {/* Desktop Navigation Menu */}
-        <nav className="hidden lg:flex items-center space-x-7">
+        {/* Desktop Navigation Menu - full nav only from xl up, where 8 items + CTA comfortably fit */}
+        <nav className="hidden xl:flex items-center space-x-6 2xl:space-x-7">
           {navItems.map((item) => {
             const isActive = isItemActive(item.href);
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`transition-colors relative py-1 inline-flex items-center nav-heartbeat-item ${isActive
+                className={`transition-colors relative py-1 inline-flex items-center whitespace-nowrap nav-heartbeat-item ${isActive
                   ? "text-[#004E24] active-nav font-bold"
                   : "text-[#3F4940] hover:text-[#004E24] font-medium"
                   }`}
@@ -59,7 +59,7 @@ export const Navbar: React.FC = () => {
                   fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
                   fontWeight: isActive ? 700 : 500,
                   fontStyle: "normal",
-                  fontSize: "14px",
+                  fontSize: "13px",
                   lineHeight: "19.6px",
                   letterSpacing: "0.7px",
                   verticalAlign: "middle",
@@ -71,20 +71,48 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Right CTA Button */}
-        <div className="hidden lg:flex items-center">
+        {/* Compact nav for tablet / iPad Pro landscape range (lg to xl): tighter spacing, smaller type */}
+        <nav className="hidden lg:flex xl:hidden items-center space-x-4">
+          {navItems.map((item) => {
+            const isActive = isItemActive(item.href);
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`transition-colors relative py-1 inline-flex items-center whitespace-nowrap nav-heartbeat-item ${isActive
+                  ? "text-[#004E24] active-nav font-bold"
+                  : "text-[#3F4940] hover:text-[#004E24] font-medium"
+                  }`}
+                style={{
+                  fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
+                  fontWeight: isActive ? 700 : 500,
+                  fontStyle: "normal",
+                  fontSize: "11px",
+                  lineHeight: "16px",
+                  letterSpacing: "0.4px",
+                  verticalAlign: "middle",
+                }}
+              >
+                {item.name}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Right CTA Button - shown from lg up, sized down for the tablet range */}
+        <div className="hidden lg:flex items-center flex-shrink-0">
           <Link
             href="/pdf/sevenstar%20.pdf"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setMobileMenuOpen(false)}
-            className="bg-[#c8102e] hover:bg-[#a60d25] text-white font-bold text-xs uppercase px-6 py-3 rounded-xs shadow-sm hover:shadow-md transition-all duration-200 tracking-wider"
+            className="bg-[#c8102e] hover:bg-[#a60d25] text-white font-bold uppercase rounded-xs shadow-sm hover:shadow-md transition-all duration-200 tracking-wider whitespace-nowrap text-[10px] px-4 py-2.5 xl:text-xs xl:px-6 xl:py-3"
           >
             Portfolio Download
           </Link>
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile / Tablet Menu Button - visible below lg (covers phones and iPad Pro portrait @ 1024px) */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="lg:hidden text-[#3F4940] hover:text-[#004E24] p-2 focus:outline-none"
@@ -100,7 +128,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-gray-200 px-6 py-4 space-y-3 shadow-lg">
+        <div className="lg:hidden bg-white border-b border-gray-200 px-6 py-4 space-y-3 shadow-lg max-h-[calc(100vh-4rem)] overflow-y-auto">
           {navItems.map((item) => {
             const isActive = isItemActive(item.href);
             return (
@@ -125,11 +153,11 @@ export const Navbar: React.FC = () => {
           })}
           <div className="pt-2">
             <Link
-              href="/contact"
+              href="/pdf/sevenstar%20.pdf"
               onClick={() => setMobileMenuOpen(false)}
               className="block text-center bg-[#c8102e] text-white font-bold text-xs uppercase py-3 rounded-xs tracking-wider"
             >
-              GET A QUOTE
+               Portfolio Download
             </Link>
           </div>
         </div>

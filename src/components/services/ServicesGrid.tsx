@@ -237,12 +237,12 @@ export const ServicesGrid: React.FC = () => {
     <section className="py-16 md:py-24 bg-[#f7faf3]">
       <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Filter Category Pills Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 md:gap-3 mb-14">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 md:gap-3 mb-8 sm:mb-14">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 rounded-full text- font-bold tracking-wider transition-all duration-200 ${activeCategory === cat
+              className={`px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-sm font-bold tracking-wider transition-all duration-200 ${activeCategory === cat
                 ? "bg-[#0b4226] text-white shadow-md"
                 : "bg-white text-gray-700 border border-gray-200 hover:border-emerald-600 hover:text-[#0b4226]"
                 }`}
@@ -252,14 +252,14 @@ export const ServicesGrid: React.FC = () => {
           ))}
         </div>
 
-        {/* 26 Services Cards Grid (3 Columns) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {/* Services Cards Grid - 2 columns on mobile, 3 on desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
           {filteredServices.map((service) => {
             const Icon = service.icon;
             return (
               <div
                 key={service.id}
-                className="bg-white rounded-xl p-7 border border-gray-100 
+                className="bg-white rounded-xl p-4 sm:p-7 border border-gray-100 
 shadow-xs 
 hover:shadow-xl 
 hover:border-emerald-800 
@@ -270,8 +270,8 @@ group cursor-pointer"
               >
                 <div>
                   {/* Icon Circle */}
-                  <div className="w-10 h-10 rounded-full bg-[#0b4226] text-white flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-xs">
-                    <Icon className="w-5 h-5 text-white" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0b4226] text-white flex items-center justify-center mb-3 sm:mb-5 group-hover:scale-110 transition-transform duration-300 shadow-xs">
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
 
                   {/* Title */}
@@ -279,11 +279,14 @@ group cursor-pointer"
                     className="
     font-['Public_Sans']
     font-medium
-    text-[24px]
-    leading-[31.2px]
+    text-sm
+    sm:text-[24px]
+    leading-snug
+    sm:leading-[31.2px]
     tracking-[0px]
     text-[#181D18]
-    mb-2.5
+    mb-1.5
+    sm:mb-2.5
     group-hover:text-[#0b4226]
     transition-colors
   "
@@ -292,7 +295,7 @@ group cursor-pointer"
                   </h3>
 
                   {/* Description */}
-                  <p className="text-gray-600 text-xs leading-relaxed mb-6">
+                  <p className="text-gray-600 text-[10px] sm:text-xs leading-snug sm:leading-relaxed mb-3 sm:mb-6">
                     {service.description}
                   </p>
                 </div>
@@ -300,18 +303,18 @@ group cursor-pointer"
                 {/* Learn More Link */}
                 <a
                   href="/contact"
-                  className="inline-flex items-center gap-1.5 text-[#c8102e] hover:text-[#a60d25] uppecase transition-colors group/link pt-2"
+                  className="inline-flex items-center gap-1 sm:gap-1.5 text-[#c8102e] hover:text-[#a60d25] uppercase transition-colors group/link pt-1 sm:pt-2"
                   style={{
                     fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
                     fontStyle: "normal",
-                    fontSize: "16px",
-                    lineHeight: "24px",
+                    fontSize: "12px",
+                    lineHeight: "18px",
                     letterSpacing: "0px",
                     verticalAlign: "middle",
                   }}
                 >
                   <span>Learn More</span>
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1" />
+                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 transition-transform group-hover/link:translate-x-1" />
                 </a>
               </div>
             );

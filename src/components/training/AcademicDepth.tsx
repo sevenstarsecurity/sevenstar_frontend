@@ -45,12 +45,12 @@ export const AcademicDepth: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-20 md:py-24 bg-white border-t border-gray-100" ref={ref}>
+    <section className="py-14 sm:py-20 md:py-24 bg-white border-t border-gray-100" ref={ref}>
       <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
         {/* Header Row */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 mb-8 sm:mb-16">
           <div className="max-w-2xl">
-            <h2 className="text-[40px] md:text-3xl font-semibold tracking-wider text-[#0b4226] uppercase mb-2">
+            <h2 className="text-2xl sm:text-[40px] md:text-3xl font-semibold tracking-wider text-[#0b4226] uppercase mb-2">
               ACADEMIC DEPTH
             </h2>
             <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
@@ -66,29 +66,35 @@ export const AcademicDepth: React.FC = () => {
           </div>
         </div>
 
-        {/* 2x2 Modules Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+        {/* Modules Grid - 2 columns on mobile, 2 on desktop too (kept as-is at md+) */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-8 lg:gap-12">
           {modules.map((mod, i) => (
             <div
               key={mod.num}
-              className={`flex items-start gap-5 p-6 rounded-xl bg-gray-50/70 border border-gray-100 hover:border-emerald-200 shadow-2xs hover:shadow-md transition-all duration-500 group ${
+              className={`flex flex-col sm:flex-row items-start gap-2.5 sm:gap-5 p-3 sm:p-6 rounded-xl bg-gray-50/70 border border-gray-100 hover:border-emerald-200 shadow-2xs hover:shadow-md transition-all duration-500 group ${
                 visible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-8"
               }`}
-              style={{ transitionDelay: `${i * 120}ms` }}
+              style={{
+                // Only stagger the entrance animation. Once visible, drop
+                // the delay to 0 so every card's hover transition responds
+                // at the same, equal speed instead of inheriting the
+                // entrance stagger (which rides on the same transition-all).
+                transitionDelay: visible ? "0ms" : `${i * 120}ms`,
+              }}
             >
               {/* Dark Green Square Number Badge */}
-              <div className="w-14 h-14 bg-[#0b4226] text-white font-black text-lg flex items-center justify-center rounded-xs flex-shrink-0 shadow-sm group-hover:bg-[#c8102e] transition-colors duration-300">
+              <div className="w-9 h-9 sm:w-14 sm:h-14 bg-[#0b4226] text-white font-black text-xs sm:text-lg flex items-center justify-center rounded-xs flex-shrink-0 shadow-sm group-hover:bg-[#c8102e] transition-colors duration-300">
                 {mod.num}
               </div>
 
               {/* Text */}
               <div>
-                <h3 className="text-base font-extrabold text-[#0b4226] mb-2 tracking-wide uppercase">
+                <h3 className="text-[11px] sm:text-base font-extrabold text-[#0b4226] mb-1 sm:mb-2 tracking-wide uppercase leading-snug">
                   {mod.title}
                 </h3>
-                <p className="text-gray-600 text-xs leading-relaxed font-normal">
+                <p className="text-gray-600 text-[10px] sm:text-xs leading-snug sm:leading-relaxed font-normal">
                   {mod.description}
                 </p>
               </div>

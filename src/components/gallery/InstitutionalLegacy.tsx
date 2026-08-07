@@ -49,7 +49,7 @@ export const InstitutionalLegacy: React.FC = () => {
                   className="mt-2 text-[10px] font-bold tracking-widest text-[#B89C53] uppercase"
                   style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
                 >
-                  EST. 2012
+                  EST. 2072
                 </span>
               </div>
             </div>

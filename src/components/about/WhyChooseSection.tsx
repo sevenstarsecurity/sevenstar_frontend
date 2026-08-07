@@ -85,30 +85,37 @@ export const WhyChooseSection: React.FC = () => {
         </div>
 
         {/* 4 x 2 Feature Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {features.map((feat, i) => {
             const Icon = feat.icon;
             return (
               <div
                 key={feat.title}
-                className={`bg-[#171c18] border border-white/10 p-7 hover:border-[#40c075]/60 hover:bg-[#1b221d] hover:-translate-y-1.5 shadow-md hover:shadow-2xl hover:shadow-[#40c075]/10 transition-all duration-300 ease-out group cursor-default ${visible
+                className={`bg-[#171c18] border border-white/10 p-4 sm:p-7 hover:border-[#40c075]/60 hover:bg-[#1b221d] hover:-translate-y-1.5 shadow-md hover:shadow-2xl hover:shadow-[#40c075]/10 transition-all duration-300 ease-out group cursor-default ${visible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-8"
                   }`}
-                style={{ transitionDelay: `${i * 65}ms` }}
+                style={{
+                  // Only stagger the entrance animation. Once the card has
+                  // become visible, drop the delay to 0 so every card's
+                  // hover transition (which also rides on `transition-all`)
+                  // responds at the same, equal speed instead of inheriting
+                  // the entrance stagger.
+                  transitionDelay: visible ? "0ms" : `${i * 65}ms`,
+                }}
               >
                 {/* Green Icon */}
-                <div className="mb-5 text-[#40c075] transform group-hover:scale-110 transition-transform duration-300">
-                  <Icon className="w-7 h-7 text-[#40c075]" />
+                <div className="mb-3 sm:mb-5 text-[#40c075] transform group-hover:scale-110 transition-transform duration-300">
+                  <Icon className="w-5 h-5 sm:w-7 sm:h-7 text-[#40c075]" />
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[18px] font-normal text-white mb-2.5 tracking-[0px] group-hover:text-[#40c075] transition-colors duration-200">
+                <h3 className="text-sm sm:text-[18px] font-normal text-white mb-1.5 sm:mb-2.5 tracking-[0px] group-hover:text-[#40c075] transition-colors duration-200">
                   {feat.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-gray-400 text-xs sm:text-sm leading-relaxed tracking-[0px]">
+                <p className="text-gray-400 text-[11px] sm:text-sm leading-snug sm:leading-relaxed tracking-[0px]">
                   {feat.description}
                 </p>
               </div>
