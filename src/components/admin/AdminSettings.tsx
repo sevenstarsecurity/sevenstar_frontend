@@ -398,8 +398,8 @@ export const AdminSettings: React.FC = () => {
   const validatePasswordForm = (): string | null => {
     if (!passwordForm.currentPassword) return "Please enter your current password.";
     if (!passwordForm.newPassword) return "Please enter a new password.";
-    if (passwordForm.newPassword.length < 8)
-      return "New password must be at least 8 characters long.";
+    if (passwordForm.newPassword.length < 12)
+      return "New password must be at least 12 characters long.";
     if (passwordForm.newPassword === passwordForm.currentPassword)
       return "New password must be different from current password.";
     if (passwordForm.newPassword !== passwordForm.confirmPassword)
@@ -846,8 +846,8 @@ export const AdminSettings: React.FC = () => {
                           onClick={() => handleToggleLinkStatus(link)}
                           disabled={savingLinkId === link.id}
                           className={`flex-shrink-0 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1.5 rounded-xs transition-colors disabled:opacity-60 ${link.isActive
-                              ? "bg-[#22c55e]/10 text-[#16803c] hover:bg-[#22c55e]/20"
-                              : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                            ? "bg-[#22c55e]/10 text-[#16803c] hover:bg-[#22c55e]/20"
+                            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                             }`}
                           title={link.isActive ? "Active — click to disable" : "Inactive — click to enable"}
                         >
@@ -1014,8 +1014,8 @@ export const AdminSettings: React.FC = () => {
                                 <td className="py-3 pr-4">
                                   <span
                                     className={`text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xs ${sub.isSubscribed
-                                        ? "bg-[#22c55e]/10 text-[#16803c]"
-                                        : "bg-gray-100 text-gray-500"
+                                      ? "bg-[#22c55e]/10 text-[#16803c]"
+                                      : "bg-gray-100 text-gray-500"
                                       }`}
                                   >
                                     {sub.isSubscribed ? "Subscribed" : "Unsubscribed"}
@@ -1137,7 +1137,7 @@ export const AdminSettings: React.FC = () => {
                         disabled={pwSubmitting}
                         autoComplete="new-password"
                         className="w-full pl-10 pr-10 py-2.5 border border-gray-400 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226] disabled:bg-gray-50"
-                        placeholder="At least 8 characters"
+                        placeholder="At least 12 characters"
                       />
                       <button
                         type="button"
