@@ -527,8 +527,8 @@ export const AdminSettings: React.FC = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 -mb-px cursor-pointer ${isActive
-                      ? "border-[#0b4226] text-[#0b4226]"
-                      : "border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300"
+                    ? "border-[#0b4226] text-[#0b4226]"
+                    : "border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300"
                     }`}
                 >
                   {tab.icon}
@@ -569,7 +569,7 @@ export const AdminSettings: React.FC = () => {
                       <div className="border-2 border-dashed border-gray-300 rounded-md p-8 bg-[#f8fafc] flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-100/60 transition-colors min-h-[160px]">
                         <div className="w-32 h-10 mb-3 flex items-center justify-center">
                           <ImageFallback
-                            src="/images/sevenstarlogo.png"
+                            src="/images/sevenstarlogo.webp"
                             alt="Seven Star Security Logo"
                             className="max-h-full w-auto object-contain"
                             fallbackText="Seven Star Security"
@@ -845,11 +845,10 @@ export const AdminSettings: React.FC = () => {
                         <button
                           onClick={() => handleToggleLinkStatus(link)}
                           disabled={savingLinkId === link.id}
-                          className={`flex-shrink-0 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1.5 rounded-xs transition-colors disabled:opacity-60 ${
-                            link.isActive
+                          className={`flex-shrink-0 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1.5 rounded-xs transition-colors disabled:opacity-60 ${link.isActive
                               ? "bg-[#22c55e]/10 text-[#16803c] hover:bg-[#22c55e]/20"
                               : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                          }`}
+                            }`}
                           title={link.isActive ? "Active — click to disable" : "Inactive — click to enable"}
                         >
                           {link.isActive ? "ACTIVE" : "INACTIVE"}
@@ -1014,11 +1013,10 @@ export const AdminSettings: React.FC = () => {
                                 </td>
                                 <td className="py-3 pr-4">
                                   <span
-                                    className={`text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xs ${
-                                      sub.isSubscribed
+                                    className={`text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xs ${sub.isSubscribed
                                         ? "bg-[#22c55e]/10 text-[#16803c]"
                                         : "bg-gray-100 text-gray-500"
-                                    }`}
+                                      }`}
                                   >
                                     {sub.isSubscribed ? "Subscribed" : "Unsubscribed"}
                                   </span>
@@ -1026,7 +1024,7 @@ export const AdminSettings: React.FC = () => {
                                 <td className="py-3 pr-4 text-xs text-gray-600">
                                   {formatDate(sub.subscribedAt)}
                                 </td>
-                                
+
                                 <td className="py-3 text-right">
                                   <button
                                     onClick={() => handleDeleteSubscriber(sub)}
