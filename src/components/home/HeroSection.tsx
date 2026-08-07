@@ -6,43 +6,44 @@ import { ImageFallback } from "../ui/ImageFallback";
 
 export const HeroSection: React.FC = () => {
   return (
-    <section className="relative bg-[#f7faf6] min-h-[300px] xs:min-h-[360px] sm:min-h-[460px] lg:min-h-[580px] overflow-hidden flex items-center border-b border-gray-100">
-      {/* Green Diagonal Background */}
+    <section className="relative bg-[#f7faf6] min-h-[300px] sm:min-h-[460px] lg:min-h-[580px] overflow-hidden flex items-center border-b border-gray-100">
+      {/* Green Diagonal Background - same clip-path/position ratio at every size */}
       <div className="absolute right-0 top-0 bottom-0 w-[52%] lg:w-[48%] bg-[#0F6835] z-0 [clip-path:polygon(16%_0,100%_0,100%_100%,0_100%)]" />
 
-      {/* Guard Image */}
-      <div
-        className="absolute bottom-0 z-[1] right-[2%] w-[52%] top-[70px] xs:top-[80px] xs:right-[3%] xs:w-[54%] sm:right-[10%] sm:w-[60%] sm:top-[105px]"
-      >
+      {/* Guard Image - same right/width ratio as desktop at every breakpoint, top scales with viewport */}
+      <div className="absolute bottom-0 z-[1] right-[10%] w-[60%]" style={{ top: "clamp(45px, 18vw, 105px)" }}>
         <ImageFallback
           src="/images/nobgguard.webp"
           alt="Seven Star Security Guard Lineup"
-          className="w-full h-full object-contain object-bottom sm:object-center"
+          className="w-full h-full object-contain object-center"
           style={{
-            transform: "scale(1.1)",
-            transformOrigin: "bottom center",
+            transform: "scale(1.3)",
+            transformOrigin: "center center",
           }}
           fallbackText="nobgguard.webp"
         />
       </div>
 
       {/* Main Content */}
-      <div className="max-w-[1600px] mx-auto px-3 xs:px-4 md:px-10 lg:px-12 w-full py-6 xs:py-8 sm:py-12 lg:py-20 relative z-10">
-        <div className="w-[44%] xs:w-[45%] sm:w-1/2 lg:max-w-2xl lg:w-auto space-y-2 xs:space-y-2.5 sm:space-y-4 lg:space-y-6">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-4 md:px-10 lg:px-12 w-full py-6 sm:py-12 lg:py-20 relative z-10">
+        <div className="w-1/2 lg:max-w-2xl lg:w-auto space-y-1.5 sm:space-y-4 lg:space-y-6">
           {/* Subtitle */}
           <div>
-            <span className="text-[8px] xs:text-[9px] sm:text-xs md:text-sm font-extrabold uppercase tracking-widest text-[#0F6835]">
+            <span
+              className="font-extrabold uppercase tracking-widest text-[#0F6835]"
+              style={{ fontSize: "clamp(7px, 2.1vw, 14px)" }}
+            >
               WELCOME TO SEVEN STAR SECURITY
             </span>
           </div>
 
           {/* Title */}
           <motion.h1
-            className="font-black text-[#0F6835] tracking-normal leading-[1.05] lg:leading-none"
+            className="font-black text-[#0F6835] tracking-normal leading-[1.02] lg:leading-none"
             style={{
               fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
               fontWeight: 800,
-              fontSize: "clamp(1.35rem, 6vw, 4.5rem)",
+              fontSize: "clamp(1.15rem, 5.5vw, 4.5rem)",
               letterSpacing: "0px",
             }}
           >
@@ -75,7 +76,10 @@ export const HeroSection: React.FC = () => {
           </motion.h1>
 
           {/* Description */}
-          <p className="text-gray-600 text-[7px] xs:text-[9px] sm:text-sm md:text-base leading-snug xs:leading-relaxed max-w-md">
+          <p
+            className="text-gray-600 leading-relaxed max-w-md"
+            style={{ fontSize: "clamp(7px, 1.9vw, 16px)" }}
+          >
             Uncompromising security solutions for corporations,
             <br className="hidden lg:block" />
             events, and critical infrastructure in Nepal. Your safety, our
@@ -84,15 +88,22 @@ export const HeroSection: React.FC = () => {
           </p>
 
           {/* CTA */}
-          <div className="pt-1 sm:pt-2 flex items-center gap-1.5 xs:gap-2 sm:gap-4">
+          <div className="pt-1 sm:pt-2 flex items-center gap-1.5 sm:gap-4">
             <a
               href="/about"
-              className="bg-[#0b4226] hover:bg-[#072c19] text-white font-extrabold text-[6.5px] xs:text-[8px] sm:text-xs uppercase px-2 xs:px-3 sm:px-7 py-1.5 xs:py-2 sm:py-4 rounded-xs shadow-md transition-all tracking-wider inline-block whitespace-nowrap"
+              className="bg-[#0b4226] hover:bg-[#072c19] text-white font-extrabold uppercase rounded-xs shadow-md transition-all tracking-wider inline-block whitespace-nowrap"
+              style={{
+                fontSize: "clamp(6.5px, 1.7vw, 12px)",
+                padding: "clamp(6px, 1.6vw, 16px) clamp(10px, 3vw, 28px)",
+              }}
             >
               DISCOVER MORE
             </a>
 
-            <div className="w-5 h-5 xs:w-7 xs:h-7 sm:w-16 sm:h-16 flex items-center justify-center flex-shrink-0 ml-2 mt-3 translate-x-1 -translate-y-5">
+            <div
+              className="flex items-center justify-center flex-shrink-0 ml-2 translate-x-1 -translate-y-5"
+              style={{ width: "clamp(32px, 8vw, 64px)", height: "clamp(32px, 8vw, 64px)" }}
+            >
               <ImageFallback
                 src="/images/arrow.webp"
                 alt="Green Arrow Vector"
@@ -104,9 +115,12 @@ export const HeroSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Badges */}
-      <div className="absolute bottom-2 xs:bottom-4 sm:bottom-10 lg:bottom-14 left-[52%] lg:left-[48%] z-20 flex items-center gap-1 xs:gap-1.5 sm:gap-2">
-        <div className="h-5 xs:h-8 sm:h-16 md:h-24 flex items-center drop-shadow-2xl flex-shrink-0">
+      {/* Badges - same left/bottom ratio as desktop at every breakpoint */}
+      <div className="absolute bottom-2 sm:bottom-10 lg:bottom-14 left-[52%] lg:left-[48%] z-20 flex items-center gap-1 sm:gap-2">
+        <div
+          className="flex items-center drop-shadow-2xl flex-shrink-0"
+          style={{ height: "clamp(24px, 7vw, 96px)" }}
+        >
           <ImageFallback
             src="/images/Trusted By Badge.webp"
             alt="Trusted By 435+ Clients Badge"
@@ -115,7 +129,10 @@ export const HeroSection: React.FC = () => {
           />
         </div>
 
-        <div className="w-7 h-7 xs:w-10 xs:h-10 sm:w-20 sm:h-20 md:w-28 md:h-28 flex items-center justify-center flex-shrink-0 drop-shadow-2xl">
+        <div
+          className="flex items-center justify-center flex-shrink-0 drop-shadow-2xl"
+          style={{ width: "clamp(32px, 8vw, 112px)", height: "clamp(32px, 8vw, 112px)" }}
+        >
           <ImageFallback
             src="/images/ISO Seal Badge.webp"
             alt="ISO Seal Badge"
