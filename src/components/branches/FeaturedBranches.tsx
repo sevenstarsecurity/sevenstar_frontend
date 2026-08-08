@@ -131,7 +131,7 @@ export const FeaturedBranches: React.FC = () => {
               src="/images/traning.webp"
               alt="S3 Training Academy"
               className="w-full h-full object-cover "
-              fallbackText="mic123.png"
+              fallbackText="mic123.webp"
             />
           </div>
         </div>

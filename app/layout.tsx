@@ -1,8 +1,15 @@
+import dynamic from "next/dynamic";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Public_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import { FloatingWhatsAppWrapper } from "@/src/components/ui/FloatingWhatsAppWrapper";
+
+const FloatingWhatsAppWrapper = dynamic(
+  () =>
+    import("@/src/components/ui/FloatingWhatsAppWrapper").then(
+      (m) => m.FloatingWhatsAppWrapper
+    )
+);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -65,7 +72,7 @@ export const metadata: Metadata = {
     siteName: "Seven Star Security Services",
     images: [
       {
-        url: "/images/sevenstarlogo.png",
+        url: "/images/sevenstarlogo.webp",
         width: 1200,
         height: 630,
         alt: "Seven Star Security Services",
@@ -81,12 +88,12 @@ export const metadata: Metadata = {
       "Professional security and protection services for institutions, events, and enterprises in Nepal.",
     creator: "@SevenStarSecurity",
     site: "@SevenStarSecurity",
-    images: ["/images/sevenstarlogo.png"],
+    images: ["/images/sevenstarlogo.webp"],
   },
   icons: {
-    icon: "/images/sevenstarlogo.png",
-    shortcut: "/images/sevenstarlogo.png",
-    apple: "/images/sevenstarlogo.png",
+    icon: "/images/sevenstarlogo.webp",
+    shortcut: "/images/sevenstarlogo.webp",
+    apple: "/images/sevenstarlogo.webp",
   },
 };
 
@@ -134,7 +141,7 @@ export default function RootLayout({
               url: "https://sevenstarsecurity.com.np",
               logo: {
                 "@type": "ImageObject",
-                url: "https://sevenstarsecurity.com.np/images/sevenstarlogo.png",
+                url: "https://sevenstarsecurity.com.np/images/sevenstarlogo.webp",
               },
             },
           })}

@@ -7,6 +7,9 @@ interface ImageFallbackProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   alt: string;
   fallbackText?: string;
   containerClassName?: string;
+  priority?: boolean;
+  fetchPriority?: "high" | "low" | "auto";
+  fetchpriority?: "high" | "low" | "auto";
 }
 
 export const ImageFallback: React.FC<ImageFallbackProps> = ({
@@ -15,6 +18,11 @@ export const ImageFallback: React.FC<ImageFallbackProps> = ({
   fallbackText,
   className = "",
   containerClassName = "",
+  priority = false,
+  loading,
+  decoding = "async",
+  fetchPriority,
+  fetchpriority,
   ...props
 }) => {
   const [error, setError] = useState(false);
@@ -40,13 +48,20 @@ export const ImageFallback: React.FC<ImageFallbackProps> = ({
     );
   }
 
+  const computedLoading = loading || (priority ? "eager" : "lazy");
+  const computedFetchPriority = fetchPriority || fetchpriority || (priority ? "high" : "low");
+
   return (
     <img
       src={src}
       alt={alt}
       className={className}
+      loading={computedLoading}
+      decoding={decoding}
+      fetchPriority={computedFetchPriority}
       onError={() => setError(true)}
       {...props}
     />
   );
 };
+

@@ -16,6 +16,7 @@ export const HeroSection: React.FC = () => {
           src="/images/nobgguard.webp"
           alt="Seven Star Security Guard Lineup"
           className="w-full h-full object-contain object-center"
+          priority={true}
           style={{
             transform: "scale(1.3)",
             transformOrigin: "center center",

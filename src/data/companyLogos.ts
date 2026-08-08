@@ -9,19 +9,19 @@ export const companyLogos: CompanyLogo[] = [
   // {
   //   id: "grande-tower",
   //   name: "GRANDE TOWER",
-  //   src: "/images/grande-tower.png",
+  //   src: "/images/grande-tower.webp",
   //   alt: "Grande Tower Logo",
   // },
   // {
   //   id: "himalayan-bank",
   //   name: "HIMALAYAN BANK LTD",
-  //   src: "/images/himalayan-bank.png",
+  //   src: "/images/himalayan-bank.webp",
   //   alt: "Himalayan Bank Ltd Logo",
   // },
   {
     id: "ncell",
     name: "Ncell",
-    src: "/images/Ncell-Logo.wine.png",
+    src: "/images/Ncell-Logo.wine.webp",
     alt: "Ncell Logo",
   },
   {
@@ -34,7 +34,7 @@ export const companyLogos: CompanyLogo[] = [
   // {
   //   id: "nepal-oil",
   //   name: "NEPAL OIL CORPORATION",
-  //   src: "/images/nepal-oil.png",
+  //   src: "/images/nepal-oil.webp",
   //   alt: "Nepal Oil Corporation Logo",
   // },
 ];

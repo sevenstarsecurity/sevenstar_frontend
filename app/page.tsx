@@ -1,14 +1,29 @@
+import dynamic from "next/dynamic";
 import { TopBar } from "@/src/components/layout/TopBar";
 import { Navbar } from "@/src/components/layout/Navbar";
 import { HeroSection } from "@/src/components/home/HeroSection";
 import { LogoCarousel } from "@/src/components/home/LogoCarousel";
 import { IndustriesSection } from "@/src/components/home/IndustriesSection";
-import { PresenceSection } from "@/src/components/home/PresenceSection";
-import { StatsSection } from "@/src/components/home/StatsSection";
-import { VigilanceSection } from "@/src/components/home/VigilanceSection";
-import { CtaSection } from "@/src/components/home/CtaSection";
-import { Newsletter } from "@/src/components/layout/Newsletter";
-import { Footer } from "@/src/components/layout/Footer";
+
+// Below-the-fold components loaded dynamically for reduced initial JS payload
+const PresenceSection = dynamic(
+  () => import("@/src/components/home/PresenceSection").then((m) => m.PresenceSection)
+);
+const StatsSection = dynamic(
+  () => import("@/src/components/home/StatsSection").then((m) => m.StatsSection)
+);
+const VigilanceSection = dynamic(
+  () => import("@/src/components/home/VigilanceSection").then((m) => m.VigilanceSection)
+);
+const CtaSection = dynamic(
+  () => import("@/src/components/home/CtaSection").then((m) => m.CtaSection)
+);
+const Newsletter = dynamic(
+  () => import("@/src/components/layout/Newsletter").then((m) => m.Newsletter)
+);
+const Footer = dynamic(
+  () => import("@/src/components/layout/Footer").then((m) => m.Footer)
+);
 
 export default function Home() {
   return (
