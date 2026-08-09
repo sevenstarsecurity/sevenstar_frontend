@@ -1,14 +1,5 @@
-"use client";
-
 import { ArrowRight, MapPin, Radio, Shield, ShieldCheck } from "lucide-react";
-import React, { useState } from "react";
-
-const tabs = [
-  "FIELD OPERATIONS",
-  "ADMINISTRATION",
-  "SURVEILLANCE UNIT",
-  "TRAINING WING",
-];
+import React from "react";
 
 const divisions = [
   {
@@ -42,27 +33,9 @@ const divisions = [
 ];
 
 export const OperationsDivisions: React.FC = () => {
-  const [activeTab, setActiveTab] = useState(0);
-
   return (
     <section className="py-20 md:py-24 bg-[#f4f7f5]">
       <div className="max-w-[1600px] mx-auto px-4 md:px-10 lg:px-12">
-        {/* Navigation Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 border-b border-gray-200 pb-4 mb-14">
-          {tabs.map((tab, idx) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(idx)}
-              className={`text-xs md:text-sm font-extrabold tracking-wider transition-all relative py-2 ${
-                activeTab === idx
-                  ? "text-[#0b4226] after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#0b4226]"
-                  : "text-gray-400 hover:text-gray-700"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
 
         {/* 4 Card Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

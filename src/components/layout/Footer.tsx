@@ -83,7 +83,13 @@ export const Footer: React.FC = () => {
               />
             </Link>
 
-            <div className="text-[#9ca396] text-xs md:text-sm leading-relaxed max-w-xs space-y-1">
+            {/* Mobile view: full width paragraph */}
+            <p className="text-[#9ca396] text-xs leading-relaxed w-full sm:hidden">
+              Elite Protection Services. Safeguarding assets, ensuring operational continuity, and providing peace of mind across Nepal since 2012.
+            </p>
+
+            {/* Desktop/Web view: exact original layout */}
+            <div className="hidden sm:block text-[#9ca396] text-xs md:text-sm leading-relaxed max-w-xs space-y-1">
               <p>Elite Protection Services.</p>
               <p>Safeguarding assets, ensuring</p>
               <p>operational continuity, and providing</p>
@@ -126,7 +132,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Column 2: QUICK LINKS */}
-          <div className="space-y-4 lg:pt-[68px] flex flex-col items-center sm:items-start text-center sm:text-left">
+          <div className="space-y-4 lg:pt-[68px] flex flex-col items-start text-left">
             <div className="flex items-center gap-2 mb-5">
               <span className="w-[3px] h-4 bg-[#c8102e] inline-block flex-shrink-0" />
               <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
@@ -134,21 +140,21 @@ export const Footer: React.FC = () => {
               </h4>
             </div>
 
-            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-center sm:items-start">
+            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-start">
               {[
                 { name: "Home", href: "/" },
                 { name: "About Us", href: "/about" },
                 { name: "Our Team", href: "/team" },
-                { name: "Services", href: "#services" },
-                { name: "Careers", href: "#career" },
-                { name: "Contact Us", href: "#contact" },
+                { name: "Services", href: "/services" },
+                { name: "Branches", href: "/branches" },
+                { name: "Contact Us", href: "/contact" },
               ].map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
                     className="hover:text-white transition-colors flex items-center gap-1.5 group"
                   >
-                    <ChevronRight className="w-3.5 h-3.5 text-[#9ca396] group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-3.5 h-3.5 text-[#9ca396] group-hover:text-white group-hover:translate-x-0.5 transition-all shrink-0" />
                     <span>{link.name}</span>
                   </Link>
                 </li>
@@ -157,7 +163,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Column 3: OUR SERVICES */}
-          <div className="space-y-4 lg:pt-[68px] flex flex-col items-center sm:items-start text-center sm:text-left">
+          <div className="space-y-4 lg:pt-[68px] flex flex-col items-start text-left">
             <div className="flex items-center gap-2 mb-5">
               <span className="w-[3px] h-4 bg-[#c8102e] inline-block flex-shrink-0" />
               <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
@@ -165,7 +171,7 @@ export const Footer: React.FC = () => {
               </h4>
             </div>
 
-            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-center sm:items-start">
+            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-start">
               <li>
                 <Link href="/services" className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer">
                   <Shield className="w-4 h-4 text-[#008e43] flex-shrink-0" />
@@ -200,7 +206,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Column 4: CONTACT INFO */}
-          <div className="space-y-4 lg:pt-[68px] flex flex-col items-center sm:items-start text-center sm:text-left">
+          <div className="space-y-4 lg:pt-[68px] flex flex-col items-start text-left">
             <div className="flex items-center gap-2 mb-5">
               <span className="w-[3px] h-4 bg-[#c8102e] inline-block flex-shrink-0" />
               <h4 className="text-sm font-semibold text-white uppercase tracking-wider">
@@ -208,7 +214,7 @@ export const Footer: React.FC = () => {
               </h4>
             </div>
 
-            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-center sm:items-start">
+            <ul className="space-y-3 text-xs md:text-sm text-[#9ca396] flex flex-col items-start">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#008e43] flex-shrink-0 mt-0.5" />
                 <span>
@@ -250,3 +256,5 @@ export const Footer: React.FC = () => {
     </footer>
   );
 };
+
+

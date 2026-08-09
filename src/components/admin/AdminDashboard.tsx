@@ -156,16 +156,7 @@ export const AdminDashboard: React.FC = () => {
 
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
         {/* TOP HEADER BAR */}
-        <header className="bg-[#0b4226] text-white px-8 py-3.5 flex items-center justify-between shadow-md sticky top-0 z-20">
-          <div className="relative max-w-md w-full">
-            <Search className="w-4 h-4 text-emerald-300/70 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search terminal..."
-              className="w-full bg-[#06331b] border border-emerald-700/50 rounded-md pl-10 pr-4 py-1.5 text-xs text-white placeholder:text-emerald-200/50 focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-all"
-            />
-          </div>
-
+        <header className="bg-[#0b4226] text-white px-8 py-3.5 flex items-center justify-end shadow-md sticky top-0 z-20">
           <div className="flex items-center gap-4">
             <button
               onClick={() => loadDashboard(true)}
