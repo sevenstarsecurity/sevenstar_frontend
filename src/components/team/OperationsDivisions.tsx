@@ -71,7 +71,7 @@ export const OperationsDivisions: React.FC = () => {
 
                 {/* View Division Link → /team */}
                 <Link
-                  href="/team"
+                  href="/branches"
                   className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#0b4226] uppercase tracking-wider hover:text-[#c8102e] transition-colors group/link pt-2"
                 >
                   <span>View Division</span>
