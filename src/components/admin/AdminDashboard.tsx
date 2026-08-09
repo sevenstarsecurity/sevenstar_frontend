@@ -747,7 +747,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* ADMINISTRATIVE COMMAND CENTER */}
+              {/* ADMINISTRATIVE COMMAND CENTER
               <div className="space-y-3 pt-2">
                 <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
                   ADMINISTRATIVE COMMAND CENTER
@@ -782,7 +782,7 @@ export const AdminDashboard: React.FC = () => {
                     <span>RE-SYNC DASHBOARD</span>
                   </button>
                 </div>
-              </div>
+              </div> */}
             </>
           )}
         </main>

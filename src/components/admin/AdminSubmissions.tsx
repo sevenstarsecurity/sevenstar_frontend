@@ -32,22 +32,19 @@ import { AdminSidebar } from "./AdminSidebar";
 const STATUS_OPTIONS: (ContactStatus | "all")[] = [
   "all",
   "NEW",
-  "IN_PROGRESS",
-  "RESOLVED",
+  "READ",
   "ARCHIVED",
 ];
 
 const STATUS_STYLES: Record<ContactStatus, string> = {
   NEW: "bg-blue-50 text-blue-700 border-blue-200",
-  IN_PROGRESS: "bg-amber-50 text-amber-800 border-amber-200",
-  RESOLVED: "bg-emerald-50 text-emerald-800 border-emerald-200",
+  READ: "bg-green-50 text-green-800 border-green-200",
   ARCHIVED: "bg-gray-100 text-gray-700 border-gray-200",
 };
 
 const STATUS_LABELS: Record<ContactStatus, string> = {
   NEW: "New",
-  IN_PROGRESS: "In Progress",
-  RESOLVED: "Resolved",
+  READ: "Read",
   ARCHIVED: "Archived",
 };
 
@@ -80,7 +77,7 @@ const SEED_SUBMISSIONS: ContactSubmission[] = [
     phone: "+234-901-444-2222",
     sector: "BANKING",
     details: "Requesting a quote for branch security coverage.",
-    status: "IN_PROGRESS",
+    status: "READ",
     createdAt: new Date().toISOString(),
   },
 ];
@@ -320,7 +317,7 @@ export const AdminSubmissions: React.FC = () => {
                 {selectedIds.size} submission{selectedIds.size > 1 ? "s" : ""} selected
               </span>
               <div className="flex items-center gap-2 flex-wrap">
-                {(["NEW", "IN_PROGRESS", "RESOLVED", "ARCHIVED"] as ContactStatus[]).map(
+                {(["NEW", "READ", "ARCHIVED"] as ContactStatus[]).map(
                   (status) => (
                     <button
                       key={status}
@@ -410,7 +407,7 @@ export const AdminSubmissions: React.FC = () => {
                               STATUS_STYLES[submission.status]
                             }`}
                           >
-                            {(["NEW", "IN_PROGRESS", "RESOLVED", "ARCHIVED"] as ContactStatus[]).map(
+                            {(["NEW", "READ", "ARCHIVED"] as ContactStatus[]).map(
                               (st) => (
                                 <option key={st} value={st}>
                                   {STATUS_LABELS[st]}
@@ -575,7 +572,7 @@ export const AdminSubmissions: React.FC = () => {
                                   STATUS_STYLES[submission.status]
                                 }`}
                               >
-                                {(["NEW", "IN_PROGRESS", "RESOLVED", "ARCHIVED"] as ContactStatus[]).map(
+                                {(["NEW", "READ", "ARCHIVED"] as ContactStatus[]).map(
                                   (st) => (
                                     <option key={st} value={st}>
                                       {STATUS_LABELS[st]}
@@ -714,7 +711,7 @@ export const AdminSubmissions: React.FC = () => {
                     STATUS_STYLES[viewing.status]
                   }`}
                 >
-                  {(["NEW", "IN_PROGRESS", "RESOLVED", "ARCHIVED"] as ContactStatus[]).map(
+                  {(["NEW", "READ", "ARCHIVED"] as ContactStatus[]).map(
                     (st) => (
                       <option key={st} value={st}>
                         {STATUS_LABELS[st]}

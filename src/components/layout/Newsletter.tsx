@@ -68,6 +68,13 @@ export const Newsletter: React.FC = () => {
               <form
                 onSubmit={handleSubmit}
                 className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto"
+                // Browser extensions (password managers, Grammarly, etc.)
+                // inject attributes like style="position:relative" onto
+                // <form> elements before React hydrates, causing a
+                // harmless hydration-mismatch warning. This tells React
+                // to ignore attribute diffs on this element instead of
+                // warning about them.
+                suppressHydrationWarning
               >
 
                 <input
@@ -98,10 +105,7 @@ export const Newsletter: React.FC = () => {
                     "SUBSCRIBE"
                   )}
                 </button>
-
-
               </form>
-
               {error && (
                 <p className="text-[11px] text-red-200 font-semibold text-center md:text-left">
                   {error}

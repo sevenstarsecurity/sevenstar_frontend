@@ -38,6 +38,11 @@ import {
   Trash2,
   Loader2,
   X,
+  ArrowUp,
+  ArrowDown,
+  Pencil,
+  ExternalLink,
+  FileStack,
 } from "lucide-react";
 import {
   FaFacebook,
@@ -65,8 +70,19 @@ import {
   NewsletterSubscriber,
   NewsletterStats,
 } from "@/services/newsletter"; // adjust path to match your project
+import {
+  listPdfDocuments,
+  getPdfStats,
+  uploadPdf,
+  updatePdf,
+  togglePdfStatus,
+  reorderPdfs,
+  deletePdf,
+  PdfDocument,
+  PdfStats,
+} from "@/services/pdf"; // adjust path to match your project
 
-type SettingsTab = "general" | "social-media" | "newsletter" | "change-password";
+type SettingsTab = "pdf-documents" | "social-media" | "newsletter" | "change-password";
 
 const PLATFORM_OPTIONS: SocialPlatform[] = [
   "FACEBOOK",
@@ -86,30 +102,223 @@ const PLATFORM_ICONS: Record<SocialPlatform, React.ReactNode> = {
   TWITTER: <FaTwitter className="w-4 h-4" />,
 };
 
+const EMPTY_PDF_FORM = {
+  title: "",
+  description: "",
+  fileUrl: "",
+  isActive: true,
+};
+
 export const AdminSettings: React.FC = () => {
   // Top-level tab switcher
-  const [activeTab, setActiveTab] = useState<SettingsTab>("general");
+  const [activeTab, setActiveTab] = useState<SettingsTab>("pdf-documents");
 
-  // Accordion states
-  const [openBrand, setOpenBrand] = useState(true);
-  const [openContact, setOpenContact] = useState(true);
-  const [openSeo, setOpenSeo] = useState(false);
+  // ── PDF Documents State ─────────────────────────────────────────────────
+  const [pdfDocs, setPdfDocs] = useState<PdfDocument[]>([]);
+  const [pdfStats, setPdfStats] = useState<PdfStats | null>(null);
+  const [isLoadingPdfs, setIsLoadingPdfs] = useState(true);
+  const [pdfError, setPdfError] = useState("");
+  const [pdfSuccess, setPdfSuccess] = useState("");
+  const [savingPdfId, setSavingPdfId] = useState<string | null>(null);
 
-  // Form states
-  const [siteTitle, setSiteTitle] = useState("Seven Star Security Services");
-  const [hqAddress, setHqAddress] = useState("");
-  const [supportEmail, setSupportEmail] = useState("info@sevenstarsecurity.com.np");
-  const [mainOfficeLine, setMainOfficeLine] = useState("+977-1-4200000");
-  const [emergencyPhone, setEmergencyPhone] = useState("+977-9800000000");
+  const [showPdfModal, setShowPdfModal] = useState(false);
+  const [editingPdf, setEditingPdf] = useState<PdfDocument | null>(null);
+  const [pdfForm, setPdfForm] = useState(EMPTY_PDF_FORM);
+  const [isSavingPdfForm, setIsSavingPdfForm] = useState(false);
+  const [pdfFormError, setPdfFormError] = useState("");
 
-  // SEO states
-  const [metaTitle, setMetaTitle] = useState("Seven Star Security - Elite Protection Services");
-  const [metaDescription, setMetaDescription] = useState(
-    "Safeguarding assets, ensuring operational continuity, and providing peace of mind across Nepal."
-  );
+  const showPdfSuccess = (message: string) => {
+    setPdfSuccess(message);
+    setTimeout(() => setPdfSuccess(""), 3000);
+  };
 
-  const [hasChanges, setHasChanges] = useState(true);
-  const [savedSuccess, setSavedSuccess] = useState(false);
+  const loadPdfDocuments = async () => {
+    setIsLoadingPdfs(true);
+    setPdfError("");
+    try {
+      const res = await listPdfDocuments({ page: 1, limit: 50 });
+      const sorted = [...(res.items ?? [])].sort(
+        (a, b) => a.displayOrder - b.displayOrder
+      );
+      setPdfDocs(sorted);
+    } catch (err: any) {
+      setPdfError(
+        err?.response?.data?.message || err?.message || "Failed to load PDF documents."
+      );
+      setPdfDocs([]);
+    } finally {
+      setIsLoadingPdfs(false);
+    }
+  };
+
+  const loadPdfStats = async () => {
+    try {
+      const stats = await getPdfStats();
+      setPdfStats(stats);
+    } catch (err) {
+      // Non-blocking — stats card just won't render numbers
+      setPdfStats(null);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "pdf-documents") {
+      loadPdfDocuments();
+      loadPdfStats();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
+  const openAddPdfModal = () => {
+    setEditingPdf(null);
+    setPdfForm(EMPTY_PDF_FORM);
+    setPdfFormError("");
+    setShowPdfModal(true);
+  };
+
+  const openEditPdfModal = (doc: PdfDocument) => {
+    setEditingPdf(doc);
+    setPdfForm({
+      title: doc.title,
+      description: doc.description ?? "",
+      fileUrl: doc.fileUrl,
+      isActive: doc.isActive,
+    });
+    setPdfFormError("");
+    setShowPdfModal(true);
+  };
+
+  const closePdfModal = () => {
+    setShowPdfModal(false);
+    setEditingPdf(null);
+    setPdfForm(EMPTY_PDF_FORM);
+    setPdfFormError("");
+  };
+
+  const handlePdfFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!pdfForm.title.trim()) {
+      setPdfFormError("Please enter a title.");
+      return;
+    }
+    if (!pdfForm.fileUrl.trim()) {
+      setPdfFormError("Please enter a file URL.");
+      return;
+    }
+
+    setIsSavingPdfForm(true);
+    setPdfFormError("");
+
+    try {
+      if (editingPdf) {
+        const updated = await updatePdf(editingPdf.id, {
+          title: pdfForm.title.trim(),
+          description: pdfForm.description.trim(),
+          fileUrl: pdfForm.fileUrl.trim(),
+          isActive: pdfForm.isActive,
+        });
+        setPdfDocs((prev) =>
+          prev
+            .map((d) => (d.id === updated.id ? updated : d))
+            .sort((a, b) => a.displayOrder - b.displayOrder)
+        );
+        showPdfSuccess(`"${updated.title}" updated successfully.`);
+      } else {
+        const created = await uploadPdf({
+          title: pdfForm.title.trim(),
+          description: pdfForm.description.trim(),
+          fileUrl: pdfForm.fileUrl.trim(),
+          displayOrder: pdfDocs.length + 1,
+          isActive: pdfForm.isActive,
+        });
+        setPdfDocs((prev) =>
+          [...prev, created].sort((a, b) => a.displayOrder - b.displayOrder)
+        );
+        showPdfSuccess(`"${created.title}" uploaded successfully.`);
+      }
+      closePdfModal();
+      loadPdfStats();
+    } catch (err: any) {
+      setPdfFormError(
+        err?.response?.data?.message || err?.message || "Failed to save PDF document."
+      );
+    } finally {
+      setIsSavingPdfForm(false);
+    }
+  };
+
+  // ── FIXED: now passes the new boolean value the backend requires ───────
+  const handleTogglePdfStatus = async (doc: PdfDocument) => {
+    setSavingPdfId(doc.id);
+    try {
+      const updated = await togglePdfStatus(doc.id, !doc.isActive);
+      setPdfDocs((prev) => prev.map((d) => (d.id === updated.id ? updated : d)));
+      showPdfSuccess(
+        `"${updated.title}" ${updated.isActive ? "activated" : "deactivated"} successfully.`
+      );
+      loadPdfStats();
+    } catch (err: any) {
+      setPdfError(err?.response?.data?.message || err?.message || "Failed to update status.");
+    } finally {
+      setSavingPdfId(null);
+    }
+  };
+
+  const handleDeletePdf = async (doc: PdfDocument) => {
+    if (!confirm(`Delete "${doc.title}"? This cannot be undone.`)) return;
+    setSavingPdfId(doc.id);
+    try {
+      await deletePdf(doc.id);
+      setPdfDocs((prev) => prev.filter((d) => d.id !== doc.id));
+      showPdfSuccess(`"${doc.title}" deleted successfully.`);
+      loadPdfStats();
+    } catch (err: any) {
+      setPdfError(err?.response?.data?.message || err?.message || "Failed to delete PDF.");
+    } finally {
+      setSavingPdfId(null);
+    }
+  };
+
+  const handleMovePdf = async (doc: PdfDocument, direction: "up" | "down") => {
+    const index = pdfDocs.findIndex((d) => d.id === doc.id);
+    const swapIndex = direction === "up" ? index - 1 : index + 1;
+    if (swapIndex < 0 || swapIndex >= pdfDocs.length) return;
+
+    const reordered = [...pdfDocs];
+    [reordered[index], reordered[swapIndex]] = [reordered[swapIndex], reordered[index]];
+
+    // Optimistically update local order numbers
+    const withNewOrder = reordered.map((d, i) => ({ ...d, displayOrder: i + 1 }));
+    setPdfDocs(withNewOrder);
+    setSavingPdfId(doc.id);
+
+    try {
+      await reorderPdfs({
+        order: withNewOrder.map((d) => ({ id: d.id, displayOrder: d.displayOrder })),
+      });
+      showPdfSuccess("PDF order updated successfully.");
+    } catch (err: any) {
+      setPdfError(err?.response?.data?.message || err?.message || "Failed to reorder PDFs.");
+      // Roll back on failure
+      loadPdfDocuments();
+    } finally {
+      setSavingPdfId(null);
+    }
+  };
+
+  const formatDate = (iso: string | null) => {
+    if (!iso) return "—";
+    try {
+      return new Date(iso).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch {
+      return iso;
+    }
+  };
 
   // ── Social Media State ──────────────────────────────────────────────────
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
@@ -360,20 +569,6 @@ export const AdminSettings: React.FC = () => {
       setIsExporting(false);
     }
   };
-
-  const formatDate = (iso: string | null) => {
-    if (!iso) return "—";
-    try {
-      return new Date(iso).toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
-    } catch {
-      return iso;
-    }
-  };
-
   // ---- Change Password state ----
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -455,17 +650,11 @@ export const AdminSettings: React.FC = () => {
   ];
 
   const settingsTabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
-    { id: "general", label: "General Settings", icon: <SlidersHorizontal className="w-4 h-4" /> },
+    { id: "pdf-documents", label: "PDF Documents", icon: <FileStack className="w-4 h-4" /> },
     { id: "social-media", label: "Social Media", icon: <Share2 className="w-4 h-4" /> },
     { id: "newsletter", label: "Newsletter", icon: <Mail className="w-4 h-4" /> },
     { id: "change-password", label: "Change Password", icon: <Lock className="w-4 h-4" /> },
   ];
-
-  const handleSave = () => {
-    setHasChanges(false);
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 2500);
-  };
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
@@ -486,29 +675,29 @@ export const AdminSettings: React.FC = () => {
 
 
         {/* MAIN BODY CONTAINER */}
-        <main className="p-6 md:p-8 space-y-6 flex-1 max-w-[1200px] w-full mx-auto pb-24">
+        <main className="p-4 sm:p-6 md:p-8 space-y-6 flex-1 max-w-[1200px] w-full mx-auto pb-24">
           {/* HEADLINE */}
           <div>
-            <nav className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+            <nav className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
               <span>Dashboard</span> &gt; <span className="text-[#0b4226] font-bold">System Settings</span>
             </nav>
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">
               Admin Site Settings
             </h1>
             <p className="text-xs sm:text-sm text-gray-500 mt-1">
-              Configure the global identity, contact protocols, and search visibility for the Seven Star Security public interface.
+              Configure PDF resources, social connectivity, newsletter subscribers, and account security for the Seven Star Security public interface.
             </p>
           </div>
 
           {/* TAB SWITCHER */}
-          <div className="flex items-center gap-1 border-b border-gray-200">
+          <div className="flex items-center gap-1 border-b border-gray-200 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
             {settingsTabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 -mb-px cursor-pointer ${isActive
+                  className={`flex items-center gap-2 px-3 sm:px-4 py-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-colors border-b-2 -mb-px cursor-pointer whitespace-nowrap flex-shrink-0 ${isActive
                     ? "border-[#0b4226] text-[#0b4226]"
                     : "border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300"
                     }`}
@@ -520,236 +709,195 @@ export const AdminSettings: React.FC = () => {
             })}
           </div>
 
-          {/* ==================== GENERAL SETTINGS TAB ==================== */}
-          {activeTab === "general" && (
+          {/* ==================== PDF DOCUMENTS TAB ==================== */}
+          {activeTab === "pdf-documents" && (
             <div className="space-y-6">
-              {/* ACCORDION CARD 1: GENERAL BRAND IDENTITY */}
+              {/* STATS ROW */}
+              <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                <div className="bg-white border border-gray-200/90 rounded-md shadow-xs p-3 sm:p-5">
+                  <span className="text-[9px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                    Total
+                  </span>
+                  <span className="text-lg sm:text-2xl font-extrabold text-gray-900">
+                    {pdfStats?.total ?? pdfDocs.length ?? "—"}
+                  </span>
+                </div>
+                <div className="bg-white border border-gray-200/90 rounded-md shadow-xs p-3 sm:p-5">
+                  <span className="text-[9px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                    Active
+                  </span>
+                  <span className="text-lg sm:text-2xl font-extrabold text-[#0b4226]">
+                    {pdfStats?.active ?? pdfDocs.filter((d) => d.isActive).length ?? "—"}
+                  </span>
+                </div>
+                <div className="bg-white border border-gray-200/90 rounded-md shadow-xs p-3 sm:p-5">
+                  <span className="text-[9px] sm:text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                    Inactive
+                  </span>
+                  <span className="text-lg sm:text-2xl font-extrabold text-red-600">
+                    {pdfStats?.inactive ?? pdfDocs.filter((d) => !d.isActive).length ?? "—"}
+                  </span>
+                </div>
+              </div>
+
+              {/* PDF DOCUMENTS CARD */}
               <div className="bg-white border border-gray-200/90 rounded-md shadow-xs overflow-hidden">
-                <button
-                  onClick={() => setOpenBrand(!openBrand)}
-                  className="w-full bg-[#f8fafc] p-4 px-6 border-b border-gray-200 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer"
-                >
+                <div className="bg-[#f8fafc] p-4 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <ImageIcon className="w-4 h-4 text-[#0b4226]" />
+                    <FileStack className="w-4 h-4 text-[#0b4226] shrink-0" />
                     <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">
-                      GENERAL BRAND IDENTITY
+                      PDF DOCUMENTS
                     </span>
                   </div>
-                  {openBrand ? (
-                    <ChevronUp className="w-4 h-4 text-gray-500" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-gray-500" />
-                  )}
-                </button>
+                  <button
+                    onClick={openAddPdfModal}
+                    className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-[11px] uppercase tracking-wider px-3.5 py-2 rounded-sm shadow-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer w-full sm:w-auto"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    Upload PDF
+                  </button>
+                </div>
 
-                {openBrand && (
-                  <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    <div className="lg:col-span-6 space-y-2">
-                      <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
-                        Agency Logo
-                      </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-md p-8 bg-[#f8fafc] flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-100/60 transition-colors min-h-[160px]">
-                        <div className="w-32 h-10 mb-3 flex items-center justify-center">
-                          <ImageFallback
-                            src="/images/sevenstarlogo.webp"
-                            alt="Seven Star Security Logo"
-                            className="max-h-full w-auto object-contain"
-                            fallbackText="Seven Star Security"
-                          />
-                        </div>
-                        <span className="text-xs text-gray-500 font-medium">
-                          Upload SVG or PNG (2MB max)
-                        </span>
-                      </div>
+                <div className="p-4 sm:p-6 space-y-4">
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    Manage brochures, certificates, and other downloadable PDF resources shown on the public site.
+                  </p>
+
+                  {pdfSuccess && (
+                    <div className="p-2.5 text-xs bg-green-50 border border-green-200 text-green-700 rounded flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                      <span>{pdfSuccess}</span>
                     </div>
+                  )}
 
-                    <div className="lg:col-span-6 space-y-6">
-                      <div className="space-y-1.5">
-                        <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
-                          Site Title <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={siteTitle}
-                          onChange={(e) => {
-                            setSiteTitle(e.target.value);
-                            setHasChanges(true);
-                          }}
-                          className="w-full bg-white border border-gray-400 rounded p-2.5 text-sm font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-                        />
-                      </div>
+                  {pdfError && (
+                    <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
+                      {pdfError}
+                    </div>
+                  )}
 
-                      <div className="space-y-2">
-                        <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
-                          Site Favicon
-                        </label>
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-[#081f14] rounded-md flex items-center justify-center border border-[#0b4226]">
-                            <Shield className="w-6 h-6 text-[#4ade80]" />
-                          </div>
-                          <button
-                            type="button"
-                            className="px-4 py-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-800 text-xs font-bold uppercase tracking-wider rounded-sm shadow-xs transition-colors cursor-pointer"
+                  {isLoadingPdfs ? (
+                    <div className="flex items-center justify-center py-16 text-gray-400 gap-2">
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span className="text-sm font-semibold">Loading PDF documents...</span>
+                    </div>
+                  ) : pdfDocs.length === 0 ? (
+                    <div className="text-center py-16 text-gray-400 text-sm font-semibold">
+                      No PDF documents yet. Upload your first one.
+                    </div>
+                  ) : (
+                    /* ── RESPONSIVE LIST: stacks cleanly on mobile ────────────── */
+                    <div className="space-y-3">
+                      {pdfDocs.map((doc, index) => {
+                        const isSaving = savingPdfId === doc.id;
+                        return (
+                          <div
+                            key={doc.id}
+                            className="border border-gray-200 rounded-md p-3 sm:p-4 bg-[#fafbfa] flex flex-col gap-3"
                           >
-                            Replace Icon
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+                            {/* Row 1: icon + title/description */}
+                            <div className="flex items-start gap-3 min-w-0">
+                              <div className="w-9 h-9 rounded-md bg-[#0b4226]/10 text-[#0b4226] flex items-center justify-center shrink-0">
+                                <FileText className="w-4 h-4" />
+                              </div>
 
-              {/* ACCORDION CARD 2: CONTACT INFO (HQ DATA) */}
-              <div className="bg-white border border-gray-200/90 rounded-md shadow-xs overflow-hidden">
-                <button
-                  onClick={() => setOpenContact(!openContact)}
-                  className="w-full bg-[#f8fafc] p-4 px-6 border-b border-gray-200 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-4 h-4 text-[#0b4226]" />
-                    <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">
-                      CONTACT INFO (HQ DATA)
-                    </span>
-                  </div>
-                  {openContact ? (
-                    <ChevronUp className="w-4 h-4 text-gray-500" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start gap-2 flex-wrap">
+                                  <span className="text-sm font-bold text-gray-900 break-words">
+                                    {doc.title}
+                                  </span>
+                                  <a
+                                    href={doc.fileUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-gray-400 hover:text-[#0b4226] shrink-0 mt-0.5"
+                                    title="Open file"
+                                  >
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                  </a>
+                                </div>
+                                {doc.description && (
+                                  <p className="text-xs text-gray-500 mt-0.5 break-words line-clamp-2">
+                                    {doc.description}
+                                  </p>
+                                )}
+                                <span className="text-[10px] text-gray-400 font-medium mt-1 block">
+                                  Order #{doc.displayOrder} · Updated {formatDate(doc.updatedAt)}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Row 2: all actions — wraps cleanly, full-width on mobile */}
+                            <div className="flex items-center justify-between gap-2 pt-2 border-t border-gray-200/70 flex-wrap sm:flex-nowrap">
+                              {/* Reorder controls */}
+                              <div className="flex items-center gap-0.5 shrink-0 order-2 sm:order-1">
+                                <button
+                                  onClick={() => handleMovePdf(doc, "up")}
+                                  disabled={index === 0 || isSaving}
+                                  className="text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed p-2 sm:p-1.5 rounded transition-colors"
+                                  title="Move up"
+                                >
+                                  <ArrowUp className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleMovePdf(doc, "down")}
+                                  disabled={index === pdfDocs.length - 1 || isSaving}
+                                  className="text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed p-2 sm:p-1.5 rounded transition-colors"
+                                  title="Move down"
+                                >
+                                  <ArrowDown className="w-4 h-4" />
+                                </button>
+                              </div>
+
+                              {/* Status + edit + delete */}
+                              <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto justify-between sm:justify-end order-1 sm:order-2">
+                                <button
+                                  onClick={() => handleTogglePdfStatus(doc)}
+                                  disabled={isSaving}
+                                  className={`text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-2 sm:py-1.5 rounded-xs transition-colors disabled:opacity-60 flex-1 sm:flex-none text-center ${doc.isActive
+                                    ? "bg-[#22c55e]/10 text-[#16803c] hover:bg-[#22c55e]/20"
+                                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                                    }`}
+                                  title={doc.isActive ? "Active — click to disable" : "Inactive — click to enable"}
+                                >
+                                  {isSaving ? (
+                                    <Loader2 className="w-3 h-3 animate-spin mx-auto" />
+                                  ) : doc.isActive ? (
+                                    "ACTIVE"
+                                  ) : (
+                                    "INACTIVE"
+                                  )}
+                                </button>
+
+                                <button
+                                  onClick={() => openEditPdfModal(doc)}
+                                  disabled={isSaving}
+                                  className="text-gray-400 hover:text-[#0b4226] p-2 sm:p-1.5 rounded transition-colors disabled:opacity-60 shrink-0"
+                                  title="Edit"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </button>
+
+                                <button
+                                  onClick={() => handleDeletePdf(doc)}
+                                  disabled={isSaving}
+                                  className="text-gray-400 hover:text-red-600 p-2 sm:p-1.5 rounded transition-colors disabled:opacity-60 shrink-0"
+                                  title="Delete"
+                                >
+                                  {isSaving ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                  ) : (
+                                    <Trash2 className="w-4 h-4" />
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   )}
-                </button>
-
-                {openContact && (
-                  <div className="p-6 space-y-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                      <div className="lg:col-span-6 space-y-1.5">
-                        <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
-                          HQ Address
-                        </label>
-                        <textarea
-                          value={hqAddress}
-                          onChange={(e) => {
-                            setHqAddress(e.target.value);
-                            setHasChanges(true);
-                          }}
-                          placeholder="Full street address, City, State, ZIP"
-                          className="w-full bg-white border border-gray-400 rounded p-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] h-28 resize-none"
-                        />
-                      </div>
-
-                      <div className="lg:col-span-6 space-y-4">
-                        <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
-                            Primary Support Email
-                          </label>
-                          <input
-                            type="email"
-                            value={supportEmail}
-                            onChange={(e) => {
-                              setSupportEmail(e.target.value);
-                              setHasChanges(true);
-                            }}
-                            className="w-full bg-white border border-gray-400 rounded p-2.5 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-                          />
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
-                            Main Office Line
-                          </label>
-                          <input
-                            type="text"
-                            value={mainOfficeLine}
-                            onChange={(e) => {
-                              setMainOfficeLine(e.target.value);
-                              setHasChanges(true);
-                            }}
-                            className="w-full bg-white border border-gray-400 rounded p-2.5 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-[#fcf2f2] border-l-4 border-l-red-600 p-5 rounded-xs space-y-3">
-                      <div className="flex items-center gap-2 text-red-700 text-xs font-extrabold uppercase tracking-wider">
-                        <AlertTriangle className="w-4 h-4 text-red-600" />
-                        <span>24/7 RAPID RESPONSE PROTOCOL</span>
-                      </div>
-
-                      <div className="space-y-1 max-w-md">
-                        <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
-                          Emergency Contact Number <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={emergencyPhone}
-                          onChange={(e) => {
-                            setEmergencyPhone(e.target.value);
-                            setHasChanges(true);
-                          }}
-                          className="w-full bg-white border-2 border-red-500 rounded p-2.5 text-sm font-bold text-gray-900 focus:outline-none focus:ring-1 focus:ring-red-600"
-                        />
-                      </div>
-
-                      <p className="text-[11px] text-gray-500 font-medium">
-                        This number is prioritized in the client portal header and mobile quick-action menus.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* ACCORDION CARD 3: SEO & META DEFAULTS */}
-              <div className="bg-white border border-gray-200/90 rounded-md shadow-xs overflow-hidden">
-                <button
-                  onClick={() => setOpenSeo(!openSeo)}
-                  className="w-full bg-[#f8fafc] p-4 px-6 border-b border-gray-200 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center gap-3">
-                    <Globe className="w-4 h-4 text-[#0b4226]" />
-                    <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">
-                      SEO &amp; META DEFAULTS
-                    </span>
-                  </div>
-                  {openSeo ? (
-                    <ChevronUp className="w-4 h-4 text-gray-500" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-gray-500" />
-                  )}
-                </button>
-
-                {openSeo && (
-                  <div className="p-6 space-y-4">
-                    <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
-                        Default Meta Title
-                      </label>
-                      <input
-                        type="text"
-                        value={metaTitle}
-                        onChange={(e) => {
-                          setMetaTitle(e.target.value);
-                          setHasChanges(true);
-                        }}
-                        className="w-full bg-white border border-gray-300 rounded p-2.5 text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider block">
-                        Default Meta Description
-                      </label>
-                      <textarea
-                        value={metaDescription}
-                        onChange={(e) => {
-                          setMetaDescription(e.target.value);
-                          setHasChanges(true);
-                        }}
-                        className="w-full bg-white border border-gray-300 rounded p-2.5 text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226] h-20 resize-none"
-                      />
-                    </div>
-                  </div>
-                )}
+                </div>
               </div>
             </div>
           )}
@@ -757,7 +905,7 @@ export const AdminSettings: React.FC = () => {
           {/* ==================== SOCIAL MEDIA TAB ==================== */}
           {activeTab === "social-media" && (
             <div className="bg-white border border-gray-200/90 rounded-md shadow-xs overflow-hidden">
-              <div className="bg-[#f8fafc] p-4 px-6 border-b border-gray-200 flex items-center justify-between">
+              <div className="bg-[#f8fafc] p-4 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <Share2 className="w-4 h-4 text-[#0b4226]" />
                   <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">
@@ -766,14 +914,14 @@ export const AdminSettings: React.FC = () => {
                 </div>
                 <button
                   onClick={() => setShowAddSocialModal(true)}
-                  className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-[11px] uppercase tracking-wider px-3.5 py-2 rounded-sm shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-[11px] uppercase tracking-wider px-3.5 py-2 rounded-sm shadow-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer w-full sm:w-auto"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   Add Link
                 </button>
               </div>
 
-              <div className="p-6 space-y-4">
+              <div className="p-4 sm:p-6 space-y-4">
                 <p className="text-xs sm:text-sm text-gray-500">
                   Manage the social platform links shown across the public site footer and contact sections.
                 </p>
@@ -805,14 +953,22 @@ export const AdminSettings: React.FC = () => {
                     {socialLinks.map((link) => (
                       <div
                         key={link.id}
-                        className="flex items-center gap-3 border border-gray-200 rounded-md p-3 bg-[#fafbfa]"
+                        className="flex flex-col sm:flex-row sm:items-center gap-3 border border-gray-200 rounded-md p-3 bg-[#fafbfa]"
                       >
-                        <div className="w-9 h-9 rounded-md bg-[#0b4226]/10 text-[#0b4226] flex items-center justify-center flex-shrink-0">
-                          {PLATFORM_ICONS[link.platform]}
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-md bg-[#0b4226]/10 text-[#0b4226] flex items-center justify-center flex-shrink-0">
+                            {PLATFORM_ICONS[link.platform]}
+                          </div>
+
+                          <div className="flex-1 min-w-0 sm:hidden">
+                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                              {link.platform}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
+                          <span className="hidden sm:block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                             {link.platform}
                           </span>
                           <input
@@ -824,30 +980,32 @@ export const AdminSettings: React.FC = () => {
                           />
                         </div>
 
-                        <button
-                          onClick={() => handleToggleLinkStatus(link)}
-                          disabled={savingLinkId === link.id}
-                          className={`flex-shrink-0 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1.5 rounded-xs transition-colors disabled:opacity-60 ${link.isActive
-                            ? "bg-[#22c55e]/10 text-[#16803c] hover:bg-[#22c55e]/20"
-                            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                            }`}
-                          title={link.isActive ? "Active — click to disable" : "Inactive — click to enable"}
-                        >
-                          {link.isActive ? "ACTIVE" : "INACTIVE"}
-                        </button>
+                        <div className="flex items-center gap-2 justify-end sm:justify-start">
+                          <button
+                            onClick={() => handleToggleLinkStatus(link)}
+                            disabled={savingLinkId === link.id}
+                            className={`flex-shrink-0 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-2 sm:py-1.5 rounded-xs transition-colors disabled:opacity-60 ${link.isActive
+                              ? "bg-[#22c55e]/10 text-[#16803c] hover:bg-[#22c55e]/20"
+                              : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                              }`}
+                            title={link.isActive ? "Active — click to disable" : "Inactive — click to enable"}
+                          >
+                            {link.isActive ? "ACTIVE" : "INACTIVE"}
+                          </button>
 
-                        <button
-                          onClick={() => handleDeleteLink(link)}
-                          disabled={savingLinkId === link.id}
-                          className="flex-shrink-0 text-gray-400 hover:text-red-600 p-1.5 rounded transition-colors disabled:opacity-60"
-                          title="Delete"
-                        >
-                          {savingLinkId === link.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <Trash2 className="w-4 h-4" />
-                          )}
-                        </button>
+                          <button
+                            onClick={() => handleDeleteLink(link)}
+                            disabled={savingLinkId === link.id}
+                            className="flex-shrink-0 text-gray-400 hover:text-red-600 p-2 sm:p-1.5 rounded transition-colors disabled:opacity-60"
+                            title="Delete"
+                          >
+                            {savingLinkId === link.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -889,7 +1047,7 @@ export const AdminSettings: React.FC = () => {
 
               {/* SUBSCRIBERS TABLE CARD */}
               <div className="bg-white border border-gray-200/90 rounded-md shadow-xs overflow-hidden">
-                <div className="bg-[#f8fafc] p-4 px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="bg-[#f8fafc] p-4 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <Mail className="w-4 h-4 text-[#0b4226]" />
                     <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">
@@ -898,14 +1056,14 @@ export const AdminSettings: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-2 flex-wrap">
-                    <form onSubmit={handleSubSearchSubmit} className="relative">
+                    <form onSubmit={handleSubSearchSubmit} className="relative flex-1 sm:flex-none min-w-[140px]">
                       <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                       <input
                         type="text"
                         value={subSearchInput}
                         onChange={(e) => setSubSearchInput(e.target.value)}
                         placeholder="Search email..."
-                        className="bg-white border border-gray-300 rounded-md pl-9 pr-3 py-1.5 text-xs text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] w-48"
+                        className="bg-white border border-gray-300 rounded-md pl-9 pr-3 py-1.5 text-xs text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#0b4226] w-full sm:w-48"
                       />
                     </form>
 
@@ -937,7 +1095,7 @@ export const AdminSettings: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-6 space-y-4">
+                <div className="p-4 sm:p-6 space-y-4">
                   <p className="text-xs sm:text-sm text-gray-500">
                     Manage users who have opted into your public newsletter, and export the list for campaigns.
                   </p>
@@ -966,8 +1124,8 @@ export const AdminSettings: React.FC = () => {
                     </div>
                   ) : (
                     <>
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left">
+                      <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                        <table className="w-full text-left min-w-[480px]">
                           <thead>
                             <tr className="border-b border-gray-200">
                               <th className="text-[10px] font-bold text-gray-500 uppercase tracking-wider pb-2 pr-4">
@@ -1029,22 +1187,22 @@ export const AdminSettings: React.FC = () => {
 
                       {/* PAGINATION */}
                       {subMeta && subMeta.totalPages > 1 && (
-                        <div className="flex items-center justify-between pt-2">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
                           <span className="text-xs text-gray-500 font-medium">
                             Page {subMeta.page} of {subMeta.totalPages} · {subMeta.total} total
                           </span>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 w-full sm:w-auto">
                             <button
                               onClick={() => setSubPage((p) => Math.max(1, p - 1))}
                               disabled={!subMeta.hasPrevPage}
-                              className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider border border-gray-300 rounded-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                              className="flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold uppercase tracking-wider border border-gray-300 rounded-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                             >
                               Prev
                             </button>
                             <button
                               onClick={() => setSubPage((p) => p + 1)}
                               disabled={!subMeta.hasNextPage}
-                              className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider border border-gray-300 rounded-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                              className="flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold uppercase tracking-wider border border-gray-300 rounded-sm text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                             >
                               Next
                             </button>
@@ -1061,14 +1219,14 @@ export const AdminSettings: React.FC = () => {
           {/* ==================== CHANGE PASSWORD TAB ==================== */}
           {activeTab === "change-password" && (
             <div className="bg-white border border-gray-200/90 rounded-md shadow-xs overflow-hidden">
-              <div className="bg-[#f8fafc] p-4 px-6 border-b border-gray-200 flex items-center gap-3">
+              <div className="bg-[#f8fafc] p-4 sm:px-6 border-b border-gray-200 flex items-center gap-3">
                 <Lock className="w-4 h-4 text-[#0b4226]" />
                 <span className="text-xs font-extrabold text-gray-900 uppercase tracking-wider">
                   CHANGE PASSWORD
                 </span>
               </div>
 
-              <div className="p-6 max-w-lg">
+              <div className="p-4 sm:p-6 max-w-lg">
                 <p className="text-xs sm:text-sm text-gray-500 mb-6">
                   Update your admin account password. You&apos;ll need to sign in again after changing it.
                 </p>
@@ -1185,7 +1343,7 @@ export const AdminSettings: React.FC = () => {
                     <button
                       type="submit"
                       disabled={pwSubmitting}
-                      className="bg-[#0b4226] hover:bg-[#072c19] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-sm shadow-xs flex items-center gap-2 transition-colors cursor-pointer"
+                      className="w-full sm:w-auto bg-[#0b4226] hover:bg-[#072c19] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-sm shadow-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
                     >
                       <Save className="w-4 h-4" />
                       <span>{pwSubmitting ? "Updating..." : "Update Password"}</span>
@@ -1196,45 +1354,125 @@ export const AdminSettings: React.FC = () => {
             </div>
           )}
         </main>
-
-        {/* STICKY BOTTOM SAVE CHANGES BANNER — only shows on General Settings tab */}
-        {activeTab === "general" && (
-          <div className="bg-white border-t border-gray-200 p-4 px-6 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 sticky bottom-0 z-30 shadow-[0_-4px_15px_-3px_rgba(0,0,0,0.06)]">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#22c55e] animate-pulse" />
-              <span className="text-xs font-semibold text-gray-700">
-                {savedSuccess
-                  ? "All settings saved successfully!"
-                  : "Unsaved changes detected in 'General Identity'"}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-4 self-end sm:self-auto">
-              <button
-                onClick={() => setHasChanges(false)}
-                className="text-xs font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-wider cursor-pointer"
-              >
-                Discard
-              </button>
-              <button
-                onClick={handleSave}
-                className="bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-sm shadow-xs flex items-center gap-2 transition-colors cursor-pointer"
-              >
-                <Save className="w-4 h-4" />
-                <span>SAVE CHANGES</span>
-              </button>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* ADD / EDIT PDF MODAL */}
+      {showPdfModal && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white border border-gray-200 rounded-t-md sm:rounded-md shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95">
+            <div className="bg-[#0b4226] text-white p-4 px-5 sm:px-6 flex items-center justify-between sticky top-0 z-10">
+              <h3 className="text-sm sm:text-base font-bold uppercase tracking-wider flex items-center gap-2">
+                <FileStack className="w-5 h-5 text-[#4ade80] flex-shrink-0" />
+                <span>{editingPdf ? "Edit PDF Document" : "Upload PDF Document"}</span>
+              </h3>
+              <button
+                onClick={closePdfModal}
+                className="text-white/80 hover:text-white transition-colors cursor-pointer flex-shrink-0"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handlePdfFormSubmit} className="p-4 sm:p-6 space-y-4">
+              {pdfFormError && (
+                <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
+                  {pdfFormError}
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
+                  TITLE
+                </label>
+                <input
+                  type="text"
+                  value={pdfForm.title}
+                  onChange={(e) => setPdfForm((prev) => ({ ...prev, title: e.target.value }))}
+                  placeholder="e.g. Company Brochure"
+                  className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
+                  DESCRIPTION
+                </label>
+                <textarea
+                  value={pdfForm.description}
+                  onChange={(e) =>
+                    setPdfForm((prev) => ({ ...prev, description: e.target.value }))
+                  }
+                  placeholder="Brief description of this document"
+                  className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226] h-20 resize-none"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
+                  FILE URL
+                </label>
+                <input
+                  type="text"
+                  value={pdfForm.fileUrl}
+                  onChange={(e) => setPdfForm((prev) => ({ ...prev, fileUrl: e.target.value }))}
+                  placeholder="https://drive.google.com/file/d/..."
+                  className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
+                />
+                <p className="text-[10px] text-gray-400">
+                  Paste a shareable link (e.g. Google Drive) to the PDF file.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  id="pdf-is-active"
+                  type="checkbox"
+                  checked={pdfForm.isActive}
+                  onChange={(e) =>
+                    setPdfForm((prev) => ({ ...prev, isActive: e.target.checked }))
+                  }
+                  className="w-4 h-4 accent-[#0b4226]"
+                />
+                <label
+                  htmlFor="pdf-is-active"
+                  className="text-xs font-semibold text-gray-700 cursor-pointer"
+                >
+                  Visible on public site (active)
+                </label>
+              </div>
+
+              <div className="pt-4 flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={closePdfModal}
+                  className="flex-1 py-2.5 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer"
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingPdfForm}
+                  className="flex-1 py-2.5 bg-[#0b4226] hover:bg-[#072c19] text-white font-bold text-xs uppercase tracking-wider rounded shadow-xs transition-colors cursor-pointer disabled:opacity-60"
+                >
+                  {isSavingPdfForm
+                    ? "SAVING..."
+                    : editingPdf
+                      ? "SAVE CHANGES"
+                      : "UPLOAD"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* ADD SOCIAL LINK MODAL */}
       {showAddSocialModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-gray-200 rounded-md shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95">
-            <div className="bg-[#0b4226] text-white p-4 px-6 flex items-center justify-between">
-              <h3 className="text-base font-bold uppercase tracking-wider flex items-center gap-2">
-                <Share2 className="w-5 h-5 text-[#4ade80]" />
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white border border-gray-200 rounded-t-md sm:rounded-md shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95">
+            <div className="bg-[#0b4226] text-white p-4 px-5 sm:px-6 flex items-center justify-between sticky top-0 z-10">
+              <h3 className="text-sm sm:text-base font-bold uppercase tracking-wider flex items-center gap-2">
+                <Share2 className="w-5 h-5 text-[#4ade80] flex-shrink-0" />
                 <span>Add Social Link</span>
               </h3>
               <button
@@ -1248,7 +1486,7 @@ export const AdminSettings: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleAddSocialSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleAddSocialSubmit} className="p-4 sm:p-6 space-y-4">
               {addSocialError && (
                 <div className="p-2.5 text-xs bg-red-50 border border-red-200 text-red-700 rounded">
                   {addSocialError}

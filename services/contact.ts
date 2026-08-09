@@ -3,7 +3,7 @@ import api from "./api";
 // ─── Types ──────────────────────────────────────────────────────────────────
 // Confirmed from real API response (GET /api/admin/contact / submissions).
 
-export type ContactStatus = "NEW" | "IN_PROGRESS" | "RESOLVED" | "ARCHIVED";
+export type ContactStatus = "NEW" | "READ" | "ARCHIVED";
 
 export interface ContactSubmission {
   id: string;

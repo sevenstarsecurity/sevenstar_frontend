@@ -97,6 +97,7 @@ export const AdminTeam: React.FC = () => {
   const [staffMembers, setStaffMembers] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const currentList: Person[] =
     activeSection === "Team"
@@ -310,6 +311,58 @@ export const AdminTeam: React.FC = () => {
     currentPage * pageSize
   );
 
+  // ─── Export current section list as CSV ────────────────────────────────
+  const handleDownload = () => {
+    if (filteredList.length === 0) {
+      setError("No records to download.");
+      return;
+    }
+
+    setIsDownloading(true);
+    setError(null);
+
+    try {
+      const hasMessage = activeSection !== "Staff";
+      const headers = hasMessage
+        ? ["Name", "Role", "Message", "Display Order", "Status"]
+        : ["Name", "Role", "Display Order", "Status"];
+
+      const escapeCsv = (value: string) => {
+        const str = value ?? "";
+        if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      };
+
+      const rows = filteredList.map((p) => {
+        const cols = [escapeCsv(p.name), escapeCsv(p.role)];
+        if (hasMessage) cols.push(escapeCsv(p.message ?? ""));
+        cols.push(String(p.displayOrder));
+        cols.push(p.isActive ? "Active" : "Inactive");
+        return cols.join(",");
+      });
+
+      // Prefix with a BOM so Excel opens UTF-8 CSVs correctly.
+      const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${activeSection.toLowerCase()}-${new Date()
+        .toISOString()
+        .slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      setError(err?.message || "Failed to generate download.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   const sectionLabel =
     activeSection === "Team"
       ? "TEAM MEMBERS"
@@ -443,9 +496,16 @@ export const AdminTeam: React.FC = () => {
               </button>
               <button
                 aria-label="Download"
-                className="p-2 border border-gray-300 rounded hover:bg-gray-50 text-gray-600 transition-colors cursor-pointer"
+                title="Download CSV"
+                onClick={handleDownload}
+                disabled={isDownloading || filteredList.length === 0}
+                className="p-2 border border-gray-300 rounded hover:bg-gray-50 text-gray-600 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <Download className="w-3.5 h-3.5" />
+                {isDownloading ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
@@ -608,7 +668,7 @@ export const AdminTeam: React.FC = () => {
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-md overflow-hidden bg-gray-200 border border-gray-300 flex-shrink-0">
+                            <div className="w-10 h-10 rounded-md overflow-hidden bg-gray-200 border border-gray-300 shrink-0">
                               <ImageFallback
                                 src={person.imageUrl || ""}
                                 alt={person.name}
@@ -631,7 +691,7 @@ export const AdminTeam: React.FC = () => {
                           {person.role}
                         </td>
 
-                        <td className="py-4 px-4 text-gray-600 max-w-[280px] truncate">
+                        <td className="py-4 px-4 text-gray-600 max-w-70 truncate">
                           {person.message}
                         </td>
 
@@ -740,7 +800,7 @@ export const AdminTeam: React.FC = () => {
           />
 
           {/* Drawer Sidebar */}
-          <div className="relative z-10 w-full sm:w-[450px] max-w-full bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto">
+          <div className="relative z-10 w-full sm:w-112.5 max-w-full bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto">
             <div>
               {/* Drawer Header */}
               <div className="p-5 border-b border-gray-200 flex items-center justify-between bg-white sticky top-0 z-20">
