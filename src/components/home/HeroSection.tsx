@@ -10,8 +10,8 @@ export const HeroSection: React.FC = () => {
       {/* Green Diagonal Background - same clip-path/position ratio at every size */}
       <div className="absolute right-0 top-0 bottom-0 w-[52%] lg:w-[48%] bg-[#0F6835] z-0 [clip-path:polygon(16%_0,100%_0,100%_100%,0_100%)]" />
 
-      {/* Guard Image - same right/width ratio as desktop at every breakpoint, top scales with viewport */}
-      <div className="absolute bottom-0 z-[1] right-[10%] w-[60%]" style={{ top: "clamp(45px, 18vw, 105px)" }}>
+      {/* Guard Image - fixed position so it doesn't shift on page reload */}
+      <div className="absolute bottom-0 z-[1] right-[10%] w-[60%] top-[60px]">
         <ImageFallback
           src="/images/nobgguard.webp"
           alt="Seven Star Security Guard Lineup"

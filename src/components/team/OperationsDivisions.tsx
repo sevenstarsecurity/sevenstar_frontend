@@ -1,4 +1,5 @@
 import { ArrowRight, MapPin, Radio, Shield, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 const divisions = [
@@ -44,7 +45,7 @@ export const OperationsDivisions: React.FC = () => {
             return (
               <div
                 key={div.num}
-                className="bg-white rounded-xs border-t-4 border-t-[#c8102e] border border-gray-200/60 p-7 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
+                className="bg-white rounded-xs border-t-4 border-t-[#c8102e] border border-gray-200/60 p-7 shadow-xs hover:shadow-xl hover:scale-[1.03] hover:border-[#c8102e] transition-all duration-300 flex flex-col justify-between group cursor-pointer"
               >
                 <div>
                   {/* Top Header: Red Icon + Number */}
@@ -58,9 +59,9 @@ export const OperationsDivisions: React.FC = () => {
                   </div>
 
                   {/* Title */}
-<h3 className="font-['Barlow_Condensed'] font-medium text-[24px] leading-[31.2px] tracking-[0px] text-[#004E24] mb-3 transition-colors">
-  {div.title}
-</h3>
+                  <h3 className="font-['Barlow_Condensed'] font-medium text-[24px] leading-[31.2px] tracking-[0px] text-[#004E24] mb-3 transition-colors group-hover:text-[#c8102e]">
+                    {div.title}
+                  </h3>
 
                   {/* Description */}
                   <p className="text-gray-600 text-xs leading-relaxed mb-6">
@@ -68,14 +69,14 @@ export const OperationsDivisions: React.FC = () => {
                   </p>
                 </div>
 
-                {/* View Division Link */}
-                <a
-                  href="#contact"
+                {/* View Division Link → /team */}
+                <Link
+                  href="/team"
                   className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#0b4226] uppercase tracking-wider hover:text-[#c8102e] transition-colors group/link pt-2"
                 >
                   <span>View Division</span>
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1" />
-                </a>
+                </Link>
               </div>
             );
           })}

@@ -5,19 +5,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { ImageFallback } from "../ui/ImageFallback";
-import { getPublicPdfDocuments, PdfDocument } from "@/services/pdf"; // adjust path to match your project
+import { getPublicPdfDocuments, PdfDocument } from "@/services/pdf";
+
+// ── Module-level cache ────────────────────────────────────────────────────────
+// Persists for the entire browser session so the PDF URL is fetched only ONCE
+// no matter how many times the Navbar mounts (i.e. across page navigations).
+// `undefined`  = not fetched yet
+// `null`       = fetched, no active PDF found
+// `string`     = fetched, URL is available
+let _cachedPdfUrl: string | null | undefined = undefined;
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // ── Portfolio PDF (fetched from the public PDF documents API) ──────────
-  // No static fallback anymore — if there's no active PDF, the button
-  // simply doesn't render.
-  const [portfolioPdfUrl, setPortfolioPdfUrl] = useState<string | null>(null);
-  const [isLoadingPdf, setIsLoadingPdf] = useState(true);
+  // ── Portfolio PDF ───────────────────────────────────────────────────────────
+  // Start in a "known" state if the cache already has the answer, so there is
+  // zero loading flash on subsequent page navigations.
+  const [portfolioPdfUrl, setPortfolioPdfUrl] = useState<string | null>(
+    _cachedPdfUrl !== undefined ? _cachedPdfUrl : null
+  );
+  const [isLoadingPdf, setIsLoadingPdf] = useState(_cachedPdfUrl === undefined);
 
   useEffect(() => {
+    // Cache hit — nothing to do, state is already correct.
+    if (_cachedPdfUrl !== undefined) return;
+
     let cancelled = false;
 
     const loadPortfolioPdf = async () => {
@@ -27,11 +40,14 @@ export const Navbar: React.FC = () => {
           .filter((doc: PdfDocument) => doc.isActive)
           .sort((a, b) => a.displayOrder - b.displayOrder);
 
+        const url = active.length > 0 ? active[0].fileUrl : null;
+        _cachedPdfUrl = url; // store in module-level cache
+
         if (!cancelled) {
-          setPortfolioPdfUrl(active.length > 0 ? active[0].fileUrl : null);
+          setPortfolioPdfUrl(url);
         }
       } catch (err) {
-        // Non-blocking — if the fetch fails, just don't show the button.
+        _cachedPdfUrl = null; // mark as fetched (no PDF)
         if (!cancelled) setPortfolioPdfUrl(null);
       } finally {
         if (!cancelled) setIsLoadingPdf(false);
@@ -62,9 +78,10 @@ export const Navbar: React.FC = () => {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  // Show the button only once we know whether there's an active PDF,
-  // and only if one actually exists.
+  // Once loading is done and no PDF exists, collapse the button space entirely.
+  // While still loading, render an invisible placeholder to hold the space so nav items don't shift.
   const showPortfolioButton = !isLoadingPdf && !!portfolioPdfUrl;
+  const buttonVisible = !isLoadingPdf && !!portfolioPdfUrl;
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs">
@@ -138,14 +155,20 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Right CTA Button - shown from lg up, sized down for the tablet range */}
-        {showPortfolioButton && (
-          <div className="hidden lg:flex items-center shrink-0">
+        {/* Reserve space while loading to prevent nav items shifting; collapse only if no PDF found */}
+        {(isLoadingPdf || portfolioPdfUrl) && (
+          <div
+            className="hidden lg:flex items-center shrink-0"
+            style={{ visibility: buttonVisible ? "visible" : "hidden" }}
+          >
             <a
-              href={portfolioPdfUrl!}
+              href={portfolioPdfUrl ?? "#"}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
               className="bg-[#c8102e] hover:bg-[#a60d25] text-white font-bold uppercase rounded-xs shadow-sm hover:shadow-md transition-all duration-200 tracking-wider whitespace-nowrap text-[10px] px-4 py-2.5 xl:text-xs xl:px-6 xl:py-3 inline-flex items-center gap-1.5"
+              tabIndex={buttonVisible ? 0 : -1}
+              aria-hidden={!buttonVisible}
             >
               Portfolio Download
             </a>
