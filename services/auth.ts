@@ -70,6 +70,9 @@ export async function logout(): Promise<void> {
     // ignore network errors on logout
   } finally {
     clearSession();
+    // Reset the "stay logged in" preference so the next login starts clean
+    // (defaults to session-only) instead of inheriting a stale true/false.
+    localStorage.removeItem(STAY_LOGGED_IN_KEY);
   }
 }
 

@@ -28,10 +28,10 @@ export const StrategicOperationsNetwork: React.FC = () => {
           >
             <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-3">
               <ImageFallback
-                src="/images/NepalMap.webp"
+                src="/images/mapofnepalbranch.webp"
                 alt="Nepal Branch Map — Seven Star Security"
                 className="w-full h-auto object-cover block rounded-lg"
-                fallbackText="NepalMap.webp"
+                fallbackText="mapofnepalbranch.webp"
               />
             </div>
           </div>

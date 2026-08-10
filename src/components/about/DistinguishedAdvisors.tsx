@@ -84,8 +84,8 @@ export const DistinguishedAdvisors: React.FC = () => {
                 <p
                   style={{
                     fontFamily:
-                      "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
-                    fontWeight: 500,
+                      "var(--font-public-sans), 'Public Sans', sans-serif",
+                    fontWeight: 600,
                     fontSize: "22px",
                     lineHeight: "28px",
                     letterSpacing: "0px",

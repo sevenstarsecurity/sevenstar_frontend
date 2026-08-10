@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ImageFallback } from "../ui/ImageFallback";
+import { logout } from "@/services/auth";
 import {
   Shield,
   LayoutGrid,
@@ -94,15 +95,21 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
         </nav>
       </div>
 
-      {/* Logout Link */}
+      {/* Logout Button */}
       <div className="p-4 border-t border-gray-100">
-        <Link
-          href="/admin/login"
-          className="flex items-center gap-3 px-3.5 py-2.5 text-gray-600 hover:text-red-700 hover:bg-red-50 rounded-lg text-xs font-bold uppercase tracking-wide transition-all"
+        <button
+          type="button"
+          onClick={() => {
+            setMobileOpen(false);
+            logout().finally(() => {
+              window.location.href = "/admin/login";
+            });
+          }}
+          className="w-full flex items-center gap-3 px-3.5 py-2.5 text-gray-600 hover:text-red-700 hover:bg-red-50 rounded-lg text-xs font-bold uppercase tracking-wide transition-all cursor-pointer"
         >
           <LogOut className="w-4 h-4" />
           <span>Logout</span>
-        </Link>
+        </button>
       </div>
     </div>
   );
