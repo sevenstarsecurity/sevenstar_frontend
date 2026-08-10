@@ -268,7 +268,7 @@ export const AdminLoginForm: React.FC = () => {
                     href="#reset"
                     className="text-xs font-semibold text-[#0b4226] hover:underline transition-colors"
                   >
-                    Reset Key
+
                   </a>
                 </div>
 
@@ -295,29 +295,6 @@ export const AdminLoginForm: React.FC = () => {
           </div>
 
           {/* Additional Info & Disclaimer Below Card */}
-          <div className="mt-5 sm:mt-6 text-center space-y-3 sm:space-y-3.5">
-            <p className="text-[11px] text-gray-500 leading-relaxed max-w-xs mx-auto px-2">
-              This system is strictly for the use of authorized Seven Star Security
-              personnel. Unauthorized access attempts are monitored and recorded.
-            </p>
-
-            {/* Links */}
-            <div className="flex items-center justify-center gap-4 sm:gap-6 text-[10px] font-bold text-gray-500 tracking-wider uppercase flex-wrap">
-              <a href="#terms" className="hover:text-gray-800 transition-colors">
-                SYSTEM TERMS
-              </a>
-              <a href="#audit" className="hover:text-gray-800 transition-colors">
-                AUDIT LOGS
-              </a>
-            </div>
-
-            {/* IP & Session Info */}
-            <div className="pt-1 hidden sm:block">
-              <p className="font-mono text-[10px] text-gray-400 tracking-widest uppercase">
-                IP RECORDED: 192.168.1.104 &nbsp;|&nbsp; SESSION: X-7792
-              </p>
-            </div>
-          </div>
         </div>
 
         {/* Footer Link back to website */}
