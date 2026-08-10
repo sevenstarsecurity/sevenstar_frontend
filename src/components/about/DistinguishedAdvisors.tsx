@@ -7,14 +7,14 @@ const advisors = [
   {
     name: "Sanat Kumar Basnet",
     role: "Retired IGP of APF",
-    imageUrl: "https://picsum.photos/seed/sarat/400/400",
+    imageUrl: "/images/apf.png",
     message:
       `At Seven Star we are constantly evolving and adapting in accordance with the ever changing demands of the industry, thereby meeting client requirements and assuring their safety. Thus offering our clients a complete "Peace of mind".`,
   },
   {
     name: "Devendra Bd. Medhasi",
     role: "Retired Nepal Army",
-    imageUrl: "https://picsum.photos/seed/devendra/400/400",
+    imageUrl: "/images/army.png",
     message: `I have the honor to congratulate Seven Star Security Service
 Pvt. Ltd. to publish its Company Profile on the occasion of its Anniversary.
 

@@ -19,12 +19,12 @@ export const TopBar: React.FC = () => {
             </span>
           </a>
           
-           <a href="mailto:info@sevenstar.com.np"
+           <a href="mailto:info@sevenstarsecurity.com.np"
             className="flex items-center gap-1 sm:gap-1.5 text-white hover:text-gray-200 transition-colors shrink-0"
           >
             <Mail className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white shrink-0" />
             <span className="text-white font-normal tracking-wider text-[9px] xs:text-[10px] sm:text-xs whitespace-nowrap">
-              info@sevenstar.com.np
+              info@sevenstarsecurity.com.np
             </span>
           </a>
         </div>

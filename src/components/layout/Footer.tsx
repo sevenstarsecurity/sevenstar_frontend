@@ -231,7 +231,12 @@ export const Footer: React.FC = () => {
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-[#008e43] flex-shrink-0" />
-                <span>info@sevenstar.com.np</span>
+                <a
+                  href="mailto:info@sevenstarsecurity.com.np"
+                  className="hover:text-white transition-colors"
+                >
+                  info@sevenstarsecurity.com.np
+                </a>
               </li>
             </ul>
           </div>

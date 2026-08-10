@@ -41,8 +41,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
     <div className="flex flex-col justify-between h-full min-h-screen bg-white border-r border-gray-200 w-60">
       <div>
         {/* Sidebar Brand Header */}
-        <div className="p-4 flex items-center justify-between border-b border-gray-100">
-          <Link href="/" className="flex items-center gap-3 group" title="Go to Website Homepage">
+        <div className="p-4 flex items-center justify-center relative border-b border-gray-100">
+          <Link
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 group"
+            title="Go to Website Homepage"
+          >
             <ImageFallback
               src="/images/sevenstarlogo.webp"
               alt="Seven Star Security Logo"
@@ -55,7 +61,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
           <button
             type="button"
             onClick={() => setMobileOpen(false)}
-            className="lg:hidden p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-md"
+            className="lg:hidden absolute right-4 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-md"
             aria-label="Close Mobile Navigation"
           >
             <X className="w-5 h-5" />
@@ -105,7 +111,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
     <>
       {/* Mobile Top Header Strip with Hamburger Button */}
       <div className="lg:hidden sticky top-0 z-30 bg-[#0b4226] text-white px-4 py-3 flex items-center justify-between shadow-md">
-        <Link href="/" className="flex items-center gap-2.5" title="Go to Website Homepage">
+        <Link
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2.5"
+          title="Go to Website Homepage"
+        >
           <ImageFallback
             src="/images/sevenstarlogo.webp"
             alt="Seven Star Security Logo"

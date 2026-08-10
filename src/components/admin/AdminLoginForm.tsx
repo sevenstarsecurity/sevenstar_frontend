@@ -34,12 +34,14 @@ export const AdminLoginForm: React.FC = () => {
     setErrorMsg("");
     setIsLoading(true);
 
+    // Persist the "stay logged in" preference BEFORE authenticating, because
+    // login() → setSession() reads it to decide localStorage vs sessionStorage.
+    if (typeof window !== "undefined") {
+      localStorage.setItem("stayLoggedIn", String(stayLoggedIn));
+    }
+
     try {
       const data = await login(email.trim(), password);
-
-      if (typeof window !== "undefined") {
-        localStorage.setItem("stayLoggedIn", String(stayLoggedIn));
-      }
 
       setIsSuccess(true);
 

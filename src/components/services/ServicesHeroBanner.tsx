@@ -7,8 +7,9 @@ export const ServicesHeroBanner: React.FC = () => {
   return (
     <PageHeroBanner 
       label="SERVICES"
-      title="Complete Security Solutions"
+      title="COMPLETE SECURITY SOLUTIONS"
       breadcrumbTitle="Services"
+      disableGlow
     />
   );
 };

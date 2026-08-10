@@ -45,6 +45,7 @@ import {
 } from "recharts";
 import { ImageFallback } from "../ui/ImageFallback";
 import { getDashboard, Dashboard, ActivityLog } from "@/services/dashboard";
+import { logout } from "@/services/auth";
 import { AdminSidebar } from "./AdminSidebar";
 
 const ACTION_LABELS: Record<string, string> = {
@@ -134,8 +135,8 @@ export const AdminDashboard: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    // TODO: wire up to real auth/logout endpoint
+  const handleLogout = async () => {
+    await logout();
     window.location.href = "/admin/login";
   };
 

@@ -6,9 +6,10 @@ import { PageHeroBanner } from "../ui/PageHeroBanner";
 export const BlogHeroBanner: React.FC = () => {
   return (
     <PageHeroBanner 
-      label="COMPANY"
-      title="Security news, tips & updates"
+      label="BLOG"
+      title="SECURITY NEWS AND UPDATES"
       breadcrumbTitle="Blog"
+      disableGlow
     />
   );
 };

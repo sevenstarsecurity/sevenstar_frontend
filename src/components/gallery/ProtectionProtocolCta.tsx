@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React from "react";
+import { PortfolioDownloadButton } from "../ui/PortfolioDownloadButton";
 
 export const ProtectionProtocolCta: React.FC = () => {
   return (
@@ -35,15 +36,8 @@ export const ProtectionProtocolCta: React.FC = () => {
           </Link>
 
           {/* Outlined Green/Dark Button */}
-          <a
-            href="/pdf/sevenstar%20.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto hover:bg-[#002e15] border border-[#FFDF96] text-[#FFDF96] font-semibold text-[16px] uppercase px-8 py-4 rounded-xs shadow-md transition-all duration-200 tracking-wider text-center"
-            style={{ fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif" }}
-          >
-            DOWNLOAD PORTFOLIO
-          </a>
+          <PortfolioDownloadButton className="w-full sm:w-auto hover:bg-[#002e15] border border-[#FFDF96] text-[#FFDF96] font-semibold text-[16px] uppercase px-8 py-4 rounded-xs shadow-md transition-all duration-200 tracking-wider text-center" />
+
         </div>
       </div>
     </section>

@@ -6,9 +6,10 @@ import { PageHeroBanner } from "../ui/PageHeroBanner";
 export const TrainingHeroBanner: React.FC = () => {
   return (
     <PageHeroBanner 
-      label="COMPANY"
-      title="Trained to protect, equipped to excel"
+      label="TRAINING"
+      title="TRAINED TO PROTECT, EQUIPPED TO EXCEL"
       breadcrumbTitle="Training"
+      disableGlow
     />
   );
 };

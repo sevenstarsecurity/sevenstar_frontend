@@ -1,7 +1,6 @@
 "use client";
 
 import { Client, getPublicClients } from "@/services/clients";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { companyLogos } from "../../data/companyLogos";
 import { ImageFallback } from "../ui/ImageFallback";
@@ -74,14 +73,6 @@ export const LogoCarousel: React.FC = () => {
   return (
     <div className="bg-white py-6 border-b border-gray-100 relative overflow-hidden w-full">
       <div className="w-full relative">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-md border border-gray-200 text-gray-400">
-          <ChevronLeft className="w-5 h-5" />
-        </div>
-
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-md border border-gray-200 text-gray-400">
-          <ChevronRight className="w-5 h-5" />
-        </div>
-
         <div className="flex overflow-hidden select-none w-full">
 <div
   className="flex items-center space-x-6 md:space-x-8 animate-slow-marquee hover:[animation-play-state:paused] py-2"

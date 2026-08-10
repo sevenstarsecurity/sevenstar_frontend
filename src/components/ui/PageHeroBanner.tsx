@@ -8,9 +8,10 @@ export interface PageHeroBannerProps {
   title: string;
   label: string;
   breadcrumbTitle: string;
+  disableGlow?: boolean;
 }
 
-export const PageHeroBanner: React.FC<PageHeroBannerProps> = ({ title, label, breadcrumbTitle }) => {
+export const PageHeroBanner: React.FC<PageHeroBannerProps> = ({ title, label, breadcrumbTitle, disableGlow }) => {
   return (
     <section className="relative text-white overflow-hidden min-h-[260px] md:min-h-[300px] flex items-center justify-center">
 
@@ -56,7 +57,7 @@ export const PageHeroBanner: React.FC<PageHeroBannerProps> = ({ title, label, br
         <h1
           className="font-semibold text-4xl md:text-5xl lg:text-6xl text-white mb-5 leading-snug animate-title-reveal"
         >
-          <span className="inline-block animate-title-glow">{title}</span>
+          <span className={`inline-block ${disableGlow ? "" : "animate-title-glow"}`}>{title}</span>
         </h1>
 
 
