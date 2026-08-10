@@ -92,13 +92,13 @@ export const LogoCarousel: React.FC = () => {
             {marqueeLogos.map((logo, index) => (
               <div
                 key={`${logo.id}-${index}`}
-className="flex items-center justify-center flex-shrink-0 h-14 w-40 transition-all duration-300 transform hover:scale-105"
+className="flex items-center justify-center flex-shrink-0 h-10 w-28 md:h-14 md:w-40 transition-all duration-300 transform hover:scale-105"
               >
                 <ImageFallback
                   src={logo.src}
                   alt={logo.alt}
                   fallbackText={logo.alt}
-                  className="max-h-12 max-w-[140px] object-contain"
+                  className="max-h-8 max-w-[100px] md:max-h-12 md:max-w-[140px] object-contain"
                 />
               </div>
             ))}
