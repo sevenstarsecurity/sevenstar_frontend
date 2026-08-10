@@ -238,20 +238,20 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Copyright Bar */}
-        <div className="pt-6 border-t border-[#1e231b] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] md:text-xs font-semibold tracking-wider uppercase text-[#8b9186] text-center sm:text-left">
-          <p>© 2024 SEVEN STAR SECURITY SERVICE PVT. LTD. ALL RIGHTS RESERVED.</p>
-          <div className="text-[#deb853] mr-18">
-            Design & Developed by:{" "}
-            <a
-              href="https://www.kreativemandu.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline hover:text-[#f0c040] transition-colors duration-200"
-            >
-              KREATIVEMANDU TECHNOLOGIES
-            </a>
-          </div>
-        </div>
+        <div className="pt-6 border-t border-[#1e231b] flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] sm:text-xs font-semibold tracking-wider uppercase text-[#8b9186] text-center md:text-left">
+  <p>© {new Date().getFullYear()} SEVEN STAR SECURITY SERVICE PVT. LTD. ALL RIGHTS RESERVED.</p>
+  <div className="text-[#deb853]">
+    Design &amp; Developed by:{" "}
+    
+    <a  href="https://www.kreativemandu.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hover:underline hover:text-[#f0c040] transition-colors duration-200"
+    >
+      KREATIVEMANDU TECHNOLOGIES
+    </a>
+  </div>
+</div>
       </div>
     </footer>
   );
