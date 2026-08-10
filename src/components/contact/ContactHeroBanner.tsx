@@ -41,7 +41,7 @@ export const ContactHeroBanner: React.FC = () => {
               >
                 CORPORATE HQ
               </h3>
-              <p className="text-xs text-gray-500 mb-4">London Gateway, United Kingdom</p>
+              <p className="text-xs text-gray-500 mb-4">Chandol-4, Kathmandu, Nepal</p>
             </div>
             <p className="text-xs md:text-sm font-extrabold text-[#004E24] tracking-wider">
               01-4542880
