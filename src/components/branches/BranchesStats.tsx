@@ -41,46 +41,48 @@ export const BranchesStats: React.FC = () => {
         </p>
 
         {/* Stat Cards Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-16 items-stretch">
           {stats.map((s, i) => (
             <div
               key={s.label}
-              className="bg-white flex flex-col items-center text-center transition-all duration-700 border-b-4 border-[#C8102E] pt-6 sm:pt-8 lg:pt-10 pb-5 sm:pb-6 lg:pb-8 px-3 sm:px-4"
+              className="transition-all duration-700"
               style={{
                 transitionDelay: `${i * 120}ms`,
                 opacity: visible ? 1 : 0,
                 transform: visible ? "translateY(0)" : "translateY(16px)",
               }}
             >
-              {/* Number */}
-              <span
-                className="text-2xl xs:text-3xl sm:text-4xl lg:text-[48px]"
-                style={{
-                  fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-                  fontWeight: 700,
-                  lineHeight: "1.15",
-                  color: "#004E24",
-                }}
-              >
-                {s.value}
-              </span>
+              <div className="h-full min-h-[180px] bg-white flex flex-col items-center justify-center text-center transition-transform duration-300 ease-out border-b-4 border-[#C8102E] pt-4 sm:pt-5 lg:pt-6 pb-3 sm:pb-4 lg:pb-5 px-3 sm:px-4 hover:scale-[1.03] hover:shadow-[0_22px_60px_rgba(15,58,33,0.12)] hover:-translate-y-1">
+                {/* Number */}
+                <span
+                  className="text-2xl xs:text-3xl sm:text-4xl lg:text-[48px]"
+                  style={{
+                    fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
+                    fontWeight: 700,
+                    lineHeight: "1.15",
+                    color: "#004E24",
+                  }}
+                >
+                  {s.value}
+                </span>
 
-              {/* Label */}
-              <span
-                className="mt-2 sm:mt-3 text-[9px] xs:text-[10px] sm:text-[11px]"
-                style={{
-                  fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
-                  fontWeight: 400,
-                  lineHeight: "16px",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: "#3F4940",
-                  whiteSpace: "pre-line",
-                  textAlign: "center",
-                }}
-              >
-                {s.label}
-              </span>
+                {/* Label */}
+                <span
+                  className="mt-2 sm:mt-3 text-[9px] xs:text-[10px] sm:text-[11px]"
+                  style={{
+                    fontFamily: "var(--font-public-sans), 'Public Sans', sans-serif",
+                    fontWeight: 400,
+                    lineHeight: "16px",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "#3F4940",
+                    whiteSpace: "pre-line",
+                    textAlign: "center",
+                  }}
+                >
+                  {s.label}
+                </span>
+              </div>
             </div>
           ))}
         </div>

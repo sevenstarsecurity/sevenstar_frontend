@@ -1,53 +1,47 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { AdminSidebar } from "./AdminSidebar";
 import {
-  Shield,
-  LayoutGrid,
-  Users,
-  FileText,
-  Image as ImageIcon,
-  MapPin,
-  Send,
-  Wrench,
-  Settings,
-  LogOut,
-  Search,
-  Bell,
-  User,
-  Plus,
-  Edit2,
-  Trash2,
-  Globe,
-  RotateCw,
-  X,
-  Building,
-  Loader2,
-  Briefcase,
-  UserPlus,
-  UserCog,
-  EyeOff,
-  Eye,
-} from "lucide-react";
-import { ImageFallback } from "../ui/ImageFallback";
-import {
-  getAdminBranches,
-  createBranch,
-  updateBranch,
-  deleteBranch,
-  getBranchStaff,
-  getBranchStaffCounts,
   addBranchStaff,
-  updateBranchStaff,
-  toggleBranchStaffStatus,
-  deleteBranchStaff,
   Branch,
   BranchStaff,
+  createBranch,
   CreateBranchPayload,
   CreateStaffPayload,
+  deleteBranch,
+  deleteBranchStaff,
+  getAdminBranches,
+  getBranchStaff,
+  getBranchStaffCounts,
+  toggleBranchStaffStatus,
+  updateBranch,
+  updateBranchStaff,
 } from "@/services/branches";
+import {
+  Briefcase,
+  Building,
+  Edit2,
+  Eye,
+  EyeOff,
+  FileText,
+  Globe,
+  Image as ImageIcon,
+  LayoutGrid,
+  Loader2,
+  MapPin,
+  Plus,
+  RotateCw,
+  Send,
+  Settings,
+  Trash2,
+  UserCog,
+  UserPlus,
+  Users,
+  Wrench,
+  X
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { ImageFallback } from "../ui/ImageFallback";
+import { AdminSidebar } from "./AdminSidebar";
 
 export const AdminBranches: React.FC = () => {
   const [branches, setBranches] = useState<Branch[]>([]); // always initialized as array
@@ -846,7 +840,7 @@ export const AdminBranches: React.FC = () => {
 
                 <div className="relative aspect-[16/10] bg-gray-900 overflow-hidden">
                   <ImageFallback
-                    src="/images/nepalmap.webp"
+                    src="/images/"
                     alt="Global Deployment Map"
                     className="w-full h-full object-cover opacity-60 filter contrast-125 brightness-90"
                     fallbackText="Map"
