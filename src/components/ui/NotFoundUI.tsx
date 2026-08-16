@@ -19,7 +19,7 @@ export const NotFoundUI: React.FC = () => {
         {/* Company Logo Badge */}
         <div className="bg-white/95 backdrop-blur-md px-5 py-2.5 rounded-full mb-8 flex items-center justify-center">
           <ImageFallback
-            src="/images/sevenstarlogo.webp"
+            src="/images/sevenstarbg.webp"
             alt="Seven Star Security Logo"
             className="h-10 sm:h-12 w-auto object-contain"
             fallbackText="Seven Star Security"

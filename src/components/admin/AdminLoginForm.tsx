@@ -85,7 +85,7 @@ export const AdminLoginForm: React.FC = () => {
         <div className="relative z-10 flex items-center gap-3">
           <Link href="/" title="Go to Website Homepage" className="group cursor-pointer">
             <ImageFallback
-              src="/images/sevenstarlogo.webp"
+              src="/images/sevenstarbg.webp"
               alt="Seven Star Security Logo"
               className="h-10 sm:h-12 w-auto object-contain bg-white/95 px-2.5 py-1 rounded-md shadow-md transition-transform duration-300 group-hover:scale-105"
               fallbackText="Seven Star Security"

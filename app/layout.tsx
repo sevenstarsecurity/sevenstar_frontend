@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     siteName: "Seven Star Security Services",
     images: [
       {
-        url: "/images/sevenstarlogo.webp",
+        url: "/images/sevenstarbg.webp",
         width: 1200,
         height: 630,
         alt: "Seven Star Security Services",
@@ -88,12 +88,12 @@ export const metadata: Metadata = {
       "Professional security and protection services for institutions, events, and enterprises in Nepal.",
     creator: "@SevenStarSecurity",
     site: "@SevenStarSecurity",
-    images: ["/images/sevenstarlogo.webp"],
+    images: ["/images/sevenstarbg.webp"],
   },
   icons: {
-    icon: "/images/sevenstarlogo.webp",
-    shortcut: "/images/sevenstarlogo.webp",
-    apple: "/images/sevenstarlogo.webp",
+    icon: "/images/sevenstarbg.webp",
+    shortcut: "/images/sevenstarbg.webp",
+    apple: "/images/sevenstarbg.webp",
   },
 };
 
@@ -141,7 +141,7 @@ export default function RootLayout({
               url: "https://sevenstarsecurity.com.np",
               logo: {
                 "@type": "ImageObject",
-                url: "https://sevenstarsecurity.com.np/images/sevenstarlogo.webp",
+                url: "https://sevenstarsecurity.com.np/images/sevenstarbg.webp",
               },
             },
           })}

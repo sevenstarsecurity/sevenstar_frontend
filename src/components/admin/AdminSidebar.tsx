@@ -51,7 +51,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
             title="Go to Website Homepage"
           >
             <ImageFallback
-              src="/images/sevenstarlogo.webp"
+              src="/images/sevenstarbg.webp"
               alt="Seven Star Security Logo"
               className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               fallbackText="Seven Star Security"
@@ -126,7 +126,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
           title="Go to Website Homepage"
         >
           <ImageFallback
-            src="/images/sevenstarlogo.webp"
+            src="/images/sevenstarbg.webp"
             alt="Seven Star Security Logo"
             className="h-8 w-auto object-contain bg-white/95 px-2 py-0.5 rounded shadow-sm"
             fallbackText="Seven Star Security"

@@ -90,10 +90,10 @@ export const Navbar: React.FC = () => {
         <Link href="/" className="flex items-center group shrink-0">
           <div className="relative h-11 sm:h-14 w-auto flex items-center justify-start">
             <ImageFallback
-              src="/images/sevenstarlogo.webp"
+              src="/images/sevenstarbg.webp"
               alt="Seven Star Security Logo"
               className="h-10 sm:h-12 md:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-              fallbackText="sevenstarlogo.webp"
+              fallbackText="sevenstarbg.webp"
             />
           </div>
         </Link>

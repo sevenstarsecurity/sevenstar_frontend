@@ -195,7 +195,7 @@ export const AdminClients: React.FC = () => {
             {
               id: `seed-${Date.now()}`,
               name: formName.trim(),
-              logoUrl: formPreview || "/images/sevenstarlogo.webp",
+              logoUrl: formPreview || "/images/sevenstarbg.webp",
               cloudinaryId: "",
               displayOrder: parsedOrder ?? nextOrderSuggestion,
               isActive: formActive,
