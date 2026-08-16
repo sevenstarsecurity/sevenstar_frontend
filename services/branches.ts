@@ -159,8 +159,8 @@ export interface CreateBranchPayload {
   phone: string;
   mobile?: string;
   email?: string;
-  latitude: number;
-  longitude: number;
+  latitude?: number;
+  longitude?: number;
   googleMapsUrl?: string;
   displayOrder?: number;
 }

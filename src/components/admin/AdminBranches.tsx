@@ -89,10 +89,6 @@ export const AdminBranches: React.FC = () => {
   const [branchName, setBranchName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [email, setEmail] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
 
   const navItems = [
@@ -144,10 +140,6 @@ export const AdminBranches: React.FC = () => {
     setBranchName("");
     setAddress("");
     setPhone("");
-    setMobile("");
-    setEmail("");
-    setLatitude("");
-    setLongitude("");
     setGoogleMapsUrl("");
   };
 
@@ -156,10 +148,6 @@ export const AdminBranches: React.FC = () => {
     setBranchName(branch.name ?? "");
     setAddress(branch.address ?? "");
     setPhone(branch.phone ?? "");
-    setMobile(branch.mobile ?? "");
-    setEmail(branch.email ?? "");
-    setLatitude(branch.latitude != null ? String(branch.latitude) : "");
-    setLongitude(branch.longitude != null ? String(branch.longitude) : "");
     setGoogleMapsUrl(branch.googleMapsUrl ?? "");
     setShowAddModal(true);
 
@@ -368,10 +356,6 @@ export const AdminBranches: React.FC = () => {
       name: branchName.trim(),
       address: address.trim(),
       phone: phone.trim(),
-      mobile: mobile.trim() || undefined,
-      email: email.trim() || undefined,
-      latitude: parseFloat(latitude),
-      longitude: parseFloat(longitude),
       googleMapsUrl: googleMapsUrl.trim() || undefined,
     };
 
@@ -934,78 +918,18 @@ export const AdminBranches: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
-                    PHONE <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+977 1 4XXXXXX"
-                    className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
-                    MOBILE
-                  </label>
-                  <input
-                    type="text"
-                    value={mobile}
-                    onChange={(e) => setMobile(e.target.value)}
-                    placeholder="+977 98XXXXXXXX"
-                    className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-                  />
-                </div>
-              </div>
-
               <div className="space-y-1.5">
                 <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
-                  EMAIL
+                  PHONE <span className="text-red-500">*</span>
                 </label>
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="branch@company.com"
+                  type="text"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+977 1 4XXXXXX"
                   className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
                 />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
-                    LATITUDE <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    step="any"
-                    required
-                    value={latitude}
-                    onChange={(e) => setLatitude(e.target.value)}
-                    placeholder="40.7128"
-                    className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-bold text-gray-600 uppercase tracking-wider block">
-                    LONGITUDE <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    step="any"
-                    required
-                    value={longitude}
-                    onChange={(e) => setLongitude(e.target.value)}
-                    placeholder="-74.006"
-                    className="w-full bg-[#f8fafc] border border-gray-300 rounded p-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#0b4226]"
-                  />
-                </div>
               </div>
 
               <div className="space-y-1.5">
