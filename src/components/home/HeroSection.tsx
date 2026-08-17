@@ -19,18 +19,18 @@ export const HeroSection: React.FC = () => {
           priority={true}
           style={{
             transform: "scale(1.04)",
-            transformOrigin: "center center",
+            transformOrigin: "center bottom",
           }}
           fallbackText="singguard.webp"
         />
         <ImageFallback
           src="/images/groupguard.webp"
           alt="Seven Star Security Guard Lineup"
-          className="w-full h-full object-contain object-center hidden sm:block"
+          className="w-full h-full object-contain object-bottom hidden sm:block"
           priority={true}
           style={{
             transform: "scale(1.04)",
-            transformOrigin: "center center",
+            transformOrigin: "center bottom",
           }}
           fallbackText="groupguard.webp"
         />
