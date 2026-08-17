@@ -158,7 +158,7 @@ api.interceptors.response.use(
       } catch (refreshError) {
         pendingQueue = [];
         clearSession();
-        window.location.href = "/admin/login";
+        window.location.href = "/netbus";
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

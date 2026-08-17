@@ -41,7 +41,7 @@ export const PresenceSection: React.FC = () => {
 
             {/* Heading */}
             <h3
-              className={`${barlowCondensed.className} font-medium text-[32px] leading-[38.4px] tracking-[0px] w-[234.59px] h-[39px] mb-4 flex items-center`}
+              className={`${barlowCondensed.className} font-medium text-[32px] leading-[38.4px] tracking-[0px] md:text-[42px] md:leading-[50px] lg:text-[52px] lg:leading-[62px] mb-4`}
             >
               Nationwide Presence
             </h3>
@@ -49,7 +49,7 @@ export const PresenceSection: React.FC = () => {
 
             {/* Description */}
             <p
-              className={`${publicSans.className} font-normal text-base md:text-lg leading-relaxed max-w-md mb-6`}
+              className={`${publicSans.className} font-normal text-base md:text-xl lg:text-2xl leading-relaxed max-w-md lg:max-w-xl mb-6`}
             >
               From the heart of Kathmandu to the far-western industrial
               zones, we are the trusted shield for Nepal's growing
@@ -58,7 +58,7 @@ export const PresenceSection: React.FC = () => {
 
 
             {/* Link */}
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FFDF96]">
+            <div className="inline-flex items-center gap-2 text-xs md:text-sm lg:text-base font-bold uppercase tracking-wider text-[#FFDF96]">
               <MapPin className="w-4 h-4 text-[#FFDF96]" />
 
               <span className="text-[#FFDF96]">

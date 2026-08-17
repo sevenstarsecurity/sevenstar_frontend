@@ -46,7 +46,7 @@ import {
 import { ImageFallback } from "../ui/ImageFallback";
 import { getDashboard, Dashboard, ActivityLog } from "@/services/dashboard";
 import { logout } from "@/services/auth";
-import { AdminSidebar } from "./AdminSidebar";
+
 
 const ACTION_LABELS: Record<string, string> = {
   UPLOAD_IMAGE: "Image Uploaded",
@@ -137,7 +137,7 @@ export const AdminDashboard: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    window.location.href = "/admin/login";
+    window.location.href = "/netbus";
   };
 
   const handleReadAllNotifications = () => {
@@ -153,8 +153,6 @@ export const AdminDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
-      <AdminSidebar currentPath="/admin/dashboard" />
-
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
         {/* TOP HEADER BAR */}
         <header className="bg-[#0b4226] text-white px-8 py-3.5 flex items-center justify-end shadow-md sticky top-0 z-20">

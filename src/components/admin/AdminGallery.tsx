@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { AdminSidebar } from "./AdminSidebar";
+
 import {
   Shield,
   LayoutGrid,
@@ -527,9 +527,6 @@ export const AdminGallery: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
-      {/* LEFT SIDEBAR NAVIGATION */}
-      <AdminSidebar currentPath="/admin/gallery" />
-
       {/* CENTER & MAIN WORKSPACE */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#f4f6f3]">
         {/* TOP WHITE HEADER BAR */}

@@ -27,7 +27,7 @@ import {
   deleteSubmission,
   bulkUpdateStatus,
 } from "@/services/contact";
-import { AdminSidebar } from "./AdminSidebar";
+
 
 const STATUS_OPTIONS: (ContactStatus | "all")[] = [
   "all",
@@ -238,9 +238,6 @@ export const AdminSubmissions: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-900 font-sans selection:bg-[#0b4226] selection:text-white">
-      {/* Unified Light Sidebar */}
-      <AdminSidebar currentPath="/admin/submissions" />
-
       {/* Main Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* TOP WHITE HEADER BAR */}

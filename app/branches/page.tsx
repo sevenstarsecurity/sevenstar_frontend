@@ -8,16 +8,47 @@ import { Footer } from "@/src/components/layout/Footer";
 import { Navbar } from "@/src/components/layout/Navbar";
 import { TopBar } from "@/src/components/layout/TopBar";
 import type { Metadata } from "next";
+import { BreadcrumbJsonLd } from "@/src/components/seo/BreadcrumbJsonLd";
 
 export const metadata: Metadata = {
-  title: "Branches | Seven Star Security Services",
+  title: "Our Branches | Seven Star Security Services",
   description:
-    "Protecting communities across Nepal — explore Seven Star Security's Head Office, S9 Training Academy, and 5 regional branch locations across the country.",
+    "Find security guards near you — explore Seven Star Security's Head Office in Kathmandu, S9 Training Academy, and 5 regional branches serving all of Nepal.",
+  alternates: {
+    canonical: "/branches",
+  },
+  openGraph: {
+    title: "Seven Star Security Branches | Security Guards Across Nepal",
+    description:
+      "Find security guards near you — Seven Star Security branches in Kathmandu and across Nepal.",
+    url: "https://www.sevenstarsecurity.com.np/branches",
+    siteName: "Seven Star Security Services",
+    images: [
+      {
+        url: "/images/sevenstarbg.webp",
+        width: 895,
+        height: 279,
+        alt: "Seven Star Security Branches Across Nepal",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Seven Star Security Branches | Security Guards Across Nepal",
+    description:
+      "Find security guards near you — Seven Star Security branches in Kathmandu and across Nepal.",
+    images: ["/images/sevenstarbg.webp"],
+  },
 };
 
 export default function BranchesPage() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-white text-gray-900 selection:bg-[#0b4226] selection:text-white">
+      <BreadcrumbJsonLd
+        items={[{ name: "Home", url: "/" }, { name: "Branches", url: "/branches" }]}
+      />
       {/* Top Bar Strip */}
       <TopBar />
 

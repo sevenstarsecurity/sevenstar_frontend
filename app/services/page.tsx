@@ -4,6 +4,7 @@ import { Footer } from "@/src/components/layout/Footer";
 import { Navbar } from "@/src/components/layout/Navbar";
 import { TopBar } from "@/src/components/layout/TopBar";
 import type { Metadata } from "next";
+import { BreadcrumbJsonLd } from "@/src/components/seo/BreadcrumbJsonLd";
 
 // Dynamic imports for below-the-fold sections
 const ServicesHeaderCallout = dynamic(
@@ -28,14 +29,44 @@ const ServicesCtaBanner = dynamic(
 );
 
 export const metadata: Metadata = {
-  title: "Services | Seven Star Security Services",
+  title: "Security Guard Services in Nepal | Seven Star Security",
   description:
-    "Explore comprehensive security solutions tailored to you — static guard services, electronic surveillance, executive protection, risk assessment, and 24/7 command monitoring across Nepal.",
+    "Hire trained security guards in Nepal — static guard services, mobile patrol, event security, CCTV surveillance, executive protection, bank security, and 24/7 command monitoring across Kathmandu and Nepal.",
+  alternates: {
+    canonical: "/services",
+  },
+  openGraph: {
+    title: "Security Guard Services in Nepal | Seven Star Security",
+    description:
+      "Hire trained security guards in Nepal — static guards, mobile patrol, event security, CCTV, VIP protection, and bank security across Kathmandu and Nepal.",
+    url: "https://www.sevenstarsecurity.com.np/services",
+    siteName: "Seven Star Security Services",
+    images: [
+      {
+        url: "/images/sevenstarbg.webp",
+        width: 895,
+        height: 279,
+        alt: "Security Guard Services in Nepal - Seven Star Security",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Security Guard Services in Nepal | Seven Star Security",
+    description:
+      "Hire trained security guards in Nepal — static guards, event security, CCTV, VIP protection, and bank security.",
+    images: ["/images/sevenstarbg.webp"],
+  },
 };
 
 export default function ServicesPage() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-white text-gray-900 selection:bg-[#0b4226] selection:text-white">
+      <BreadcrumbJsonLd
+        items={[{ name: "Home", url: "/" }, { name: "Services", url: "/services" }]}
+      />
       {/* Top Contact Strip */}
       <TopBar />
 

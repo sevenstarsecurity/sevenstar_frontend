@@ -53,8 +53,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
             <ImageFallback
               src="/images/sevenstarbg.webp"
               alt="Seven Star Security Logo"
-              className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               fallbackText="Seven Star Security"
+              priority
             />
           </Link>
 
@@ -102,7 +103,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
           onClick={() => {
             setMobileOpen(false);
             logout().finally(() => {
-              window.location.href = "/admin/login";
+              window.location.href = "/netbus";
             });
           }}
           className="w-full flex items-center gap-3 px-3.5 py-2.5 text-gray-600 hover:text-red-700 hover:bg-red-50 rounded-lg text-xs font-bold uppercase tracking-wide transition-all cursor-pointer"
@@ -128,8 +129,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ currentPath }) => {
           <ImageFallback
             src="/images/sevenstarbg.webp"
             alt="Seven Star Security Logo"
-            className="h-8 w-auto object-contain bg-white/95 px-2 py-0.5 rounded shadow-sm"
+            className="h-10 w-auto object-contain bg-white/95 px-2 py-0.5 rounded shadow-sm"
             fallbackText="Seven Star Security"
+            priority
           />
         </Link>
 

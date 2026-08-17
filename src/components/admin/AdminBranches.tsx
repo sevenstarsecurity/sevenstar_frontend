@@ -41,7 +41,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { ImageFallback } from "../ui/ImageFallback";
-import { AdminSidebar } from "./AdminSidebar";
+
 
 export const AdminBranches: React.FC = () => {
   const [branches, setBranches] = useState<Branch[]>([]); // always initialized as array
@@ -633,8 +633,6 @@ export const AdminBranches: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
-      <AdminSidebar currentPath="/admin/branches" />
-
       {/* CENTER & MAIN WORKSPACE */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#f4f6f3]">
         <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-2.5 sm:py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shadow-xs relative lg:sticky lg:top-0 z-10">

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
-import { AdminSidebar } from "./AdminSidebar";
+
 import {
   Shield,
   LayoutGrid,
@@ -385,8 +385,6 @@ export const AdminClients: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f4f6f3] text-gray-800 font-sans selection:bg-[#0b4226] selection:text-white">
-      <AdminSidebar currentPath="/admin/clients" />
-
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}

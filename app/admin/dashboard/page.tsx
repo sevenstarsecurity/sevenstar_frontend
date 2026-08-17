@@ -4,6 +4,7 @@ import { AdminDashboard } from "@/src/components/admin/AdminDashboard";
 export const metadata: Metadata = {
   title: "Seven Star Security Admin Terminal - Overview Dashboard | Seven Star Security",
   description: "Restricted Access Command & Management System for Seven Star Security.",
+  robots: { index: false, follow: false },
 };
 
 export default function DashboardPage() {

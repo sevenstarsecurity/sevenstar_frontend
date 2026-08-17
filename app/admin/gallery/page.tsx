@@ -4,6 +4,7 @@ import { AdminGallery } from "@/src/components/admin/AdminGallery";
 export const metadata: Metadata = {
   title: "Visual Asset Library | Seven Star Security Admin Terminal",
   description: "Manage visual assets, tactical gallery media, and promotional photography.",
+  robots: { index: false, follow: false },
 };
 
 export default function AdminGalleryPage() {

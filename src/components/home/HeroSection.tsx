@@ -11,17 +11,28 @@ export const HeroSection: React.FC = () => {
       <div className="absolute right-0 top-0 bottom-0 w-[52%] lg:w-[48%] bg-[#0F6835] z-0 [clip-path:polygon(16%_0,100%_0,100%_100%,0_100%)]" />
 
       {/* Guard Image - fixed position so it doesn't shift on page reload */}
-      <div className="absolute bottom-0 z-[1] right-[10%] w-[60%] top-[60px]">
+      <div className="absolute bottom-0 z-[1] right-0 w-[78%] sm:w-[60%] top-0 sm:top-[60px]">
         <ImageFallback
-          src="/images/nobgguard.webp"
-          alt="Seven Star Security Guard Lineup"
-          className="w-full h-full object-contain object-center"
+          src="/images/singguard.webp"
+          alt="Seven Star Security Guard"
+          className="w-full h-full object-contain object-[88%_center] sm:hidden"
           priority={true}
           style={{
-            transform: "scale(1.3)",
+            transform: "scale(1.04)",
             transformOrigin: "center center",
           }}
-          fallbackText="nobgguard.webp"
+          fallbackText="singguard.webp"
+        />
+        <ImageFallback
+          src="/images/groupguard.webp"
+          alt="Seven Star Security Guard Lineup"
+          className="w-full h-full object-contain object-center hidden sm:block"
+          priority={true}
+          style={{
+            transform: "scale(1.04)",
+            transformOrigin: "center center",
+          }}
+          fallbackText="groupguard.webp"
         />
       </div>
 
@@ -129,7 +140,7 @@ export const HeroSection: React.FC = () => {
             </div>
 
             {/* Badges inline — mobile only; hidden on sm+ where they use absolute positioning */}
-            <div className="sm:hidden flex items-center gap-1 ml-1">
+            <div className="sm:hidden flex items-center -space-x-3 ml-auto">
               <div className="flex items-center drop-shadow-xl flex-shrink-0" style={{ height: "clamp(24px, 7vw, 40px)" }}>
                 <ImageFallback
                   src="/images/Trusted By Badge.webp"
@@ -152,7 +163,7 @@ export const HeroSection: React.FC = () => {
       </div>
 
       {/* Badges absolute — desktop/tablet only; mobile uses inline badges in the CTA row */}
-      <div className="hidden sm:flex absolute bottom-2 sm:bottom-10 lg:bottom-14 left-[52%] lg:left-[48%] z-20 items-center gap-1 sm:gap-2">
+      <div className="hidden sm:flex absolute bottom-2 sm:bottom-10 lg:bottom-14 left-[62%] lg:left-[58%] z-20 items-center -space-x-4 sm:-space-x-6">
         <div
           className="flex items-center drop-shadow-2xl flex-shrink-0"
           style={{ height: "clamp(24px, 7vw, 96px)" }}

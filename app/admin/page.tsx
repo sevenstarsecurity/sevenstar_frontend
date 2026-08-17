@@ -1,11 +1,11 @@
 import { Metadata } from "next";
-import { AdminLoginForm } from "@/src/components/admin/AdminLoginForm";
 
 export const metadata: Metadata = {
   title: "Seven Star Security Admin Terminal | Seven Star Security Services",
   description: "Restricted Access Command & Management System for Seven Star Security.",
+  robots: { index: false, follow: false },
 };
 
 export default function AdminPage() {
-  return <AdminLoginForm />;
+  return null;
 }

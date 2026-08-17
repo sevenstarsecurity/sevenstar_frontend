@@ -4,6 +4,7 @@ import { Footer } from "@/src/components/layout/Footer";
 import { Navbar } from "@/src/components/layout/Navbar";
 import { TopBar } from "@/src/components/layout/TopBar";
 import type { Metadata } from "next";
+import { BreadcrumbJsonLd } from "@/src/components/seo/BreadcrumbJsonLd";
 
 // Dynamic imports for below-the-fold sections
 const OurStorySection = dynamic(
@@ -38,12 +39,42 @@ const AboutCtaBanner = dynamic(
 export const metadata: Metadata = {
   title: "About Us | Seven Star Security Services",
   description:
-    "Learn about Seven Star Security Services — a trusted security company founded in 2071 B.S., serving corporations, events, and institutions across Nepal.",
+    "Learn about Seven Star Security Services — a trusted security guard company in Nepal founded in 2071 B.S., serving corporations, events, and institutions across Kathmandu and all of Nepal.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "About Seven Star Security | Security Guard Company Nepal",
+    description:
+      "Learn about Seven Star Security Services — a trusted security guard company in Nepal serving corporations, events, and institutions across Kathmandu and Nepal.",
+    url: "https://www.sevenstarsecurity.com.np/about",
+    siteName: "Seven Star Security Services",
+    images: [
+      {
+        url: "/images/sevenstarbg.webp",
+        width: 895,
+        height: 279,
+        alt: "About Seven Star Security - Security Guard Company Nepal",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Seven Star Security | Security Guard Company Nepal",
+    description:
+      "A trusted security guard company in Nepal serving corporations, events, and institutions across Kathmandu and Nepal.",
+    images: ["/images/sevenstarbg.webp"],
+  },
 };
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-white text-gray-900 selection:bg-[#0b4226] selection:text-white">
+      <BreadcrumbJsonLd
+        items={[{ name: "Home", url: "/" }, { name: "About Us", url: "/about" }]}
+      />
       {/* Top Bar */}
       <TopBar />
 

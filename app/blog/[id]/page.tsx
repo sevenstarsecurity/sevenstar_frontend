@@ -22,6 +22,8 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+const BASE_URL = "https://www.sevenstarsecurity.com.np";
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
   const post = blogPosts.find((p) => p.id === id);
@@ -29,12 +31,41 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!post) {
     return {
       title: "Article Not Found | Seven Star Security Services",
+      robots: { index: false, follow: false },
     };
   }
 
   return {
     title: `${post.title} | Seven Star Security Services`,
     description: post.excerpt,
+    alternates: {
+      canonical: `/blog/${post.id}`,
+    },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: `${BASE_URL}/blog/${post.id}`,
+      siteName: "Seven Star Security Services",
+      images: [
+        {
+          url: post.image,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+      locale: "en_US",
+      type: "article",
+      publishedTime: new Date(post.date).toISOString(),
+      authors: [post.author.name],
+      section: post.category,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image],
+    },
   };
 }
 
@@ -315,6 +346,67 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
 
       {/* Footer */}
       <Footer />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+            {
+              "@type": "BreadcrumbList",
+              "@id": `${BASE_URL}/blog/${post.id}/#breadcrumb`,
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Home",
+                  item: BASE_URL,
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: "Blog",
+                  item: `${BASE_URL}/blog`,
+                },
+                {
+                  "@type": "ListItem",
+                  position: 3,
+                  name: post.title,
+                  item: `${BASE_URL}/blog/${post.id}`,
+                },
+              ],
+            },
+            {
+              "@type": "BlogPosting",
+              "@id": `${BASE_URL}/blog/${post.id}#article`,
+              mainEntityOfPage: `${BASE_URL}/blog/${post.id}`,
+              headline: post.title,
+              description: post.excerpt,
+              image: `${BASE_URL}${post.image}`,
+              datePublished: new Date(post.date).toISOString(),
+              dateModified: new Date(post.date).toISOString(),
+              author: {
+                "@type": "Person",
+                name: post.author.name,
+                jobTitle: post.author.role,
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "Seven Star Security Services",
+                url: BASE_URL,
+                logo: {
+                  "@type": "ImageObject",
+                  url: `${BASE_URL}/images/sevenstarlogo.webp`,
+                },
+              },
+              category: post.category,
+              inLanguage: "en",
+            },
+            ],
+          }),
+        }}
+      />
     </div>
   );
 }

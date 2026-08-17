@@ -4,6 +4,7 @@ import { Footer } from "@/src/components/layout/Footer";
 import { Navbar } from "@/src/components/layout/Navbar";
 import { TopBar } from "@/src/components/layout/TopBar";
 import type { Metadata } from "next";
+import { BreadcrumbJsonLd } from "@/src/components/seo/BreadcrumbJsonLd";
 
 // Dynamic imports for below-the-fold sections
 const DefiningExcellence = dynamic(
@@ -24,14 +25,44 @@ const JoinEliteForce = dynamic(
 );
 
 export const metadata: Metadata = {
-  title: "Training | Seven Star Security Services",
+  title: "Security Guard Training | Seven Star Security Services",
   description:
-    "Trained to protect, equipped to excel — explore Seven Star Security's elite training program, curriculum modules, and purpose-built training arena in Nepal.",
+    "Trained to protect, equipped to excel — explore Seven Star Security's elite security guard training program, curriculum modules, and purpose-built training arena in Nepal.",
+  alternates: {
+    canonical: "/training",
+  },
+  openGraph: {
+    title: "Security Guard Training | Seven Star Security Services",
+    description:
+      "Explore Seven Star Security's elite security guard training program and training arena in Nepal.",
+    url: "https://www.sevenstarsecurity.com.np/training",
+    siteName: "Seven Star Security Services",
+    images: [
+      {
+        url: "/images/sevenstarbg.webp",
+        width: 895,
+        height: 279,
+        alt: "Security Guard Training - Seven Star Security",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Security Guard Training | Seven Star Security Services",
+    description:
+      "Explore Seven Star Security's elite security guard training program in Nepal.",
+    images: ["/images/sevenstarbg.webp"],
+  },
 };
 
 export default function TrainingPage() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-white text-gray-900 selection:bg-[#0b4226] selection:text-white">
+      <BreadcrumbJsonLd
+        items={[{ name: "Home", url: "/" }, { name: "Training", url: "/training" }]}
+      />
       {/* Top Bar Strip */}
       <TopBar />
 
