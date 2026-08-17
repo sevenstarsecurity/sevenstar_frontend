@@ -63,7 +63,7 @@ export const ContactHeroBanner: React.FC = () => {
               <p className="text-xs text-gray-500 mb-4">Secure encrypted communication line</p>
             </div>
             <p className="text-xs md:text-sm font-extrabold text-[#004E24] tracking-wider underline break-all">
-              SEVENSTARSECURITIES@GMAIL.COM
+              info@sevenstarsecurity.com.np
             </p>
           </div>
 

@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/netbus", "/pagenotfound"],
+      disallow: ["/admin", "/pagenotfound"],
     },
     sitemap: "https://www.sevenstarsecurity.com.np/sitemap.xml",
   };

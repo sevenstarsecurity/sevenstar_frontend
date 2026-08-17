@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.sevenstarsecurity.com.np"),
   title: {
     default:
-      "Security Guard Services in Nepal | Seven Star Security - 24/7 Guard Company Kathmandu",
+      "Seven Star Security Service | Security Guard Company in Nepal - 24/7 Guard Kathmandu",
     template: "%s | Seven Star Security Services",
   },
   description:
@@ -73,7 +73,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Security Guard Services in Nepal | Seven Star Security - 24/7 Guard Company",
+    title:
+      "Seven Star Security Service | Security Guard Company in Nepal - 24/7 Guard Kathmandu",
     description:
       "Trusted security guard company in Nepal. 24/7 guard services, event security, VIP protection, CCTV surveillance and bank security across Kathmandu and Nepal. Get security guard services near me.",
     url: "https://www.sevenstarsecurity.com.np",
@@ -91,7 +92,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Security Guard Services in Nepal | Seven Star Security",
+    title: "Seven Star Security Service | Security Guard Company in Nepal - 24/7 Guard",
     description:
       "Professional security guard company in Nepal - 24/7 guard services, event security, VIP protection, CCTV and bank security across Kathmandu and Nepal.",
     creator: "@SevenStarSecurity",
